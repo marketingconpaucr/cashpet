@@ -1,7 +1,7 @@
 # ESTADO — CashPet
-Última actualización: 2026-09-16 | Sesión actual: 1
+Última actualización: 2026-09-17 | Sesión actual: 3
 
-⏸️ CHECKPOINT — Última acción completada: Sesión 3 CERRADA — landing real construida en Next.js (app/page.tsx) desde el kit canónico, FICHA-MERCADO.md creada (plazos de garantía verificados contra Hotmart), auditoría de conversión en 0 críticos / Siguiente acción exacta: mostrar la landing corriendo al usuario y esperar su OK para arrancar Sesión 4 (onboarding, paywall y login)
+⏸️ CHECKPOINT — Última acción completada: Landing de CashPet declarada LISTA por el revisor-visual tras 7 pasadas y varias rondas de feedback directo del usuario (veredicto: Usabilidad 36/40 · Craft 17/20 · Copy 20/20, en `docs/revisiones/landing-veredicto.md`) / Siguiente acción exacta: esperar el OK del usuario para arrancar Sesión 4 (onboarding, paywall y login/auth)
 
 ## Qué es esta app (3 líneas máximo)
 Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario anota un gasto en segundos y la mascota reacciona (felicita o regaña con humor), genera rachas de ahorro y sube de nivel. Para adultos jóvenes en LATAM (22-35) que ganan bien pero sienten que el dinero "se les evapora". Monetización por suscripción ($8.99/mes o $69.99/año) vía Hotmart.
@@ -57,7 +57,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Servicios externos: pendiente — GitHub/Supabase/IA/Vercel/Resend/dominio/Hotmart
 
 ## Puertas de etapa (aprobación antes de avanzar)
-- Landing: construida, esperando OK del usuario para pasar a Onboarding
+- Landing: LISTA (veredicto del revisor-visual, 36/40 · 17/20 · copy 20/20) — esperando OK del usuario para pasar a Onboarding
 - Onboarding: no iniciada
 - Paywall: no iniciada
 - Login/Auth: no iniciada
@@ -109,7 +109,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
   5. Presupuesto de copy: la regex de "literal largo" no distinguía comillas/backticks dentro de comentarios o código de comillas de copy real, y a veces "tragaba" bloques enteros de código como si fueran un párrafo (por un apóstrofe suelto). Se agregaron tres guardas: no está dentro de un comentario, contiene palabras de prosa en español reales, y no contiene sintaxis de código (`{`, `}`, `=>`, `${`).
   Los 5 fixes están en `scripts/lib-conversion.mjs`, verificados corriendo `bash scripts/audit-conversion.sh` antes y después (bajó de 13 a 0 críticos falsos, sin perder ninguna detección real — se probó con contenido real de la landing).
 
-- [EN CURSO] Veredicto de landing pendiente: 5 pasadas del revisor-visual, todas NO LISTA (28→29→28→31→30/40 usabilidad, 12→15→14→14→14/20 craft, copy 19/20 desde la 4ª). Rondas 1-3 (defectos del revisor): mascota en el hero, capturas reales en el carrusel, garantía junto al CTA, prueba social atribuida a Cleo AI, cálculo mostrado en vez de cifra suelta. Feedback directo del usuario en medio (todo resuelto): "no me convence de comprar" → copy más visceral (microinfarto, irresponsable, "te quita la tarjeta de las manos"); "menos texto, más visual" → recorte de copy + mascota como puente entre Agitación y Solución; ejemplo de otra app "menos plano" → card flotante de racha en el hero; "no siento NECESITO y se ve plana" → dato-héroe con la cifra real de FICHA-AVATAR ($1.800-2.400/año, antes un $500 inventado) + captura real del mecanismo; "se repite el café" → 3 escenas distintas (café/domicilio/compra en línea, la última con la cara "Preocupada" del sistema de 5 emociones, a pedido del usuario en 1ª persona: "esta sí me preocupa"). Rondas 4-5 del revisor (10 defectos técnicos, todos corregidos): patrón SectionShell+useReveal+CountUp animado en los bloques nuevos, fondos alternados (`--surface-2`), frames de teléfono unificados (`rounded-[30px] border-[5px]`, igual al carrusel), stub `/entrar`, contraste del CTA recalculado con el color de texto real (`--accent` #7C5CFC→#7154E5, ~9%), ancla "Ver plan y precios" visible en desktop, fallback `onError` en las imágenes reales. Se relanzó una 6ª pasada, resultado pendiente.
+- [RESUELTO 2026-09-17] Veredicto de landing: LISTA tras 7 pasadas del revisor-visual (36/40 usabilidad · 17/20 craft · 20/20 copy). Camino: rondas 1-3 corrigieron defectos propios del revisor (mascota en el hero, capturas reales, garantía junto al CTA, prueba social atribuida a Cleo, cálculo mostrado); en paralelo, 5 rondas de feedback directo del usuario (más punch de venta, menos texto más visual, capas/profundidad, dato-héroe con la cifra real de FICHA-AVATAR en vez de un número inventado, más variedad de escenas en vez de repetir "café") empujaron la mayoría del trabajo; rondas 4-7 cerraron 13 defectos técnicos más finos (patrón de animación del kit, fondos alternados, frames unificados, ruta `/entrar`, contraste AA del CTA en dos fondos distintos, ancla de precios en desktop, fallback de imágenes). Pulido opcional anotado por la 7ª pasada, NO bloqueante: timeline visual para la secuencia 7+15 días de la garantía, aligerar el CTA mensual de la Oferta, agregar focus-visible custom en los interactivos del kit, y considerar fusionar los 2 puentes intermedios si se vuelve a tocar la landing (scroll total denso).
 
 ## Pendientes del usuario (acciones que el usuario debe hacer)
 - [ ] Confirmar el nombre definitivo de la app: CashPet (nombre de carpeta/archivo del usuario) vs Fintchi (nombre tentativo de su propia investigación) vs RegañadorFinanciero
