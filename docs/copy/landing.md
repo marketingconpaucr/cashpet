@@ -19,7 +19,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 - Subtítulo marcado: `El Freno de 5 Segundos actúa [b]antes de la compra que vas a lamentar.[/b]`
 - CTA: `Quiero mi mascota financiera` → `/onboarding`
 - Social proof (sin números falsos de CashPet — cero usuarios reales todavía; se cita a Cleo AI CON NOMBRE, dato real y sourceado en FICHA-MODELO.md): `Sin conectar tu banco · 7 días gratis` / `Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos`
-- Visual: la mascota (componente propio, no placeholder) + burbuja con su reacción a un gasto + card flotante de racha ("14 días · de racha", con ícono de llama) superpuesta con leve rotación — capa de profundidad pedida por el usuario ("menos plano"), ilustra el mecanismo de racha, no es un dato de uso real
+- Visual: Gastón, el Gato (componente propio, no placeholder — mascota rediseñada 2026-09-17, ver FICHA-ARTE.md) + burbuja con su reacción sarcástica a un gasto (`"¿Otro café? Qué autocontrol el tuyo"`) + card flotante de racha ("14 días · de racha", con ícono de llama) superpuesta con leve rotación — capa de profundidad pedida por el usuario ("menos plano"), ilustra el mecanismo de racha, no es un dato de uso real
 
 ## 2. PROBLEMA — "¿Te suena?" (preguntas más filosas, tomadas literal de FICHA-AVATAR.md)
 1. (icon Frown) `¿Sientes un microinfarto cada vez que abres la app de tu banco?`
@@ -49,7 +49,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 - Cifra de FICHA-AVATAR.md ("$1.800-2.400 no ahorrados al año") con conteo animado a "+$1.800" · subtítulo "hasta $2.400 si no los frenas" · mascota + "Yo te aviso antes." (antes decía "$500 al año", un cálculo inventado más débil que la evidencia real de la ficha)
 
 ## Puente visual (NO es sección canónica — captura real del mecanismo, justo después de la Solución)
-- Frame de teléfono con `/mockups/mecanismo-impulso.png`: la mascota con la cara "Preocupada" (sistema de 5 emociones de FICHA-ARTE.md) reaccionando a una compra en línea — `"¿Otra compra en línea? Ya van 3 este mes — esta sí me preocupa un poco"` (el usuario pidió reemplazar "Instagram" por algo más genérico y "te preocupa" por "me preocupa", en voz de la mascota) · botón "Va anotado, con cuidado" · TERCERA escena distinta (hero=café/feliz, carrusel "Mecanismo"=domicilio/feliz, este puente=compra en línea/preocupada) para que no se repita la misma experiencia ni la misma emoción dos veces (feedback del usuario, ver ESTADO.md)
+- Frame de teléfono con `/mockups/mecanismo-impulso.png`: Gastón con la cara "Desconfiada" (sistema de 5 emociones de FICHA-ARTE.md, renombrada junto con el cambio de mascota) reaccionando a una compra en línea — `"¿Otra compra en línea? Van 3 este mes. Mmm, ¿la necesitabas de verdad?"` · botón "Anotado. Lo vigilo." · TERCERA escena distinta (hero=café/feliz, carrusel "Mecanismo"=domicilio/feliz, este puente=compra en línea/desconfiada) para que no se repita la misma experiencia ni la misma emoción dos veces (feedback del usuario, ver ESTADO.md)
 
 ## 5. LA APP POR DENTRO (placeholders honestos — screenshots reales pendientes de Sesión 5)
 - Título marcado: `Tu día, con [acento]mascota incluida[/acento]`

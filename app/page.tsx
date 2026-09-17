@@ -62,11 +62,11 @@ export default function LandingCashPet() {
               className="rounded-[var(--radius-card)] px-4 py-3 text-sm font-semibold shadow-[var(--shadow-2)]"
               style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}
             >
-              &ldquo;¿Otro café? Ya van 3 esta semana&rdquo;
+              &ldquo;¿Otro café? Qué autocontrol el tuyo&rdquo;
             </div>
 
             {/* Card flotante: capa de profundidad — muestra el mecanismo de racha, no es un dato de uso real */}
-            <div className="absolute right-4 top-6 flex items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--accent)_20%,transparent)] bg-[var(--surface)] px-4 py-3 shadow-[var(--shadow-2)] rotate-[4deg] sm:right-10">
+            <div className="absolute right-2 top-20 flex items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--accent)_20%,transparent)] bg-[var(--surface)] px-4 py-3 shadow-[var(--shadow-2)] rotate-[4deg] sm:right-8">
               <IconChip icon={Flame} />
               <div className="text-left">
                 <p className="text-base font-bold leading-none text-[var(--text-primary)]">14 días</p>

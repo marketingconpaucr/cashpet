@@ -1,25 +1,46 @@
-// Mascota de CashPet — el personaje de FICHA-ARTE.md (orejitas, mofletes, brote que crece
-// con el nivel). Un solo componente reusado en toda la app para que sea siempre la MISMA cara
-// base (16/FICHA-ARTE: "cambian ojos, boca y cejas, nunca el diseño base").
+// Mascota de CashPet — Gastón, el Gato (FICHA-ARTE.md): rechoncho, violeta, ojos
+// entrecerrados y bigotes. Un solo componente reusado en toda la app para que sea
+// siempre la MISMA cara base (16/FICHA-ARTE: "cambian ojos, boca y cejas, nunca el
+// diseño base").
 export function Mascota({ size = 100 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Tu mascota financiera">
-      <circle cx="26" cy="24" r="11" fill="var(--accent)" />
-      <circle cx="74" cy="24" r="11" fill="var(--accent)" />
-      <circle cx="26" cy="24" r="5.5" fill="color-mix(in oklab, var(--accent) 55%, white)" />
-      <circle cx="74" cy="24" r="5.5" fill="color-mix(in oklab, var(--accent) 55%, white)" />
-      <path d="M50 6c-5 1-7 6-4 11 5-1 8-6 4-11Z" fill="var(--mascota-brote-1)" />
-      <path d="M50 6c5 1 7 6 4 11-5-1-8-6-4-11Z" fill="var(--mascota-brote-2)" />
-      <circle cx="50" cy="56" r="38" fill="var(--accent)" />
-      <circle cx="24" cy="64" r="6.5" fill="var(--mascota-moflete)" opacity="0.55" />
-      <circle cx="76" cy="64" r="6.5" fill="var(--mascota-moflete)" opacity="0.55" />
-      <ellipse cx="36" cy="52" rx="8.5" ry="10.5" fill="var(--mascota-blanco)" />
-      <ellipse cx="64" cy="52" rx="8.5" ry="10.5" fill="var(--mascota-blanco)" />
-      <circle cx="37.5" cy="55.5" r="5" fill="var(--mascota-linea)" />
-      <circle cx="65.5" cy="55.5" r="5" fill="var(--mascota-linea)" />
-      <circle cx="35.5" cy="50.5" r="1.8" fill="var(--mascota-blanco)" />
-      <circle cx="63.5" cy="50.5" r="1.8" fill="var(--mascota-blanco)" />
-      <path d="M40 68q10 8 20 0" stroke="var(--mascota-linea)" strokeWidth="3" strokeLinecap="round" fill="none" />
+    <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Gastón, tu mascota financiera">
+      {/* Cola, curvándose detrás del cuerpo */}
+      <path
+        d="M82 84c14 2 18-14 10-24-3 8 0 16-12 16Z"
+        fill="var(--accent)"
+      />
+      {/* Orejas puntiagudas de gato */}
+      <path d="M15 30 29 3 41 28Z" fill="var(--accent)" />
+      <path d="M85 30 71 3 59 28Z" fill="var(--accent)" />
+      <path d="M21 26 29 11 35 25Z" fill="color-mix(in oklab, var(--accent) 55%, white)" />
+      <path d="M79 26 71 11 65 25Z" fill="color-mix(in oklab, var(--accent) 55%, white)" />
+      {/* Cuerpo/cabeza rechoncho */}
+      <circle cx="50" cy="58" r="40" fill="var(--accent)" />
+      {/* Cachetes/mofletes gorditos */}
+      <circle cx="25" cy="70" r="9.5" fill="var(--mascota-moflete)" opacity="0.55" />
+      <circle cx="75" cy="70" r="9.5" fill="var(--mascota-moflete)" opacity="0.55" />
+      {/* Bigotes */}
+      <path d="M20 62 4 60" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      <path d="M19 66 3 66" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      <path d="M20 70 4 73" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      <path d="M80 62 96 60" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      <path d="M81 66 97 66" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      <path d="M80 70 96 73" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      {/* Ojos entrecerrados, con juicio: almendra chata, sin ceja separada (así se lee "sleepy/judging") */}
+      <path d="M26 50.5q10-6 20 0q-10 5-20 0Z" fill="var(--mascota-linea)" />
+      <path d="M54 50.5q10-6 20 0q-10 5-20 0Z" fill="var(--mascota-linea)" />
+      {/* Naricita */}
+      <path d="M46.5 61.5q3.5-3.5 7 0-3.5 4-7 0Z" fill="var(--mascota-moflete)" />
+      {/* Boca de gato (forma de "w") con una comisura levantada, sonrisa de superioridad */}
+      <path
+        d="M50 63v4q-4 4-8-1M50 67q4 4 10-3"
+        stroke="var(--mascota-linea)"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 }
