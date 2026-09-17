@@ -1,7 +1,7 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-16 | Sesión actual: 1
 
-⏸️ CHECKPOINT — Última acción completada: FICHA-AVATAR.md creada (borrador) desde la investigación del usuario / Siguiente acción exacta: mostrar Plan Maestro al usuario y esperar su OK para seguir Sesión 1 (FICHA-MODELO con revenue verificado, unit economics, arquitectura y BD)
+⏸️ CHECKPOINT — Última acción completada: FICHA-MODELO.md creada y aprobada por evidencia (Cleo AI, 2 señales de revenue independientes) / Siguiente acción exacta: mostrar el plano de Cleo y el eje de diferenciación al usuario, luego seguir Sesión 1 con el gate de unit economics (40), arquitectura y BD
 
 ## Qué es esta app (3 líneas máximo)
 Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario anota un gasto en segundos y la mascota reacciona (felicita o regaña con humor), genera rachas de ahorro y sube de nivel. Para adultos jóvenes en LATAM (22-35) que ganan bien pero sienten que el dinero "se les evapora". Monetización por suscripción ($4.99/mes o $39.99/año) vía Hotmart.
@@ -13,7 +13,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Veredicto: Viable con ajustes (80/100 en la investigación propia del usuario) — recortar el alcance a un tracker de gastos gamificado, sin cursos largos ni consultoría de inversión
 - Apps de referencia: YNAB (queja: complejo y caro, ~$100/año) · Wallet/Mobills (queja: aburridos, exigen disciplina) · Cleo (queja: solo inglés/EE.UU., pero prueba que "IA con actitud" factura — 4M+ usuarios)
 - Lo que los usuarios odian de la competencia (nuestra oportunidad): "difícil de configurar", "aburrida a largo plazo", "parece Excel", "me siento culpable al ver mis números"
-- Brecha LATAM confirmada: sí, según la investigación del usuario (océano azul: gamificación + humor + educación para principiantes en español) — pendiente verificación propia con fuentes públicas (Sensor Tower, Meta Ads Library) antes de cerrar FICHA-MODELO
+- Brecha LATAM confirmada: sí — verificado con fuentes públicas propias: Cleo AI (el modelo elegido, ver FICHA-MODELO.md) factura $280M ARR (jul-2025, fuente Sacra) solo en inglés/EE.UU.-UK, sin presencia en español/LATAM
 - Precio de referencia del mercado: $5-$15/mes (benchmark de la investigación del usuario)
 
 ## Dirección de Arte (Sesión 2 — NO cambiar sin justificación)
@@ -71,10 +71,10 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 (ninguna cerrada todavía — Sesión 1 en curso)
 
 ## Sesión en progreso 🔧
-- Sesión 1 — Validación, avatar, monetización y arquitectura. Hecho: idea validada (traída por el usuario, no se re-valida), FICHA-AVATAR.md en borrador. Falta: mostrar Plan Maestro y obtener OK del usuario; luego FICHA-MODELO con revenue verificado, gate de unit economics (40), diseño de arquitectura/BD/auth
+- Sesión 1 — Validación, avatar, monetización y arquitectura. Hecho: idea validada (traída por el usuario, no se re-valida), FICHA-AVATAR.md en borrador, FICHA-MODELO.md aprobada (app modelo: Cleo AI). Falta: gate de unit economics (40), esquema de base de datos y método de auth
 
 ## Próximas sesiones 📋
-- Sesión 1 (continuación): FICHA-MODELO (Cleo/Duolingo como referencia, con señales de revenue), gate de unit economics, esquema de base de datos y método de auth
+- Sesión 1 (continuación): gate de unit economics (40) con el costo real de Claude Haiku 4.5, esquema de base de datos y método de auth
 - Sesión 2: identidad visual (FICHA-ARTE.md) y sistema de diseño
 - Sesión 3: página de ventas (landing)
 
