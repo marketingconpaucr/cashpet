@@ -1,7 +1,7 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-16 | Sesión actual: 1
 
-⏸️ CHECKPOINT — Última acción completada: Sesión 1 completa — gate de unit economics (40) pasado, auth y esquema de BD diseñados / Siguiente acción exacta: mostrar cierre de Sesión 1 al usuario y esperar su OK para arrancar Sesión 2 (identidad visual — FICHA-ARTE.md)
+⏸️ CHECKPOINT — Última acción completada: Sesión 2 iniciada — comparativa direcciones-abc.html construida (3 fusiones: A=Duolingo, B=Cleo, C=Nubank), verificada visualmente en el navegador (fuentes cargadas, sin emojis, 3 diseños divergentes) / Siguiente acción exacta: esperar que el usuario elija A/B/C (o combine/ajuste/pida otras 3) y luego cerrar FICHA-ARTE.md con la dirección elegida
 
 ## Qué es esta app (3 líneas máximo)
 Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario anota un gasto en segundos y la mascota reacciona (felicita o regaña con humor), genera rachas de ahorro y sube de nivel. Para adultos jóvenes en LATAM (22-35) que ganan bien pero sienten que el dinero "se les evapora". Monetización por suscripción ($4.99/mes o $39.99/año) vía Hotmart.
@@ -17,11 +17,16 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Precio de referencia del mercado: $5-$15/mes (benchmark de la investigación del usuario)
 
 ## Dirección de Arte (Sesión 2 — NO cambiar sin justificación)
-- FICHA-ARTE.md: NO existe todavía (se hace en Sesión 2)
-- ¿Hubo referencia visual del usuario?: NO, aún no preguntado
-- Resumen: pendiente
-- Personalidad: pendiente (a definir con el compilador de personalidad, sesión 2)
-- REGISTRO ANTI-REPETICIÓN: pendiente
+- FICHA-ARTE.md: NO existe todavía — pendiente de que el usuario elija A/B/C en direcciones-abc.html
+- ¿Hubo referencia visual del usuario?: NO — usuario pidió que se le propongan direcciones (Ruta 1 del protocolo 54/16)
+- TABLA DE LÍDERES (16 PASO 0.2bis): Cleo AI (app modelo, FICHA-MODELO.md) · Duolingo (gamificación/rachas — ya referenciado como benchmark de mecánica) · Nubank (gigante fintech LATAM admirado por confianza/craft)
+- Comparativa A/B/C construida: `direcciones-abc.html` (raíz del proyecto, kit oficial `plantillas-codigo/direcciones-abc/plantilla.html`, marcador `data-kit="abc-v2"` intacto) — verificada visualmente en el navegador: 3 diseños divergentes, fuentes cargadas correctamente (Baloo 2/Nunito · Schibsted Grotesk/JetBrains Mono · Archivo/Instrument Sans), cero emojis como íconos
+  - Opción A "La mascota juguetona" — base Duolingo: blanco, verde #58CC02, redondeado, arquetipo Bufón
+  - Opción B "La consciencia con actitud" — base Cleo: oscuro, lima #CDFA4C, datos en monospace (estética ticket), arquetipo Forajido/Bufón irreverente
+  - Opción C "La claridad confiable" — base Nubank: blanco frío, violeta #820AD1, editorial/timeline, arquetipo Gente Común/Cuidador
+- Resumen: pendiente de elección del usuario
+- Personalidad: pendiente (se compila con 11-DISENO-EMOCIONAL.md una vez elegida la dirección)
+- REGISTRO ANTI-REPETICIÓN: pendiente (se fija al cerrar FICHA-ARTE.md)
 
 ## Avatar y venta (Sesión 1 — NO cambiar sin validar)
 - FICHA-AVATAR.md: existe, estado BORRADOR — creada 2026-09-16, pendiente de aprobación explícita del usuario
