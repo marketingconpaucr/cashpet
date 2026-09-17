@@ -9,22 +9,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import {
-  Coins,
-  HeartHandshake,
-  Moon,
-  ShoppingBag,
-  Sparkles,
-  Sunrise,
-  Sun,
-  Sunset,
-  Trophy,
-} from 'lucide-react';
+import { Moon, ShoppingBag, Sparkles, Sunrise, Sun, Sunset } from 'lucide-react';
 import { Mascota, type EmocionMascota } from '@/components/Mascota';
 import { CtaButton } from '@/components/landing/ui';
 import {
+  BarraMiniVisual,
   ChipOpcion,
   EncabezadoOnboarding,
+  PantallaLoading,
   PantallaPregunta,
   PantallaReconocimiento,
   SliderCompromiso,
@@ -151,6 +143,11 @@ export default function OnboardingPage() {
   const [gastoCategoria, setGastoCategoria] = useState<string | null>(null);
   const [reaccion, setReaccion] = useState<EmocionMascota | null>(null);
 
+  // Feedback de validación (defecto real que encontró el revisor-visual: los botones no
+  // avisaban nada cuando faltaba completar algo) — mensaje + sacudida breve, nunca silencio.
+  const [errorCategorias, setErrorCategorias] = useState(false);
+  const [errorGasto, setErrorGasto] = useState<string | null>(null);
+
   const avanzar = () => setIndice((i) => Math.min(i + 1, PASOS.length - 1));
   const atras = () => setIndice((i) => Math.max(i - 1, 0));
 
@@ -169,7 +166,11 @@ export default function OnboardingPage() {
 
   const reaccionar = () => {
     const monto = parseFloat(gastoMonto.replace(',', '.'));
-    if (!Number.isFinite(monto) || monto <= 0 || !gastoCategoria) return;
+    if (!Number.isFinite(monto) || monto <= 0 || !gastoCategoria) {
+      setErrorGasto(!gastoMonto.trim() || !Number.isFinite(monto) || monto <= 0 ? 'Escribe cuánto gastaste' : 'Elige una categoría');
+      setTimeout(() => setErrorGasto(null), 2000);
+      return;
+    }
     const proporcion = monto / presupuesto;
     let emocion: EmocionMascota;
     if (proporcion <= 0.5) emocion = 'celebrando';
@@ -199,8 +200,8 @@ export default function OnboardingPage() {
     } catch {
       // localStorage puede fallar (modo privado) — no bloquea el flujo, se re-preguntará si hace falta.
     }
-    const t = setTimeout(() => router.push('/paywall'), 4200);
-    return () => clearTimeout(t);
+    // La navegación a /paywall la dispara <PantallaLoading> (onCompletar) cuando termina su
+    // propia secuencia visual — no un timeout aparte aquí.
   }, [paso]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const mostrarAtras = paso !== 'bienvenida' && paso !== 'loading' && indice > 1;
@@ -285,12 +286,12 @@ export default function OnboardingPage() {
 
         {paso === 'reconocimiento1' && (
           <PantallaReconocimiento
-            icon={HeartHandshake}
+            emocion="feliz"
             tituloMarked="No es falta de voluntad"
             cuerpo={
               dolor === 'Ni idea — y eso es lo que quiero descubrir'
                 ? 'Si ni siquiera sabes cuándo se te va, el problema no es tu disciplina: es que nadie te avisa EN EL MOMENTO. Por eso existe el Freno de 5 Segundos.'
-                : 'Que sepas exactamente cuándo se te escapa el dinero ya te pone adelante de la mayoría. El problema nunca fue no saber ahorrar — fue que nadie te avisaba a tiempo.'
+                : 'Que sepas exactamente cuándo se te escapa el dinero ya te pone adelante de la mayoría. El problema nunca fue no saber ahorrar — fue que nadie te avisaba a tiempo. Para eso está el Freno de 5 Segundos.'
             }
             onContinuar={avanzar}
           />
@@ -301,18 +302,28 @@ export default function OnboardingPage() {
             tituloMarked="¿En qué se te va más el dinero?"
             subcopy="Elige todas las que apliquen."
             ctaFijo={
-              <CtaButton href="#" alto={52} fullMobile>
-                <span
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (categorias.length === 0 && !otraCategoria) return;
-                    avanzar();
-                  }}
-                  style={{ opacity: categorias.length === 0 && !otraCategoria ? 0.65 : 1 }}
-                >
-                  Continuar
-                </span>
-              </CtaButton>
+              <div>
+                <motion.div animate={errorCategorias ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }} transition={{ duration: 0.4 }}>
+                  <CtaButton href="#" alto={52} fullMobile>
+                    <span
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (categorias.length === 0 && !otraCategoria) {
+                          setErrorCategorias(true);
+                          setTimeout(() => setErrorCategorias(false), 500);
+                          return;
+                        }
+                        avanzar();
+                      }}
+                    >
+                      Continuar
+                    </span>
+                  </CtaButton>
+                </motion.div>
+                {errorCategorias && (
+                  <p className="mt-2 text-center text-sm font-medium text-[var(--accent)]">Elige al menos una opción</p>
+                )}
+              </div>
             }
           >
             {OPCIONES_CATEGORIA.map((op) => (
@@ -385,9 +396,12 @@ export default function OnboardingPage() {
                   ))}
                 </div>
                 <div className="mt-4 pb-[max(16px,env(safe-area-inset-bottom))]">
-                  <CtaButton href="#" alto={56}>
-                    <span onClick={(e) => { e.preventDefault(); reaccionar(); }}>Anotar gasto</span>
-                  </CtaButton>
+                  <motion.div animate={errorGasto ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }} transition={{ duration: 0.4 }}>
+                    <CtaButton href="#" alto={56}>
+                      <span onClick={(e) => { e.preventDefault(); reaccionar(); }}>Anotar gasto</span>
+                    </CtaButton>
+                  </motion.div>
+                  {errorGasto && <p className="mt-2 text-center text-sm font-medium text-[var(--accent)]">{errorGasto}</p>}
                 </div>
               </div>
             ) : (
@@ -415,24 +429,25 @@ export default function OnboardingPage() {
 
         {paso === 'reconocimientoFinal' && (
           <PantallaReconocimiento
-            icon={Trophy}
+            emocion="celebrando"
             tituloMarked="Ya diste el primer paso"
             cuerpo="Pocos definen su límite Y anotan un gasto antes de tener la app instalada. Tu Freno de 5 Segundos va a usar exactamente esa disciplina que ya mostraste."
+            dato={<BarraMiniVisual etiqueta="Categorías de riesgo identificadas" valor={categorias.length} total={OPCIONES_CATEGORIA.length} />}
             ctaLabel="Ver mi plan"
             onContinuar={avanzar}
           />
         )}
 
         {paso === 'loading' && (
-          <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-            <Coins className="animate-pulse" size={40} color="var(--accent)" aria-hidden="true" />
-            <h2 className="mt-5 text-2xl font-bold [font-family:var(--font-display)]">Armando tu Freno de 5 Segundos…</h2>
-            <ul className="mt-6 flex flex-col gap-3 text-left text-[15px]">
-              <li>✓ Ajustando tu límite diario: {formatoMoneda(presupuesto, monedaActual.moneda, monedaActual.locale)}</li>
-              <li>✓ Configurando tus categorías de riesgo</li>
-              <li>✓ Tu momento de riesgo: {momento}</li>
-            </ul>
-          </div>
+          <PantallaLoading
+            titulo="Armando tu Freno de 5 Segundos…"
+            lineas={[
+              `Ajustando tu límite diario: ${formatoMoneda(presupuesto, monedaActual.moneda, monedaActual.locale)}`,
+              'Configurando tus categorías de riesgo',
+              `Tu momento de riesgo: ${momento}`,
+            ]}
+            onCompletar={() => router.push('/paywall')}
+          />
         )}
       </TransicionPaso>
     </div>

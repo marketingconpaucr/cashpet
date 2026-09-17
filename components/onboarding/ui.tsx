@@ -10,6 +10,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Check, ChevronLeft } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { CtaButton } from '@/components/landing/ui';
+import { Mascota, type EmocionMascota } from '@/components/Mascota';
 
 /* ── <BarraProgreso> — línea fina 2px, % real, ENDOWED PROGRESS (nunca arranca en 0%) ── */
 export function BarraProgreso({ porcentaje }: { porcentaje: number }) {
@@ -141,36 +142,63 @@ export function PantallaPregunta({
   );
 }
 
-/* ── <PantallaReconocimiento> — recompensa entre bloques de preguntas (A5), CERO decisiones ── */
+/* ── <PantallaReconocimiento> — recompensa entre bloques de preguntas (A5), CERO decisiones.
+   La carga emocional es GASTÓN (con la emoción real que corresponde), nunca un ícono genérico
+   solo — regla dura de 50-DISENO-ONBOARDING-PAYWALL.md §A5 ("prohibido el ícono duotone
+   genérico como ÚNICA carga del momento de reconocimiento"). El "dato" opcional es el mini-
+   visual con colores reales de la app que la misma regla exige cuando hay uno que mostrar. ── */
 export function PantallaReconocimiento({
-  icon: Icono,
+  emocion = 'feliz',
   tituloMarked,
   cuerpo,
+  dato,
   ctaLabel = 'Continuar',
   onContinuar,
 }: {
-  icon: LucideIcon;
+  emocion?: EmocionMascota;
   tituloMarked: string;
   cuerpo: string;
+  /** Mini-visual con un dato REAL del usuario (ej. "3 de 5 categorías" con una barra) — opcional. */
+  dato?: ReactNode;
   ctaLabel?: string;
   onContinuar: () => void;
 }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-      <span
-        aria-hidden="true"
-        className="flex size-16 items-center justify-center rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--accent)_22%,transparent)] bg-[var(--chip-bg)]"
-      >
-        <Icono size={30} strokeWidth={1.8} color="var(--accent)" aria-hidden="true" />
-      </span>
+      <Mascota size={84} emocion={emocion} />
       <h2 className="mt-5 text-balance text-2xl font-bold leading-tight text-[var(--text-primary)] [font-family:var(--font-display)]">
         {tituloMarked}
       </h2>
       <p className="mt-3 max-w-[38ch] text-[15px] leading-relaxed text-[var(--text-secondary)]">{cuerpo}</p>
+      {dato && <div className="mt-5 w-full">{dato}</div>}
       <div className="mt-8 w-full pb-[max(16px,env(safe-area-inset-bottom))]">
         <CtaButton href="#" alto={56}>
           <span onClick={(e) => { e.preventDefault(); onContinuar(); }}>{ctaLabel}</span>
         </CtaButton>
+      </div>
+    </div>
+  );
+}
+
+/* ── <BarraMiniVisual> — mini-visual con colores reales del kit (dato cuantificado del
+   usuario, ej. "3 de 6 categorías") — para el "dato" de PantallaReconocimiento (A5). ── */
+export function BarraMiniVisual({ etiqueta, valor, total }: { etiqueta: string; valor: number; total: number }) {
+  const pct = total > 0 ? Math.round((valor / total) * 100) : 0;
+  return (
+    <div className="rounded-[var(--radius-card)] bg-[var(--surface)] p-4 shadow-[var(--shadow-1)]">
+      <div className="flex items-baseline justify-between">
+        <span className="text-sm text-[var(--text-secondary)]">{etiqueta}</span>
+        <span className="text-lg font-bold tabular-nums text-[var(--accent)]">
+          {valor}/{total}
+        </span>
+      </div>
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]">
+        <motion.div
+          className="h-full rounded-full bg-[var(--accent)]"
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+        />
       </div>
     </div>
   );
@@ -229,6 +257,114 @@ export function SliderCompromiso({
           <span onClick={(e) => { e.preventDefault(); onFijar(); }}>Fijar mi límite</span>
         </CtaButton>
       </div>
+    </div>
+  );
+}
+
+const RADIO_ANILLO = 44;
+const CIRCUNFERENCIA = 2 * Math.PI * RADIO_ANILLO;
+
+/* ── <PantallaLoading> — B1/B2: el argumento de apertura del paywall (patrón Noom/Labor
+   Illusion), NUNCA un spinner. Anillo con % real + 3-5 líneas que aparecen una a una con
+   DATOS REALES del usuario, check custom (nunca "✓" de sistema), aria-live/aria-busy. ── */
+export function PantallaLoading({
+  titulo,
+  lineas,
+  duracionMs = 4200,
+  onCompletar,
+}: {
+  titulo: string;
+  lineas: string[];
+  duracionMs?: number;
+  onCompletar: () => void;
+}) {
+  const reduce = useReducedMotion();
+  const [activaIdx, setActivaIdx] = useState(-1);
+  const [porcentaje, setPorcentaje] = useState(8);
+
+  useEffect(() => {
+    if (reduce) {
+      setActivaIdx(lineas.length);
+      setPorcentaje(100);
+      const done = setTimeout(onCompletar, 600);
+      return () => clearTimeout(done);
+    }
+    const pasoMs = duracionMs / lineas.length;
+    const timers = lineas.map((_, i) =>
+      setTimeout(() => {
+        setActivaIdx(i);
+        setPorcentaje(Math.round(8 + (92 * (i + 1)) / lineas.length));
+      }, pasoMs * i)
+    );
+    const done = setTimeout(onCompletar, duracionMs + 400);
+    return () => {
+      timers.forEach(clearTimeout);
+      clearTimeout(done);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div
+      className="flex flex-1 flex-col items-center justify-center px-6 text-center"
+      role="status"
+      aria-live="polite"
+      aria-busy={porcentaje < 100}
+    >
+      <div className="relative flex size-28 items-center justify-center">
+        <svg width="112" height="112" viewBox="0 0 100 100" className="-rotate-90">
+          <circle cx="50" cy="50" r={RADIO_ANILLO} fill="none" stroke="color-mix(in oklab, var(--accent) 15%, transparent)" strokeWidth="8" />
+          <motion.circle
+            cx="50"
+            cy="50"
+            r={RADIO_ANILLO}
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth="8"
+            strokeLinecap="round"
+            strokeDasharray={CIRCUNFERENCIA}
+            animate={{ strokeDashoffset: CIRCUNFERENCIA * (1 - porcentaje / 100) }}
+            transition={{ duration: reduce ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] }}
+          />
+        </svg>
+        <span className="absolute text-2xl font-bold tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">
+          {porcentaje}%
+        </span>
+      </div>
+      <h2 className="mt-5 text-balance text-2xl font-bold leading-tight text-[var(--text-primary)] [font-family:var(--font-display)]">
+        {titulo}
+      </h2>
+      <ul className="mt-6 flex w-full flex-col gap-3 text-left">
+        {lineas.map((linea, i) => {
+          const completada = i < activaIdx || (reduce && porcentaje === 100);
+          const activa = i === activaIdx && !completada;
+          return (
+            <motion.li
+              key={linea}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: i <= activaIdx || reduce ? 1 : 0.4, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center gap-3 text-[15px] text-[var(--text-primary)]"
+            >
+              {completada ? (
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]">
+                  <Check size={12} strokeWidth={3} color="var(--bg)" aria-hidden="true" />
+                </span>
+              ) : activa ? (
+                <motion.span
+                  animate={{ opacity: [1, 0.4, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="size-5 shrink-0 rounded-full bg-[var(--accent)]"
+                  aria-hidden="true"
+                />
+              ) : (
+                <span className="size-5 shrink-0 rounded-full border-2 border-[color-mix(in_oklab,var(--text-tertiary)_35%,transparent)]" aria-hidden="true" />
+              )}
+              <span>{linea}</span>
+            </motion.li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
