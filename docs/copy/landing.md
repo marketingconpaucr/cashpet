@@ -49,7 +49,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 - Cifra de FICHA-AVATAR.md ("$1.800-2.400 no ahorrados al año") con conteo animado a "+$1.800" · subtítulo "hasta $2.400 si no los frenas" · mascota + "Yo te aviso antes." (antes decía "$500 al año", un cálculo inventado más débil que la evidencia real de la ficha)
 
 ## Puente visual (NO es sección canónica — captura real del mecanismo, justo después de la Solución)
-- Frame de teléfono con `/mockups/mecanismo-impulso.png`: la mascota reaccionando a una compra por impulso en Instagram — TERCERA escena distinta (hero=café, carrusel "Mecanismo"=domicilio, este puente=impulso) para que no se repita la misma experiencia dos veces (feedback del usuario, ver ESTADO.md)
+- Frame de teléfono con `/mockups/mecanismo-impulso.png`: la mascota con la cara "Preocupada" (sistema de 5 emociones de FICHA-ARTE.md) reaccionando a una compra en línea — `"¿Otra compra en línea? Ya van 3 este mes — esta sí me preocupa un poco"` (el usuario pidió reemplazar "Instagram" por algo más genérico y "te preocupa" por "me preocupa", en voz de la mascota) · botón "Va anotado, con cuidado" · TERCERA escena distinta (hero=café/feliz, carrusel "Mecanismo"=domicilio/feliz, este puente=compra en línea/preocupada) para que no se repita la misma experiencia ni la misma emoción dos veces (feedback del usuario, ver ESTADO.md)
 
 ## 5. LA APP POR DENTRO (placeholders honestos — screenshots reales pendientes de Sesión 5)
 - Título marcado: `Tu día, con [acento]mascota incluida[/acento]`

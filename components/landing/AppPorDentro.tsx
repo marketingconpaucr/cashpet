@@ -51,6 +51,9 @@ export function AppPorDentro({
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const frameRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [activo, setActivo] = useState(0);
+  // Si un screenshot real falla al cargar (404, archivo corrupto), cae al mismo
+  // placeholder honesto que ya se usa cuando falta el `src` — nunca un ícono roto.
+  const [fallidos, setFallidos] = useState<Set<number>>(new Set());
 
   // Dots sincronizados con el frame más visible — obligatorios SIEMPRE (19 §5)
   useEffect(() => {
@@ -106,7 +109,7 @@ export function AppPorDentro({
                   className="relative aspect-[9/19.5] w-[250px] overflow-hidden rounded-[30px] border-[5px] shadow-[var(--shadow-2)]"
                   style={{ borderColor: 'color-mix(in oklab, var(--text-primary) 90%, var(--accent))' }}
                 >
-                  {f.src ? (
+                  {f.src && !fallidos.has(i) ? (
                     /* Si el proyecto usa next/image, cambiar por <Image> — <img> mantiene el kit portable */
                     <img
                       src={f.src}
@@ -115,6 +118,7 @@ export function AppPorDentro({
                       height={542}
                       loading="lazy"
                       className="h-full w-full object-cover"
+                      onError={() => setFallidos((prev) => new Set(prev).add(i))}
                     />
                   ) : (
                     /* Placeholder honesto (55 §5.2): gris elevado + nombre + dashed —

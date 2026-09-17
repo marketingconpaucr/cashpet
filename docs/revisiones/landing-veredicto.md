@@ -1,14 +1,14 @@
 # VEREDICTO revisor-visual — landing
 Fecha: 2026-09-17 00:00
 Screenshot: docs/revisiones/landing-375.png
-Usabilidad: 31/40
+Usabilidad: 30/40
 Craft: 14/20
 Copy (si vende): 19/20
 Fidelidad (si hubo referencia): N-A
 Veredicto: NO LISTA
 Top defectos:
-1. [Puente Solución→carrusel y frame "Mecanismo" de AppPorDentro] La misma captura `mecanismo.png` se repite dos veces en el mismo scroll (a segundos de diferencia) — cheapens la sensación de "enriquecido" que se buscaba con esta ronda → usar una captura distinta para el frame "Mecanismo" del carrusel, o eliminar el puente duplicado.
-2. [Bloque "$1.800–$2.400" y puente de mecanismo, entre Agitación/Solución y Solución/carrusel] Ambos bloques nuevos son `<div>` sueltos que no usan `SectionShell`/`useReveal` del kit: no tienen stagger de entrada, y el número más grande de toda la página ($1.800–$2.400, 48px) no cuenta hacia arriba pese a ser exactamente el caso de uso del baseline "conteo animado de números héroe" → migrar ambos bloques al patrón motion del kit y animar el conteo del número.
-3. [Transición Solución → puente del mecanismo] Ambas secciones usan el mismo `--bg` sin separador ni cambio de superficie — se funden en un solo plano, rompiendo la alternancia base/elevado que sí se respeta en el resto del scroll (código: `app/page.tsx` líneas 113-149) → alternar una de las dos a `--surface` o `--surface-2`.
-4. [Header, esquina superior derecha, enlace "Entrar"] Apunta a `/entrar`, ruta que no existe en `app/` (404 al hacer clic) — viola la propia regla del kit ("todo enlace apunta a una página que existe") aplicada solo al footer → crear la página de login o quitar el enlace hasta que exista.
-5. [CTA violeta con texto crema, en Hero/Oferta/CtaFinal] Contraste medido texto-sobre-botón ≈3.9:1 (accent #7C5CFC vs texto --bg #FDF1E7 a 17px semibold) — por debajo de 4.5:1 AA para texto que no califica como "grande" → oscurecer el texto del botón o ajustar el acento.
+1. [Puente mecanismo (app/page.tsx ~L158) vs carrusel "La app por dentro" (components/landing/AppPorDentro.tsx L106)] Los dos frames de teléfono usan radio y borde distintos (rounded-[24px] border-4 vs rounded-[30px] border-[5px]) — mismo tipo de componente, esquinas distintas a pocas secciones de distancia → unificar a un solo valor (24px, el token --radius-card) y un solo grosor de borde en ambos frames.
+2. [Puente post-Agitación "+$1.800" y puente post-Solución "mecanismo-impulso.png"] Las dos escenas nuevas (domicilio vs. compra por Instagram) ya no repiten el archivo, pero comparten pose de mascota, burbuja y botón "Listo, seguimos" idénticos — a simple vista siguen leyéndose como la misma captura con el texto cambiado, no como dos pruebas distintas del mecanismo → variar la expresión de la mascota o el encuadre entre ambas escenas.
+3. [tokens.css --accent + CtaButton en ui.tsx] El acento #7758F2 sobre --bg mide ~4.2-4.3:1 (calculado), no los 4.5:1 que FICHA-ARTE.md y el comentario del código declaran como objetivo ya cumplido para el texto del botón (17px/600, no califica como texto grande) — supera el piso de 3:1 del CTA héroe pero no cierra el gap de accesibilidad que el propio fix afirma haber cerrado → oscurecer un poco más el acento o pintar el texto del botón con --text-primary, y remedir antes de dar el fix por cerrado.
+4. [Toda la landing, 11 secciones de scroll] No hay salto de contenido ni ancla visible para quien no quiere leer todo (solo existen los anchors internos #oferta que usa el sticky-CTA); nada distingue la navegación por teclado más allá del comportamiento default del navegador → agregar un enlace "ver plan y precios" visible además del sticky mobile, también para desktop/teclado.
+5. [Frames de /mockups/*.png en AppPorDentro y en los dos puentes] No hay fallback visual si alguna de las 6 imágenes reales no carga (solo el alt nativo del navegador) → agregar un onError que muestre el placeholder honesto que el propio componente ya sabe renderizar cuando falta el src.

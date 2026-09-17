@@ -27,10 +27,11 @@
   --text-secondary: #7a6a5c;
   --text-tertiary: #7a6a5c;
 
-  /* ── MARCA (violeta de FICHA-ARTE.md #7c5cfc, oscurecido ~4% para pasar AA 4.5:1
-     con texto blanco/crema en el CTA — ajuste de contraste, no un color nuevo) ── */
-  --accent: #7758f2;
-  --accent-2: #7758f2;         /* sin 2ª nota de UI — el verde-brote de la ficha vive solo en la mascota, no en componentes de landing */
+  /* ── MARCA (violeta de FICHA-ARTE.md #7c5cfc, oscurecido ~9% para pasar AA 4.5:1
+     con el texto crema del CTA — --bg mide más claro que blanco puro, así que el
+     4% inicial no alcanzaba; verificado con cálculo de contraste real, no estimado) ── */
+  --accent: #7154e5;
+  --accent-2: #7154e5;         /* sin 2ª nota de UI — el verde-brote de la ficha vive solo en la mascota, no en componentes de landing */
 
   /* ── FORMA ── */
   --radius-card: 24px;

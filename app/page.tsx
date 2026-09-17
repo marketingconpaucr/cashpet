@@ -4,6 +4,7 @@
 // Copy 100% derivado de docs/copy/landing.md (marcado, trazado a FICHA-AVATAR.md).
 // Tokens visuales: components/landing/tokens.css (tematizado desde FICHA-ARTE.md).
 
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Wallet, ClipboardList, Frown, ShoppingBag, Flame } from 'lucide-react';
 import { Mascota } from '@/components/Mascota';
@@ -27,9 +28,17 @@ const CTA_LABEL = 'Quiero mi mascota financiera';
 
 export default function LandingCashPet() {
   const { contenedor, item } = useReveal();
+  const [mecanismoImgFallo, setMecanismoImgFallo] = useState(false);
 
   return (
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--text-primary)] [font-family:var(--font-body)]">
+      {/* Ancla a la oferta visible en desktop/teclado — en mobile ya cubre esto StickyCtaMobile */}
+      <div className="sticky top-0 z-30 hidden justify-end border-b border-[color-mix(in_oklab,var(--text-tertiary)_20%,transparent)] bg-[var(--surface)] px-6 py-2 md:flex">
+        <a href="#oferta" className="text-sm font-semibold text-[var(--accent)] hover:underline">
+          Ver plan y precios
+        </a>
+      </div>
+
       {/* 1. HERO */}
       <Hero
         appName="CashPet"
@@ -155,17 +164,24 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
         >
           <motion.div
             variants={item}
-            className="relative aspect-[9/19.5] w-48 overflow-hidden rounded-[24px] border-4 shadow-[var(--shadow-2)]"
+            className="relative aspect-[9/19.5] w-48 overflow-hidden rounded-[30px] border-[5px] shadow-[var(--shadow-2)]"
             style={{ borderColor: 'color-mix(in oklab, var(--text-primary) 90%, var(--accent))' }}
           >
-            <img
-              src="/mockups/mecanismo-impulso.png"
-              alt="La mascota de CashPet reaccionando a una compra por impulso"
-              width={192}
-              height={417}
-              loading="lazy"
-              className="h-full w-full object-cover"
-            />
+            {!mecanismoImgFallo ? (
+              <img
+                src="/mockups/mecanismo-impulso.png"
+                alt="La mascota de CashPet reaccionando a una compra en línea"
+                width={192}
+                height={417}
+                loading="lazy"
+                className="h-full w-full object-cover"
+                onError={() => setMecanismoImgFallo(true)}
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center border-2 border-dashed border-[color-mix(in_oklab,var(--text-tertiary)_40%,transparent)] bg-[var(--surface-2)] px-4">
+                <span className="text-center text-sm font-medium text-[var(--text-secondary)]">Mecanismo</span>
+              </div>
+            )}
           </motion.div>
           <motion.p variants={item} className="max-w-[28ch] text-center text-sm font-medium text-[var(--text-secondary)]">
             Así se ve en tu teléfono, en el momento exacto del gasto.

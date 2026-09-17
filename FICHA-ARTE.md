@@ -46,11 +46,12 @@
 - Motion signature: easing suave (ease-out) · stagger ~60ms entre cards · firma: la mascota "respira"/parpadea sutil en estados idle (a implementar en código real, Sesión 5)
 
 ## Nota técnica (no reabre la ficha — ajuste de accesibilidad, no de identidad)
-- El acento de la landing (`--accent` en tokens.css) se oscureció de #7C5CFC a #7758F2 (~4%,
-  imperceptible) para que el texto del botón CTA pase contraste AA 4.5:1. Sigue siendo "el mismo
-  violeta" a efectos de identidad — la app/onboarding/paywall pueden seguir usando #7C5CFC si no
-  tienen el mismo problema de contraste; esto es una corrección puntual de la landing, detectada
-  por el revisor-visual (2026-09-17).
+- El acento de la landing (`--accent` en tokens.css) se oscureció de #7C5CFC a #7154E5 (~9%) para
+  que el texto crema del botón CTA pase contraste AA 4.5:1 (un primer ajuste a #7758F2/~4% no
+  alcanzó: el revisor-visual midió ~4.2-4.3:1 con el texto real de --bg, más claro que blanco
+  puro — se recalculó con el color de texto exacto en vez de asumir blanco). Sigue siendo "el
+  mismo violeta" a efectos de identidad — la app/onboarding/paywall pueden seguir usando #7C5CFC
+  si no tienen el mismo problema de contraste; esto es una corrección puntual de la landing.
 
 ## Trazabilidad y vetos
 - Ruta de diseño: RUTA 2 — referencia parcial del usuario (moodboard de 5 capturas), no propuesta desde cero
