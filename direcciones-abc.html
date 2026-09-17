@@ -8,56 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&family=Schibsted+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Archivo:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- ============================================================================
-  KIT-ABC-V2 — PLANTILLA DEL PROTOCOLO A/B/C (54, Regla Dura #0 + gate del CLAUDE.md)
-  ⚠️ EL MARCADOR data-kit="abc-v2" DEL <html> NO SE BORRA: el hook pre-stop lo
-  verifica. Una comparativa sin ese marcador se trata como escrita desde cero
-  (prohibido). Este archivo se COPIA y se TEMATIZA — nunca se reescribe a mano.
-  Comparativa AUTOCONTENIDA: 3 layouts ESTRUCTURALMENTE DISTINTOS de la MISMA
-  pantalla clave, cada uno con su dirección de arte completa. El usuario la ABRE
-  y VE — prohibido presentar direcciones solo con texto.
-
-  CÓMO USARLA:
-  1. Reemplazar los tokens de .op-a / .op-b / .op-c (marcados "← reemplazar") con
-     las 3 direcciones derivadas (16 PASO 0.2bis + banco del 54). La paleta del
-     líder/banco se toma TAL CUAL — la divergencia va en composición y dispositivo.
-  2. Reemplazar los DATOS SEMILLA por datos del dominio REAL del avatar (nunca
-     lorem ipsum, nunca pantallas a medias — el mockup ES la promesa de calidad).
-  3. Llenar la "Hipótesis de conversión" de cada opción (1 línea).
-  4. EMBEBER LAS FUENTES (obligatorio antes de mostrar — ver bloque de abajo).
-  5. Verificar el TEST DE DIVERGENCIA (54): en escala de grises deben verse 3
-     diseños distintos; si solo cambia el acento, NO son 3 opciones — rehacer.
-
-  ── CÓMO EMBEBER LAS FUENTES (elegir UNA vía según el vehículo) ──────────────
-  FALLBACK-TRAMPA: cada familia se declara `font-family: "X", monospace` — si la
-  fuente no carga, el monospace GRITA y el fallo no pasa desapercibido. NO quitar
-  el monospace "para que se vea mejor": es el detector.
-
-  VÍA A — data-URI (artifacts / CSP estricta que bloquea hosts externos):
-  descargar el .woff2 (solo los pesos usados), convertir a base64 y pegar:
-
-    @font-face {
-      font-family: 'NombreFamilia';
-      font-style: normal;
-      font-weight: 400 700;            /* variable font: rango */
-      font-display: swap;
-      src: url(data:font/woff2;base64,AAAA...) format('woff2');
-    }
-
-  (un @font-face por familia; los subsets latin bastan; vigilar el peso total —
-  el vehículo de artifacts admite hasta 16MB por página)
-
-  VÍA B — Google Fonts (solo si el vehículo permite red — p. ej. /dev/direcciones
-  servido por el dev server del proyecto): descomentar y ajustar familias:
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..700&family=Mulish:wght@400..700&family=Geologica:wght@400..700&family=Wix+Madefor+Text:wght@400..700&family=EB+Garamond:wght@400..700&family=Inter+Tight:wght@400..700&display=swap" rel="stylesheet">
-
-  VERIFICACIÓN: el ESPÉCIMEN de cada opción muestra el nombre de la familia EN su
-  propia fuente. Si ahí se ve letra de máquina (monospace), la fuente NO está
-  embebida — no mostrar la comparativa así.
-============================================================================= -->
+<!-- Comparativa construida desde plantillas-codigo/direcciones-abc/plantilla.html (kit-abc-v2).
+     Marcador data-kit="abc-v2" del <html> conservado a propósito — no borrar. -->
 
 <style>
   /* ── Shell neutro de la comparativa (no compite con las opciones) ── */

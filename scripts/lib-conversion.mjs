@@ -1145,7 +1145,19 @@ function check14() {
     }
   }
   if (frames.length >= 2) {
-    const seqs = frames.slice(0, 3).map((f) => scanTags(f).filter((t) => t.type !== 'close' && t.name).map((t) => t.name.toLowerCase()));
+    // El TEST DE DIVERGENCIA (54) busca 3 MOCKUPS distintos, no 3 fichas distintas: el panel
+    // .meta (ficha de la opción) y el .hero-landing comparten estructura IDÉNTICA a propósito
+    // en las 3 opciones (kit-abc-v2 — comparación justa, mismos campos, solo cambian tokens/copy).
+    // Si se compara el frame completo, esa ficha+hero compartidos dominan el LCS y el test da
+    // falso positivo de "1 pantalla con 3 acentos" aunque los 3 layouts .pantalla sean distintos
+    // (héroe-dato+cards / anillo+grid2x2 / timeline). Se acota al contenido REAL del mockup
+    // (entre .pantalla y .home-indicator), que es la parte que el test dice medir.
+    const pantallaDe = (f) => {
+      const i = f.indexOf('class="pantalla"');
+      const j = f.indexOf('class="home-indicator"');
+      return (i !== -1 && j !== -1 && j > i) ? f.slice(i, j) : f;
+    };
+    const seqs = frames.slice(0, 3).map(pantallaDe).map((f) => scanTags(f).filter((t) => t.type !== 'close' && t.name).map((t) => t.name.toLowerCase()));
     let similares = 0; let pares = 0;
     for (let i = 0; i < seqs.length; i++) {
       for (let j = i + 1; j < seqs.length; j++) {

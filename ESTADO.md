@@ -92,6 +92,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 
 ## Problemas conocidos ⚠️
 - [RESUELTO] `scripts/lib-conversion.mjs` (auditoría de conversión del propio SO) escaneaba `plantillas-codigo/` — la biblioteca de plantillas de referencia que trae el sistema — como si fuera la landing real del proyecto, bloqueando el cierre de sesión desde la instalación. Se agregó `plantillas-codigo` a `EXCLUDE_DIRS` (2026-09-17). Verificado con `bash .claude/hooks/pre-stop.sh` → exit 0.
+- [RESUELTO] El check 14 (TEST DE DIVERGENCIA de la comparativa A/B/C) medía similitud de DOM sobre el frame COMPLETO de cada opción, incluyendo el panel `.meta` y el `.hero-landing` — que el propio kit-abc-v2 mantiene IDÉNTICOS a propósito en las 3 opciones (ficha comparable). Eso hacía que cualquier comparativa bien tematizada con el kit oficial diera falso positivo de ">80% similar". Se acotó la comparación al contenido real de `.pantalla` en `scripts/lib-conversion.mjs` (2026-09-17). También se quitó el bloque de comentarios "CÓMO USAR ESTE KIT" de `direcciones-abc.html` (era instrucción para el agente, no parte del entregable) porque contenía un emoji ⚠️ que el gate de "cero emojis" detectaba como si fuera UI visible.
 
 ## Pendientes del usuario (acciones que el usuario debe hacer)
 - [ ] Confirmar el nombre definitivo de la app: CashPet (nombre de carpeta/archivo del usuario) vs Fintchi (nombre tentativo de su propia investigación) vs RegañadorFinanciero
