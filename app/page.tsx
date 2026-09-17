@@ -82,7 +82,7 @@ export default function LandingCashPet() {
 
       {/* 4. SOLUCIÓN */}
       <Solucion
-        tituloMarked="Tu plata bajo control [acento]antes del primer gasto[/acento]"
+        tituloMarked="Tu dinero bajo control [acento]antes del primer gasto[/acento]"
         mecanismo="el Freno de 5 Segundos"
         bigIdeaMarked="No te falta fuerza de voluntad: te falta [b]alguien que te avise a tiempo[/b]. El Freno actúa en el momento, no a fin de mes."
         pasos={[
@@ -140,8 +140,8 @@ export default function LandingCashPet() {
           features: [
             'Reacciones ilimitadas de tu mascota',
             'Historial completo de tus rachas',
+            'Niveles y crecimiento de tu mascota',
             'Cancela cuando quieras',
-            'Garantía de la Primera Racha: 15 días',
           ],
         }}
       />
@@ -149,7 +149,7 @@ export default function LandingCashPet() {
       {/* 7. GARANTÍA */}
       <Garantia
         nombre="la Garantía de la Primera Racha"
-        condicionMarked="Si en tus primeros 15 días el Freno de 5 Segundos no te ayuda a [b]sentir más control sobre tu plata[/b], te devolvemos todo. Sin preguntas."
+        condicionMarked="Si en tus primeros 15 días el Freno de 5 Segundos no te ayuda a [b]sentir más control sobre tu dinero[/b], te devolvemos todo. Sin preguntas."
         pisoLegal="Respaldada por la garantía de reembolso de Hotmart de 15 días, además de tus 7 días de prueba gratis"
       />
 
@@ -187,7 +187,7 @@ export default function LandingCashPet() {
       {/* 9. CTA FINAL */}
       <CtaFinal
         h2Marked="Imagina cerrar el mes [acento]sin sustos[/acento]"
-        futurePacingMarked="Anotas un gasto, tu mascota reacciona, y por primera vez sientes que alguien más está cuidando tu plata contigo."
+        futurePacingMarked="Anotas un gasto, tu mascota reacciona, y por primera vez sientes que alguien más está cuidando tu dinero contigo."
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         recap="Sin conectar tu banco · Cancela cuando quieras"

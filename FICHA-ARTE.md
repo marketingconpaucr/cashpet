@@ -17,7 +17,7 @@
 ## Identidad derivada
 - Referencia-mandato de las 5 capturas del usuario (no aplica Tabla de Líderes de nicho para el LOOK — esa tabla, con Cleo/Duolingo/Nubank, sigue vigente solo para el MECANISMO de negocio en FICHA-MODELO.md)
 - Combinación tipográfica: Fredoka (display) + Nunito (body) — ambas geométricas redondeadas, family friendly, coherente con el mood de las capturas
-- Arquetipo: Bufón/Cuidador (mascota juguetona que también da ganas de cuidar) · Mundo del sujeto: mascota-criatura tipo "tamagotchi financiero" — orejitas de osito, mofletes, brote que crece con el ahorro (metáfora directa: tu plata crece, tu mascota crece)
+- Arquetipo: Bufón/Cuidador (mascota juguetona que también da ganas de cuidar) · Mundo del sujeto: mascota-criatura tipo "tamagotchi financiero" — orejitas de osito, mofletes, brote que crece con el ahorro (metáfora directa: tu dinero crece, tu mascota crece)
 - Dispositivo ownable: la mascota-blob con brote en la cabeza (crece de nivel visualmente, no solo con un número) · paleta violeta tomada de las capturas del usuario
 
 ## Personalidad compilada

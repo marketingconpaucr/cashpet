@@ -4,7 +4,7 @@
 > palabra que vende) y `[b]…[/b]` (énfasis). Trazabilidad de cada pieza a un campo de la ficha.
 
 ## Big Idea (19 §"LA BIG IDEA")
-"Camila no deja de gastar por falta de fuerza de voluntad — se le escapa la plata porque nadie
+"Camila no deja de gastar por falta de fuerza de voluntad — se le escapa el dinero porque nadie
 le avisa EN EL MOMENTO en que está por cometer el error. El Freno de 5 Segundos lo resuelve:
 anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepentimiento."
 
@@ -34,7 +34,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 - Contraste — Hoy: `Revisas tu cuenta con miedo y no sabes en qué se fue la quincena.` · En 6 meses si nada cambia: `El mismo susto cada quincena — con 6 meses menos de ahorro.`
 
 ## 4. SOLUCIÓN
-- Título marcado: `Tu plata bajo control [acento]antes del primer gasto[/acento]`
+- Título marcado: `Tu dinero bajo control [acento]antes del primer gasto[/acento]`
 - Mecanismo: `el Freno de 5 Segundos`
 - Big idea marcada: `No te falta fuerza de voluntad: te falta [b]alguien que te avise a tiempo[/b]. El Freno actúa en el momento, no a fin de mes.`
 - Pasos:
@@ -51,13 +51,13 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 ## 6. OFERTA (precio confirmado por el usuario 2026-09-17: $8.99/mes · $69.99/año)
 - Título marcado: `Empieza gratis. Sigue por [acento]menos de $0.20 al día[/acento]`
 - Trial: 7 días
-- Stack de valor: CashPet Pro con el Freno de 5 Segundos (12 meses) = $107.88 · Historial de rachas y niveles de tu mascota = $19 · Guía «Cómo domar tus gastos hormiga» = $15 · Total tachado: $141.88 · Nota: `Hoy: $5.83/mes (se cobra $69.99/año)`
-- Anual (badge MÁS POPULAR): $5.83/mes · se cobra $69.99/año · ahorro 35% · `menos de $0.20 al día` · CTA `Empezar mis 7 días gratis` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Niveles y crecimiento de tu mascota · Soporte prioritario por email
-- Mensual: $8.99/mes · CTA `Elegir mensual` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Cancela cuando quieras
+- Sin stack de valor (se retiró: el kit Hormozi exige precios reales de bonos existentes, y CashPet no tiene guías/bonos reales todavía — inventarlos falló la revisión de copy, ver ESTADO.md)
+- Anual (badge MÁS POPULAR): $5.83/mes · se cobra $69.99/año · ahorro 35% · `menos de $0.20 al día` · CTA `Empezar mis 7 días gratis` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Niveles y crecimiento de tu mascota · Soporte prioritario por email · Garantía de la Primera Racha: 15 días
+- Mensual: $8.99/mes · CTA `Elegir mensual` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Niveles y crecimiento de tu mascota · Cancela cuando quieras · Garantía de la Primera Racha: 15 días (mismas features que el anual salvo soporte prioritario — la diferencia entre planes es SOLO precio/facturación, nunca funciones, decisión del usuario 2026-09-17)
 
 ## 7. GARANTÍA
 - Nombre: `la Garantía de la Primera Racha`
-- Condición marcada: `Si en tus primeros 15 días el Freno de 5 Segundos no te ayuda a [b]sentir más control sobre tu plata[/b], te devolvemos todo. Sin preguntas.`
+- Condición marcada: `Si en tus primeros 15 días el Freno de 5 Segundos no te ayuda a [b]sentir más control sobre tu dinero[/b], te devolvemos todo. Sin preguntas.`
 - Piso legal: `Respaldada por la garantía de reembolso de Hotmart de 15 días, además de tus 7 días de prueba gratis`
 - ⚠️ Ver `FICHA-MERCADO.md` §4: la prueba (7 días, sin cobro) y la garantía (15 días, desde el primer cobro) son ventanas SECUENCIALES, no la misma cifra — regla dura de 18-VENTA-HOTMART.md (garantía > prueba)
 
@@ -70,7 +70,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 
 ## 9. CTA FINAL EMOCIONAL
 - H2 marcado: `Imagina cerrar el mes [acento]sin sustos[/acento]`
-- Future pacing marcado: `Anotas un gasto, tu mascota reacciona, y por primera vez sientes que alguien más está cuidando tu plata contigo.`
+- Future pacing marcado: `Anotas un gasto, tu mascota reacciona, y por primera vez sientes que alguien más está cuidando tu dinero contigo.`
 - Recap: `Garantía de la Primera Racha · 7 días gratis`
 - PS marcado: `PS: CashPet convierte tus gastos hormiga en una racha que cuidas, gracias al Freno de 5 Segundos. Sin conectar tu banco, sin letra chica.`
 

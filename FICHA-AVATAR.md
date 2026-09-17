@@ -58,7 +58,7 @@
 ## Lenguaje
 - Verbos de percepción/acción: "se me evapora", "gastos hormiga", "quedarse en ceros", "regalar plata"
 - Registro: TUTEO neutro LATAM — nunca voseo ("vos", "tenés", "che"; el usuario lo corrigió explícitamente el 2026-09-17). Léxico local: plata, sueldo, quincena, tarjeta de crédito (pan-LATAM, no regionalismo de un solo país) · Palabras vetadas: términos técnicos-contables (presupuesto categórico, flujo de caja, balance) Y cualquier modismo de un país específico (che, boludo, guagua, chido, etc.)
-- Palabras que el copy DEBE usar: "gastos hormiga", "se me evapora", "consciencia financiera", "mascota" · Prohibidas: "gestión financiera", "optimiza tus finanzas", cualquier tono de asesor/contador
+- Palabras que el copy DEBE usar: "gastos hormiga", "se me evapora", "consciencia financiera", "mascota", "dinero" (el usuario corrigió explícitamente 2026-09-17: prefiere "dinero" a "plata" en el copy de la app, aunque las citas de VoC de arriba —investigación original— se conservan tal cual como evidencia histórica) · Prohibidas: "gestión financiera", "optimiza tus finanzas", "plata" (en copy nuevo), cualquier tono de asesor/contador
 - Ancla emocional: dolor #1 (no saber en qué se fue el sueldo) → alivio (la mascota te avisa ANTES de gastar, no después)
 
 ## Cierre
