@@ -1,7 +1,7 @@
 # ESTADO — CashPet
-Última actualización: 2026-09-17 | Sesión actual: 3
+Última actualización: 2026-09-17 | Sesión actual: 4
 
-⏸️ CHECKPOINT — Última acción completada: landing LISTA con Gastón de ojos grandes (10ª pasada del revisor-visual: 36/40 · 18/20 · 20/20) + 1 micro-ajuste posterior invisible en el margen ojos/mofletes (ver Problemas conocidos, no requirió re-revisión) / Siguiente acción exacta: esperar el OK del usuario para arrancar Sesión 4 (onboarding, paywall y login/auth)
+⏸️ CHECKPOINT — Última acción completada: recorrido de inicio (onboarding) construido y probado de punta a punta en `app/onboarding/page.tsx` — 5 preguntas + activación real + reconocimientos + loading, con moneda dinámica por país (Intl.NumberFormat por locale) y las 5 caras de Gastón reaccionando en vivo. Capturas en `docs/revisiones/onboarding-*.png`. Pendiente: revisor-visual (es una de las 4 pantallas del dinero) / Siguiente acción exacta: lanzar el revisor-visual sobre el onboarding, y si pasa, seguir con la pantalla de planes (paywall, hoy un stub en `app/paywall/page.tsx`)
 
 ## Qué es esta app (3 líneas máximo)
 Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario anota un gasto en segundos y la mascota reacciona (felicita o regaña con humor), genera rachas de ahorro y sube de nivel. Para adultos jóvenes en LATAM (22-35) que ganan bien pero sienten que el dinero "se les evapora". Monetización por suscripción ($8.99/mes o $69.99/año) vía Hotmart.
@@ -47,18 +47,18 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Notificaciones de re-enganche: SÍ, decidido (24-GAMIFICACION.md) — push web opt-in, máximo 1 al día, disparada a la hora en la que el usuario suele usar la app (no una hora fija para todos), con prioridad "racha en riesgo" (avisa antes de perderla, no después). Copy siempre específico y accionable ("Te quedan 2 horas para no perder tu racha de 12 días" — nunca "te extrañamos"). Se construye en Sesión 5 junto con la app interna (necesita el service worker + el historial de actividad del usuario, que todavía no existen)
 
 ## Secuencia maestra de construcción (NO saltar)
-- Estado de la secuencia: Landing lista tras Sesión 3. Sesión 4 sigue con el resto: onboarding, paywall y login
-- Ruta aprobada: `/` → `/onboarding` → `/paywall` → `/login` → `/app`
+- Estado de la secuencia: Landing lista tras Sesión 3. Sesión 4 en curso: onboarding CONSTRUIDO, sigue paywall y login
+- Ruta aprobada: `/` → `/onboarding` → `/paywall` → `/entrar` → `/app`
 - Landing: CONSTRUIDA — protagonista: la mascota reaccionando a un gasto (mecanismo "el Freno de 5 Segundos") — CTA primario: "Quiero mi mascota financiera" → `/onboarding`
-- Onboarding: pendiente (ruta `/onboarding` existe como stub) — primera decisión: ingresar presupuesto diario/mensual aproximado
-- Paywall: pendiente — oferta principal: $8.99/mes o $69.99/año con trial de 7 días
+- Onboarding: CONSTRUIDO (`app/onboarding/page.tsx`, ver docs/copy/onboarding.md) — 5 preguntas (país/moneda, dolor-ancla, categorías, momento del día, presupuesto diario) + activación real (anota un gasto, Gastón reacciona en vivo con sus 5 emociones) + 2 reconocimientos + loading — probado de punta a punta, capturas en `docs/revisiones/onboarding-*.png`. Pendiente: revisor-visual
+- Paywall: pendiente (ruta `/paywall` existe como stub) — oferta principal: $8.99/mes o $69.99/año con trial de 7 días
 - Login/Auth: pendiente — motivo de pedir cuenta: guardar historial de gastos, rachas y suscripción
 - App interna: pendiente — secciones (borrador, a confirmar en Sesión 5): Registro de gasto / Mascota+chat / Rachas y progreso
 - Servicios externos: pendiente — GitHub/Supabase/IA/Vercel/Resend/dominio/Hotmart
 
 ## Puertas de etapa (aprobación antes de avanzar)
-- Landing: LISTA (veredicto del revisor-visual, 36/40 · 17/20 · copy 20/20) — esperando OK del usuario para pasar a Onboarding
-- Onboarding: no iniciada
+- Landing: LISTA (veredicto del revisor-visual, 36/40 · 18/20 · copy 20/20)
+- Onboarding: CONSTRUIDO, esperando veredicto del revisor-visual
 - Paywall: no iniciada
 - Login/Auth: no iniciada
 - App interna: no iniciada
@@ -78,7 +78,8 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
   - Índices: `gastos(user_id, gastado_en desc)` para el historial · `gastos(user_id)` ya cubierto por el compuesto
   - RLS: todas las tablas con policy `user_id = auth.uid()` (select/insert/update/delete) — un usuario nunca ve gastos de otro
   - Durante el onboarding (sin cuenta), presupuesto + el gasto de prueba viven en el navegador (localStorage) y se migran a `profiles`/`gastos` recién al crear la cuenta — no se toca la base de datos hasta que hay usuario real
-  - **Decisión de moneda DENTRO de la app (2026-09-17, el usuario preguntó: "todo lo estamos haciendo en dólares, pero en CR son colones"):** `gastos.monto` NO necesita conversión ni tabla de tipos de cambio — cada usuario ve y anota TODO en su propia moneda (dato privado, RLS por usuario, nunca se comparan montos entre usuarios). Se agrega la columna `moneda` a `profiles`, elegida en el onboarding (pregunta nueva: "¿en qué país estás?" o selector de moneda directo — se decide el copy exacto al construir la Sesión 4), y TODO monto que se muestre en la app (presupuesto, gasto, mensaje de la mascota "te quedan X para hoy") se formatea con `Intl.NumberFormat(locale, { style: 'currency', currency: moneda })` (ver `39-INTERNACIONALIZACION.md`) — nunca un símbolo "$" cableado a mano. Esto es DISTINTO del precio de suscripción (que si se cobra en USD vía Hotmart — Hotmart ya convierte a la moneda local del comprador en su propio checkout con el tipo de cambio del día, verificado con fuente: [Central de Ayuda Hotmart](https://help.hotmart.com/es/article/213026287/-como-es-el-proceso-de-compra-internacional-), 2026-09-17). Los mockups actuales de `public/mockups/` (con "$" fijo) son ilustrativos de la Sesión 2/3, pendientes de actualizar a moneda dinámica cuando se construya la app real en Sesión 5.
+  - **Decisión de moneda DENTRO de la app (2026-09-17, el usuario preguntó: "todo lo estamos haciendo en dólares, pero en CR son colones"):** `gastos.monto` NO necesita conversión ni tabla de tipos de cambio — cada usuario ve y anota TODO en su propia moneda (dato privado, RLS por usuario, nunca se comparan montos entre usuarios). Se agrega la columna `moneda` a `profiles`, elegida en el onboarding (pregunta 1: "¿en qué país estás?", 9 países + "Otro país"), y TODO monto se formatea con `Intl.NumberFormat(locale, { style: 'currency', currency: moneda })` usando el LOCALE específico del país (`es-CR`, `es-MX`...), nunca el genérico `'es'` — bug real verificado: `Intl` con locale `'es'` a secas pierde el símbolo (muestra "CRC" en vez de "₡") y agrupa mal los miles de 4 cifras ("5000" en vez de "5.000"); con `es-CR` da "₡5.000" correcto (ver `39-INTERNACIONALIZACION.md`). Esto es DISTINTO del precio de suscripción (que sí se cobra en USD vía Hotmart — Hotmart ya convierte a la moneda local del comprador en su propio checkout, fuente: [Central de Ayuda Hotmart](https://help.hotmart.com/es/article/213026287/-como-es-el-proceso-de-compra-internacional-), 2026-09-17).
+  - Reacción de Gastón en la activación del onboarding (demo, sin cuenta): compara el gasto de prueba contra el presupuesto diario fijado — ≤50% Celebrando · ≤100% Feliz · ≤150% Desconfiada · >150% Decepcionada. Esta misma lógica de umbrales (adaptada del Excel del usuario, ver FICHA-ARTE.md) se reutiliza en la app real (Sesión 5) contra el gasto acumulado del día/mes.
 
 ## Sesiones completadas ✅
 - Sesión 1 — Validación (idea traída por el usuario, no re-validada) · FICHA-AVATAR.md en borrador (Camila) · FICHA-MODELO.md aprobada (app modelo: Cleo AI) · modelo de negocio elegido: onboarding primero, pago después (precio ajustado luego a $8.99/$69.99, ver Estrategia de monetización) · gate de unit economics: PASA · auth y esquema de BD (`profiles`/`gastos` + RLS) diseñados — cerrada 2026-09-17
@@ -86,7 +87,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Sesión 3 — Página de ventas: scaffold real de Next.js 16 + React 19 + Tailwind v4 + Motion + lucide-react instalado · kit canónico de landing copiado y tematizado con FICHA-ARTE · Big Idea + mecanismo "el Freno de 5 Segundos" bautizados · copy completo en `docs/copy/landing.md` derivado de FICHA-AVATAR.md · FICHA-MERCADO.md creada (plazos de garantía Hotmart verificados: 15 días, secuenciales a los 7 de prueba) · landing corriendo en `npm run dev`, verificada a 375px, auditoría de conversión en 0 críticos — cerrada 2026-09-17
 
 ## Sesión en progreso 🔧
-(ninguna — esperando OK del usuario para arrancar Sesión 4)
+- Sesión 4 — onboarding CONSTRUIDO y probado (ver arriba), pendiente revisor-visual · siguen paywall y login/auth
 
 ## Próximas sesiones 📋
 - Sesión 4: onboarding, paywall y login/auth — el resto del camino de venta hasta la app interna
