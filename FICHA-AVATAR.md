@@ -4,7 +4,7 @@
 
 ## El avatar (cliente ideal — UNA persona concreta)
 - Nombre/arquetipo: Camila · Edad: 26 · Situación: diseñadora gráfica, freelancer o empleada de agencia · País(es): LATAM (español)
-- Poder adquisitivo: medio-estable (gana lo suficiente para vivir bien) · ¿$4.99/mes le duele? No en lo racional, sí genera la objeción "pagar por ahorrar es contradictorio" · Dispositivo: Android gama media (default LATAM)
+- Poder adquisitivo: medio-estable (gana lo suficiente para vivir bien) · ¿$8.99/mes le duele? No en lo racional (menos de $0.30/día), sí genera la objeción "pagar por ahorrar es contradictorio" · Dispositivo: Android gama media (default LATAM)
 - IDENTIDAD (cómo se describe a sí misma, literal): "Soy un desastre con la plata."
 - MOMENTO DEL DÍA en que el problema duele (escena): al despertar (café "porque se lo merece"), al mediodía estresada (Uber Eats), en la noche (compra impulsiva por Instagram) — y el día 20 del mes, revisando la cuenta con ansiedad
 - MOMENTO DEL AÑO: fin de quincena/mes (ciclo de pago) — no hay estacionalidad anual marcada en la investigación
@@ -48,7 +48,7 @@
 - Énfasis del hero: mecanismo al frente (la mascota IA que regaña/felicita) + identificación (polarizar contra "Excel aburrido / apps para contadores")
 
 ## Objeciones reales
-1. "¿Para qué voy a pagar una suscripción si lo que quiero es ahorrar dinero?" → respuesta: reposicionar el precio como inversión ("$4.99/mes para evitar regalar $150-200/mes en gastos hormiga") → vive en: paywall + FAQ
+1. "¿Para qué voy a pagar una suscripción si lo que quiero es ahorrar dinero?" → respuesta: reposicionar el precio como inversión ("menos de $0.30 al día para evitar regalar $150-200 al mes en gastos hormiga") → vive en: paywall + FAQ
 2. "Seguro me va a dar flojera usarla después de 3 días." → respuesta: mostrar el registro de 5 segundos + el loop de rachas desde el onboarding (demo, no promesa) → vive en: onboarding + landing (mecanismo)
 3. "La IA es un gimmick / me da miedo que me regañe tanto que me estrese más" → respuesta: mostrar un ejemplo real de la reacción de la mascota (tono humor, no castigo) en el carrusel de la landing y en la primera victoria del onboarding → vive en: landing (carrusel) + onboarding
 4. "Es caro / no lo voy a usar" → respuesta: trial de 7 días + precio por día (~$0.16/día) → vive en: paywall

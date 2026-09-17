@@ -4,7 +4,7 @@
 ⏸️ CHECKPOINT — Última acción completada: Sesión 2 CERRADA — usuario eligió Opción A, tour de la app (vista-previa-app.html) aprobado, FICHA-ARTE.md creada y aprobada / Siguiente acción exacta: mostrar el cierre de Sesión 2 al usuario y esperar su OK para arrancar Sesión 3 (página de ventas / landing)
 
 ## Qué es esta app (3 líneas máximo)
-Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario anota un gasto en segundos y la mascota reacciona (felicita o regaña con humor), genera rachas de ahorro y sube de nivel. Para adultos jóvenes en LATAM (22-35) que ganan bien pero sienten que el dinero "se les evapora". Monetización por suscripción ($4.99/mes o $39.99/año) vía Hotmart.
+Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario anota un gasto en segundos y la mascota reacciona (felicita o regaña con humor), genera rachas de ahorro y sube de nivel. Para adultos jóvenes en LATAM (22-35) que ganan bien pero sienten que el dinero "se les evapora". Monetización por suscripción ($8.99/mes o $69.99/año) vía Hotmart.
 
 ## Promesa central
 "Ayudo a jóvenes profesionales que gastan por impulso a llegar a fin de mes con dinero de sobra, sin anotar cada centavo en Excel ni usar apps para contadores, mediante una mascota de IA que te frena antes de gastar."
@@ -35,8 +35,8 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Justificación: el nicho finanzas pide confianza antes de pedir la tarjeta; el uso diario se retiene con rachas, no con paywall temprano. Coincide con lo ya definido en la investigación del usuario (trial de 7 días, diagnóstico + gasto de prueba como primera victoria)
 - Diseño del paywall: aparece después de que el usuario registra su presupuesto + un gasto de prueba y recibe la primera reacción de la mascota (la "primera victoria" del punto 10 de la investigación)
 - Trial: 7 días — justificado porque el aha es inmediato (minutos), no requiere acumulación de datos
-- Pricing: $4.99/mes | $39.99/año (equivalente a $3.33/mes, mostrado como ahorro) — tomado del benchmark de la investigación del usuario
-- Gate de unit economics (40) — PASA: costo de IA estimado ~$0.15/usuario/mes (Haiku 4.5, ~120 reacciones/mes de ~500 tokens entrada + 150 salida) = ~3% del precio de catálogo (regla: debe ser <20% — sobra margen). Venta directa: neto ~$3.94 tras fee Hotmart+impuestos, menos COGS (~$0.60 IA+infra+email) = margen ~$3.34 (~85%). Peor caso, venta por afiliado al 50%: neto ~$1.44, margen ~$0.84 (~58%) — sigue siendo positivo, aunque ese es el escenario a vigilar si la mayoría de ventas viene de afiliados
+- Pricing: $8.99/mes | $69.99/año (equivalente a $5.83/mes, ahorro de 35%) — subido desde $4.99/$39.99 a pedido del usuario (2026-09-17), justificado contra el plan medio de Cleo AI ($8.99, ver FICHA-MODELO.md) y validado con el gate de unit economics
+- Gate de unit economics (40) — PASA con margen aún mejor que antes: costo de IA sigue ~$0.15/usuario/mes = ~1.7% del precio de catálogo (regla: debe ser <20%). Venta directa: neto ~$6.89 tras fee Hotmart+impuestos, menos COGS (~$0.60 IA+infra+email) = margen ~$6.29 (~91%). Peor caso, venta por afiliado al 50%: neto ~$2.40, margen ~$1.80 (~75%) — mucho más sano que con el precio anterior
 
 ## Gamificación y retención (loop documentado en Sesión 4; momentos construidos en Sesión 5)
 - Loop del hábito (Hooked): Gatillo [necesidad/impulso de gastar o hábito de revisar el día] → Acción [registrar el gasto en <5s] → Recompensa [reacción de la mascota + racha viva] → Inversión [la mascota sube de nivel / desbloquea personalidad]
@@ -49,7 +49,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Ruta aprobada: `/` → `/onboarding` → `/paywall` → `/login` → `/app`
 - Landing: pendiente — protagonista: la reacción de la mascota a un gasto — CTA primario: pendiente de definir en Sesión 3
 - Onboarding: pendiente — primera decisión: ingresar presupuesto mensual aproximado
-- Paywall: pendiente — oferta principal: $4.99/mes o $39.99/año con trial de 7 días
+- Paywall: pendiente — oferta principal: $8.99/mes o $69.99/año con trial de 7 días
 - Login/Auth: pendiente — motivo de pedir cuenta: guardar historial de gastos, rachas y suscripción
 - App interna: pendiente — secciones (borrador, a confirmar en Sesión 5): Registro de gasto / Mascota+chat / Rachas y progreso
 - Servicios externos: pendiente — GitHub/Supabase/IA/Vercel/Resend/dominio/Hotmart
@@ -78,7 +78,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
   - Durante el onboarding (sin cuenta), presupuesto + el gasto de prueba viven en el navegador (localStorage) y se migran a `profiles`/`gastos` recién al crear la cuenta — no se toca la base de datos hasta que hay usuario real
 
 ## Sesiones completadas ✅
-- Sesión 1 — Validación (idea traída por el usuario, no re-validada) · FICHA-AVATAR.md en borrador (Camila) · FICHA-MODELO.md aprobada (app modelo: Cleo AI) · modelo de negocio elegido: onboarding primero, pago después ($4.99/$39.99, trial 7 días) · gate de unit economics: PASA (~3% de IA sobre precio, margen positivo incluso con afiliado al 50%) · auth y esquema de BD (`profiles`/`gastos` + RLS) diseñados — cerrada 2026-09-17
+- Sesión 1 — Validación (idea traída por el usuario, no re-validada) · FICHA-AVATAR.md en borrador (Camila) · FICHA-MODELO.md aprobada (app modelo: Cleo AI) · modelo de negocio elegido: onboarding primero, pago después (precio ajustado luego a $8.99/$69.99, ver Estrategia de monetización) · gate de unit economics: PASA · auth y esquema de BD (`profiles`/`gastos` + RLS) diseñados — cerrada 2026-09-17
 - Sesión 2 — Identidad visual: comparativa A/B/C basada en referencias del usuario (no en líderes) · mascota rediseñada más tierna a pedido del usuario · Opción A elegida ("Tu mascota, en grande") · tour de la app aprobado · FICHA-ARTE.md cerrada y aprobada — cerrada 2026-09-17
 
 ## Sesión en progreso 🔧
