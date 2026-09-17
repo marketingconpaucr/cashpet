@@ -9,7 +9,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Check, ChevronLeft } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { CtaButton, Hairline } from '@/components/landing/ui';
+import { Accent, CtaButton, Hairline } from '@/components/landing/ui';
 import { Mascota, type EmocionMascota } from '@/components/Mascota';
 
 /* ── <BarraProgreso> — línea fina 2px, % real, ENDOWED PROGRESS (nunca arranca en 0%) ── */
@@ -131,7 +131,7 @@ export function PantallaPregunta({
   children,
   ctaFijo,
 }: {
-  tituloMarked: string;
+  tituloMarked: ReactNode;
   subcopy?: string;
   children: ReactNode;
   /** CTA fijo abajo — solo para selección múltiple o input libre (nunca en selección única). */
@@ -169,7 +169,7 @@ export function PantallaReconocimiento({
   onContinuar,
 }: {
   emocion?: EmocionMascota;
-  tituloMarked: string;
+  tituloMarked: ReactNode;
   cuerpo: string;
   /** Mini-visual con un dato REAL del usuario (ej. "3 de 5 categorías" con una barra) — opcional. */
   dato?: ReactNode;
@@ -254,7 +254,7 @@ export function SliderCompromiso({
   onFijar,
   feedback,
 }: {
-  tituloMarked: string;
+  tituloMarked: ReactNode;
   valor: number;
   min: number;
   max: number;
@@ -312,7 +312,7 @@ export function PantallaLoading({
   duracionMs = 4200,
   onCompletar,
 }: {
-  titulo: string;
+  titulo: ReactNode;
   lineas: string[];
   duracionMs?: number;
   onCompletar: () => void;
