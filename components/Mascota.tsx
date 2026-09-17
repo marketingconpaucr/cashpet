@@ -1,7 +1,10 @@
 // Mascota de CashPet — Gastón, el Gato (FICHA-ARTE.md): rechoncho, violeta, ojos
-// entrecerrados y bigotes. Un solo componente reusado en toda la app para que sea
-// siempre la MISMA cara base (16/FICHA-ARTE: "cambian ojos, boca y cejas, nunca el
-// diseño base").
+// grandes y redondos, tierno de cara — habla con sarcasmo (ver copy), pero se VE
+// amigable (el usuario rechazó la primera versión de ojos entrecerrados: "está
+// horrible, me imagino algo más amigable y lindo" — referencia mixta: proporciones
+// simples tipo gato sentado + ojos enormes tipo gato de ojos grandes). Un solo
+// componente reusado en toda la app para que sea siempre la MISMA cara base
+// (16/FICHA-ARTE: "cambian ojos, boca y cejas, nunca el diseño base").
 export function Mascota({ size = 100 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Gastón, tu mascota financiera">
@@ -27,18 +30,21 @@ export function Mascota({ size = 100 }: { size?: number }) {
       <path d="M80 62 94 60" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
       <path d="M81 66 95 66" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
       <path d="M80 70 94 73" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-      {/* Ojos entrecerrados, con juicio: almendra chata, sin ceja separada (así se lee "sleepy/judging") */}
-      <path d="M26 50.5q10-6 20 0q-10 5-20 0Z" fill="var(--mascota-linea)" />
-      <path d="M54 50.5q10-6 20 0q-10 5-20 0Z" fill="var(--mascota-linea)" />
+      {/* Ojos grandes y redondos — la cara amigable, dominan el rostro */}
+      <circle cx="34" cy="50" r="12.5" fill="var(--mascota-blanco)" />
+      <circle cx="66" cy="50" r="12.5" fill="var(--mascota-blanco)" />
+      <circle cx="34" cy="52.5" r="6.5" fill="var(--mascota-linea)" />
+      <circle cx="66" cy="52.5" r="6.5" fill="var(--mascota-linea)" />
+      <circle cx="30.5" cy="47.5" r="2.2" fill="var(--mascota-blanco)" />
+      <circle cx="62.5" cy="47.5" r="2.2" fill="var(--mascota-blanco)" />
       {/* Naricita */}
-      <path d="M46.5 61.5q3.5-3.5 7 0-3.5 4-7 0Z" fill="var(--mascota-moflete)" />
-      {/* Boca de gato (forma de "w") con una comisura levantada, sonrisa de superioridad */}
+      <path d="M46.5 64.5q3.5-3.5 7 0-3.5 4-7 0Z" fill="var(--mascota-moflete)" />
+      {/* Boca de gato simple y contenta (simétrica, sin comisura levantada) */}
       <path
-        d="M50 63v4q-4 4-8-1M50 67q4 4 10-3"
+        d="M44 69q6 5 12 0"
         stroke="var(--mascota-linea)"
         strokeWidth="2.4"
         strokeLinecap="round"
-        strokeLinejoin="round"
         fill="none"
       />
     </svg>

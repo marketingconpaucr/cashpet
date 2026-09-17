@@ -2,18 +2,27 @@
 
 ## Cambio de mascota (2026-09-17 — reabierto a pedido EXPLÍCITO del usuario, no es "cosa juzgada" roto)
 - La mascota deja de ser un blob-osito sin nombre y pasa a ser **Gastón, el Gato**: un gato
-  rechoncho violeta que mira con los ojos entrecerrados — el gato de internet que se cree
-  superior y juzga a su dueño. El sarcasmo es su idioma: reacciona a los gastos con humor
-  altanero, no con ternura.
+  rechoncho violeta. El sarcasmo es su idioma — reacciona a los gastos con humor altanero — pero
+  la CARA es tierna y amigable, no juzgona (ver ajuste de look más abajo): personaje que se ve
+  adorable y habla con filo, no que se ve regañón.
 - Por qué lo pidió el usuario: "el sarcasmo es el idioma oficial de los gatos — sus regaños por
   malas decisiones financieras se sentirían 100% orgánicos". Encaja mejor con la objeción #3 de
   FICHA-AVATAR.md ("me da miedo que me regañe") resuelta con humor, no con culpa — ahora ese humor
-  tiene una fuente más creíble (un gato juzgón, no un osito tierno).
+  tiene una fuente más creíble (un gato con actitud, no un osito tierno).
 - Diseño base (mismo principio de siempre: cambian ojos/boca, nunca el diseño base): cuerpo
   circular rechoncho, orejas triangulares, mofletes/cachetes gorditos, bigotes, cola — violeta
   (el mismo acento de marca, decisión del usuario: "mantiene mi marca" sobre un color de gato
-  realista). Ojos por defecto: almendra chata y entrecerrada (el "sleepy judging cat" de memes),
-  boca con una comisura levantada (sonrisa de superioridad).
+  realista).
+- ⚠️ AJUSTE DE LOOK (2026-09-17, mismo día, 2ª iteración): la primera versión de Gastón tenía ojos
+  entrecerrados en almendra ("sleepy judging cat" de memes) y una sonrisa asimétrica de
+  superioridad. El usuario vio el resultado renderizado y dijo "está horrible el gato, me imagino
+  algo más amigable y lindo", mandando 2 referencias (un gato de ojos ENORMES y redondos, y un
+  gato minimalista de ojos cerrados/felices sentado con un corazón en el pecho). Eligió una
+  MEZCLA: proporciones simples tipo el 2º gato + ojos grandes y redondos tipo el 1º. Y confirmó
+  que Gastón se ve tierno pero sigue hablando con sarcasmo (el copy de las burbujas no cambió por
+  esto). Ojos por defecto ahora: dos círculos grandes blancos con pupila negra y brillo, boca
+  simple y contenta (sin comisura levantada). Ver `docs/revisiones/estados-mascota.html` para las
+  5 emociones ya actualizadas a este look.
 - Mecanismo de "crecimiento" (reemplaza el brote-que-crece del diseño anterior, que no aplicaba a
   un gato): Gastón nace gatito/bebé y va creciendo físicamente con la racha, y ADEMÁS gana
   accesorios (referencia del usuario: un widget tipo "mascota de grupo" con barra de progreso,
@@ -46,11 +55,11 @@
 ## Identidad derivada
 - Referencia-mandato de las 5 capturas del usuario (no aplica Tabla de Líderes de nicho para el LOOK — esa tabla, con Cleo/Duolingo/Nubank, sigue vigente solo para el MECANISMO de negocio en FICHA-MODELO.md)
 - Combinación tipográfica: Fredoka (display) + Nunito (body) — ambas geométricas redondeadas, family friendly, coherente con el mood de las capturas
-- Arquetipo: Bufón (el sarcasmo como humor, no la ternura) · Mundo del sujeto: gato de internet que se cree superior y juzga a su dueño — Gastón, el Gato, un gato rechoncho con ojos entrecerrados
-- Dispositivo ownable: Gastón, el Gato — rechoncho, violeta, ojos entrecerrados, cola y bigotes · crece de gatito a adulto con la racha + gana accesorios de sass (Sesión 5, ver "Cambio de mascota" arriba) · paleta violeta tomada de las capturas originales del usuario, conservada a pedido explícito
+- Arquetipo: Bufón (el sarcasmo como humor, no la ternura) · Mundo del sujeto: gato de internet que se cree superior y juzga a su dueño — Gastón, el Gato, un gato rechoncho con cara amigable y ojos grandes
+- Dispositivo ownable: Gastón, el Gato — rechoncho, violeta, ojos grandes y redondos, cola y bigotes · crece de gatito a adulto con la racha + gana accesorios de sass (Sesión 5, ver "Cambio de mascota" arriba) · paleta violeta tomada de las capturas originales del usuario, conservada a pedido explícito
 
 ## Personalidad compilada
-- 3 adjetivos de personalidad: sarcástica, altanera, juguetona (antes: tierna, cálida, juguetona — cambiado junto con la mascota, 2026-09-17)
+- 3 adjetivos de personalidad: sarcástica, altanera, juguetona (antes: tierna, cálida, juguetona — cambiado junto con la mascota, 2026-09-17). Gobiernan la VOZ/copy (las burbujas de Gastón, el tono de las notificaciones futuras); el LOOK del personaje se suavizó después (ver "Ajuste de look" arriba) a pedido del usuario — cara amigable de ojos grandes, no juzgona. Un personaje puede verse tierno y hablar con filo; eso es a propósito, no una contradicción.
 - Compilación: spring suave (no rebote agresivo) · duración base ~220ms · exclamaciones máx 1/pantalla (la reacción de Gastón) · celebración de nivel: Gastón "crece" (Sesión 5) · radio tendencial 20-24px
 
 ## Sistema de emociones de Gastón (ver docs/revisiones/estados-mascota.html)
@@ -59,7 +68,7 @@
 > adopta esa MISMA lógica de umbrales, traducida a 5 caras de Gastón — no una mascota única.
 > 2 de las 5 se renombraron el 2026-09-17 para sonar a gato sarcástico, no a mascota tierna.
 - 🎉 Celebrando — gasto total < 70% del ingreso, o quedó muy por debajo del presupuesto de una categoría (equivale a "Woohoo, gastando menos del 70%" / "Bien, quedaste X% abajo" del Excel) — Gastón ronronea y duerme sobre el "saldo en verde"
-- 😊 Feliz (default) — dentro de presupuesto con margen razonable — ojos entrecerrados, sonrisa de superioridad
+- 😊 Feliz (default) — dentro de presupuesto con margen razonable — ojos grandes y redondos, sonrisa simple y contenta
 - 😐 Neutral — gastó justo lo presupuestado (equivale a "😎 Gastaste justo lo presupuestado")
 - 🙄 Desconfiada (antes "Preocupada") — cerca del límite (70-100% del ingreso) o se pasó un poco del presupuesto de una categoría (equivale a "⚠️ Cuidado, estás cerca de gastar más de lo que ganas" / "Cuidado, te pasaste X%") — side-eye, un ojo más cerrado que el otro
 - 😒 Decepcionada (antes "Triste") — gastó más de lo que ganó ese mes (equivale a "Ya fue... gastaste más de lo que ganaste") — Gastón NO llora (un gato no llora, juzga): párpados caídos, boca fruncida, sin lágrimas
@@ -72,7 +81,7 @@
 - Semánticos: éxito #7C5CFC (reutiliza el acento — app sin conexión bancaria, sin rojo de alarma a propósito) · error #E0574C · aviso #F5A623
 - Display: Fredoka (pesos 500/600/700) · Body: Nunito (pesos 400/600/700/800) · Escala: display 42px / title 25px / body 14.5px / label 11.5px
 - Radio: 20-24px (cards), 20px/píldora (botones) · Profundidad: hairline degradado + sombra tintada violeta en 2 capas · Espaciado base: escala 4·8·12·16·24·32·48·64
-- Dispositivo ownable: Gastón, el Gato — rechoncho, violeta, orejas triangulares, ojos entrecerrados, bigotes y cola
+- Dispositivo ownable: Gastón, el Gato — rechoncho, violeta, orejas triangulares, ojos grandes y redondos, bigotes y cola
 - Motion signature: easing suave (ease-out) · stagger ~60ms entre cards · firma: Gastón "respira"/parpadea sutil en estados idle (a implementar en código real, Sesión 5)
 
 ## Nota técnica (no reabre la ficha — ajuste de accesibilidad, no de identidad)
