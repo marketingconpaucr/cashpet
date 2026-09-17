@@ -32,7 +32,8 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 - `Un café y un domicilio de más por semana se sienten inofensivos — hasta que sumas [acento]el año completo[/acento].` (teaser: el número real se revela en el puente de abajo, no aquí — evita repetir la cifra dos veces)
 - Contraste — Hoy: `Revisas tu cuenta con el corazón en la boca, sintiéndote una irresponsable.` · En 6 meses si nada cambia: `El mismo miedo, mes tras mes — hasta que decidas frenarlo hoy.`
 
-## Puente visual (NO es sección canónica — un respiro entre Agitación y Solución, más mascota/menos texto)
+## Puente visual (NO es sección canónica — un respiro entre Agitación y Solución, dato-héroe + mascota)
+- Cifra de FICHA-AVATAR.md ("$1.800-2.400 no ahorrados al año") con conteo animado a "+$1.800" · subtítulo "hasta $2.400 si no los frenas" (antes decía "$500 al año", un cálculo inventado más débil que la evidencia real de la ficha)
 - Gastón + burbuja: `"Yo aviso antes. Tú decides ignorarme."` (sarcástico, coherente con el resto de sus frases — antes decía "Yo te aviso antes.", tono demasiado tierno para el personaje)
 
 ## 4. SOLUCIÓN
@@ -44,9 +45,6 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
   2. **Tu mascota te frena** — `Te dice la verdad con humor, antes de que sigas gastando.`
   3. **Sube tu racha** — `Cada día sin pasarte del límite, tu mascota crece.`
 - Antes/Después — Antes: `Descubres el daño a fin de mes, cuando ya no hay nada que hacer.` · Después: `Tu mascota te frena en el momento — antes de que la tarjeta salga de tu cartera.`
-
-## Puente visual (NO es sección canónica — dato-héroe del costo, entre Agitación y Solución)
-- Cifra de FICHA-AVATAR.md ("$1.800-2.400 no ahorrados al año") con conteo animado a "+$1.800" · subtítulo "hasta $2.400 si no los frenas" · mascota + "Yo te aviso antes." (antes decía "$500 al año", un cálculo inventado más débil que la evidencia real de la ficha)
 
 ## Puente visual (NO es sección canónica — captura real del mecanismo, justo después de la Solución)
 - Frame de teléfono con `/mockups/mecanismo-impulso.png`: Gastón con la cara "Desconfiada" (sistema de 5 emociones de FICHA-ARTE.md, renombrada junto con el cambio de mascota) reaccionando a una compra en línea — `"¿Otra compra en línea? Van 3 este mes. Mmm, ¿la necesitabas de verdad?"` · botón "Anotado. Lo vigilo." · TERCERA escena distinta (hero=café/feliz, carrusel "Mecanismo"=domicilio/feliz, este puente=compra en línea/desconfiada) para que no se repita la misma experiencia ni la misma emoción dos veces (feedback del usuario, ver ESTADO.md)
