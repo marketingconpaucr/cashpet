@@ -155,7 +155,18 @@ export default function OnboardingPage() {
   const [errorPais, setErrorPais] = useState(false);
 
   const avanzar = () => setIndice((i) => Math.min(i + 1, PASOS.length - 1));
-  const atras = () => setIndice((i) => Math.max(i - 1, 0));
+  const atras = () => {
+    // Si el usuario ya vio la reacción de Gastón y retrocede (ej. a "presupuesto" para
+    // ajustar su límite), la reacción vieja no debe seguir esperando al reingresar —
+    // sin este reset, avanzar de nuevo salta directo al resultado con datos obsoletos.
+    if (paso === 'activacion') {
+      setReaccion(null);
+      setGastoMonto('');
+      setGastoCategoria(null);
+      setErrorGasto(null);
+    }
+    setIndice((i) => Math.max(i - 1, 0));
+  };
 
   const confirmarOtroPais = () => {
     if (!otroPaisTexto.trim()) {
@@ -248,6 +259,14 @@ export default function OnboardingPage() {
         <EncabezadoOnboarding porcentaje={PROGRESO[paso]} onAtras={atras} mostrarAtras={mostrarAtras} />
       )}
 
+      {paso === 'pais' && !mostrarOtroPais && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-x-0 bottom-0 h-16"
+          style={{ background: 'linear-gradient(to bottom, transparent, var(--bg))' }}
+        />
+      )}
+
       <TransicionPaso pasoKey={paso}>
         {paso === 'bienvenida' && (
           <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
@@ -276,9 +295,12 @@ export default function OnboardingPage() {
                   value={busquedaPais}
                   onChange={(e) => setBusquedaPais(e.target.value)}
                   placeholder="Busca tu país"
-                  className="mb-1 h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-base text-[var(--text-primary)] shadow-[var(--shadow-1)] outline-none focus:border-[var(--accent)]"
+                  className="mb-1 h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:border-[var(--accent)] focus:bg-[var(--surface)]"
                 />
                 <ChipOpcion indice={0} label="Otro país" seleccionado={mostrarOtroPais} onClick={() => setMostrarOtroPais(true)} />
+                {paisesFiltrados.length === 0 && (
+                  <p className="px-1 text-sm text-[var(--text-secondary)]">No encontramos tu país — usa &ldquo;Otro país&rdquo; arriba.</p>
+                )}
                 {paisesFiltrados.map((p, i) => (
                   <ChipOpcion
                     key={p.nombre}
@@ -516,7 +538,13 @@ export default function OnboardingPage() {
             emocion="celebrando"
             tituloMarked="Ya diste el primer paso"
             cuerpo="Pocos definen su límite Y anotan un gasto antes de tener la app instalada. Tu Freno de 5 Segundos va a usar exactamente esa disciplina que ya mostraste."
-            dato={<BarraMiniVisual etiqueta="Categorías de riesgo identificadas" valor={categorias.length} total={OPCIONES_CATEGORIA.length} />}
+            dato={
+              <BarraMiniVisual
+                etiqueta="Categorías de riesgo identificadas"
+                valor={categorias.length + (otraCategoria.trim() ? 1 : 0)}
+                total={OPCIONES_CATEGORIA.length + (otraCategoria.trim() ? 1 : 0)}
+              />
+            }
             ctaLabel="Ver mi plan"
             onContinuar={avanzar}
           />

@@ -1,3 +1,5 @@
+'use client';
+
 // Mascota de CashPet — Gastón, el Gato (FICHA-ARTE.md): rechoncho, violeta, ojos
 // grandes y redondos, tierno de cara — habla con sarcasmo (ver copy), pero se VE
 // amigable (el usuario rechazó la primera versión de ojos entrecerrados: "está
@@ -6,6 +8,8 @@
 // componente reusado en toda la app para que sea siempre la MISMA cara base
 // (16/FICHA-ARTE: "cambian ojos, boca y cejas, nunca el diseño base") — las 5
 // emociones (docs/revisiones/estados-mascota.html) cambian SOLO ojos/boca/cejas.
+import { motion, useReducedMotion } from 'motion/react';
+
 export type EmocionMascota = 'celebrando' | 'feliz' | 'neutral' | 'desconfiada' | 'decepcionada';
 
 function CaraCelebrando() {
@@ -90,8 +94,19 @@ const CARAS: Record<EmocionMascota, () => React.JSX.Element> = {
 
 export function Mascota({ size = 100, emocion = 'feliz' }: { size?: number; emocion?: EmocionMascota }) {
   const Cara = CARAS[emocion];
+  const reduce = useReducedMotion();
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Gastón, tu mascota financiera">
+    <motion.svg
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      role="img"
+      aria-label="Gastón, tu mascota financiera"
+      // Respiración idle sutil — Gastón nunca queda 100% estático, sin ser una
+      // animación que distraiga del contenido (FICHA-ARTE: "a implementar en código real").
+      animate={reduce ? undefined : { scale: [1, 1.015, 1] }}
+      transition={reduce ? undefined : { duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+    >
       {/* Orejas puntiagudas de gato */}
       <path d="M15 30 29 3 41 28Z" fill="var(--accent)" />
       <path d="M85 30 71 3 59 28Z" fill="var(--accent)" />
@@ -113,6 +128,6 @@ export function Mascota({ size = 100, emocion = 'feliz' }: { size?: number; emoc
       <path d="M80 70 94 73" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
       {/* Cara: SOLO esto cambia entre emociones */}
       <Cara />
-    </svg>
+    </motion.svg>
   );
 }
