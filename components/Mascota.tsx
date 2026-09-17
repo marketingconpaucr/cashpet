@@ -20,9 +20,9 @@ export function Mascota({ size = 100 }: { size?: number }) {
         d="M82 84c14 2 18-14 10-24-3 8 0 16-12 16Z"
         fill="var(--accent)"
       />
-      {/* Cachetes/mofletes gorditos */}
-      <circle cx="25" cy="70" r="9.5" fill="var(--mascota-moflete)" opacity="0.55" />
-      <circle cx="75" cy="70" r="9.5" fill="var(--mascota-moflete)" opacity="0.55" />
+      {/* Cachetes/mofletes gorditos (cy 72, no 70: deja margen real contra los ojos grandes) */}
+      <circle cx="25" cy="72" r="9.5" fill="var(--mascota-moflete)" opacity="0.55" />
+      <circle cx="75" cy="72" r="9.5" fill="var(--mascota-moflete)" opacity="0.55" />
       {/* Bigotes (con aire contra el borde del viewBox) */}
       <path d="M20 62 6 60" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
       <path d="M19 66 5 66" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
