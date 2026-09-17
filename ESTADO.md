@@ -44,7 +44,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Loop del hábito (Hooked): Gatillo [necesidad/impulso de gastar o hábito de revisar el día] → Acción [registrar el gasto en <5s] → Recompensa [reacción de la mascota + racha viva] → Inversión [la mascota sube de nivel / desbloquea personalidad]
 - Mecánicas elegidas: racha diaria (streaks) · medallas/hitos · nivel de la mascota
 - Primera victoria que celebra el onboarding (<60s): registrar presupuesto mensual + un gasto de prueba y recibir la primera reacción divertida/sarcástica de la mascota
-- Notificaciones de re-enganche: pendiente de diseñar en Sesión 4-5 (tope ≤1-2/día)
+- Notificaciones de re-enganche: SÍ, decidido (24-GAMIFICACION.md) — push web opt-in, máximo 1 al día, disparada a la hora en la que el usuario suele usar la app (no una hora fija para todos), con prioridad "racha en riesgo" (avisa antes de perderla, no después). Copy siempre específico y accionable ("Te quedan 2 horas para no perder tu racha de 12 días" — nunca "te extrañamos"). Se construye en Sesión 5 junto con la app interna (necesita el service worker + el historial de actividad del usuario, que todavía no existen)
 
 ## Secuencia maestra de construcción (NO saltar)
 - Estado de la secuencia: Landing lista tras Sesión 3. Sesión 4 sigue con el resto: onboarding, paywall y login
