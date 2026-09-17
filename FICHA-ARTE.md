@@ -45,6 +45,13 @@
 - Dispositivo ownable: mascota-blob con orejitas, mofletes y brote de "crecimiento" (propio, derivado de las capturas del usuario)
 - Motion signature: easing suave (ease-out) · stagger ~60ms entre cards · firma: la mascota "respira"/parpadea sutil en estados idle (a implementar en código real, Sesión 5)
 
+## Nota técnica (no reabre la ficha — ajuste de accesibilidad, no de identidad)
+- El acento de la landing (`--accent` en tokens.css) se oscureció de #7C5CFC a #7758F2 (~4%,
+  imperceptible) para que el texto del botón CTA pase contraste AA 4.5:1. Sigue siendo "el mismo
+  violeta" a efectos de identidad — la app/onboarding/paywall pueden seguir usando #7C5CFC si no
+  tienen el mismo problema de contraste; esto es una corrección puntual de la landing, detectada
+  por el revisor-visual (2026-09-17).
+
 ## Trazabilidad y vetos
 - Ruta de diseño: RUTA 2 — referencia parcial del usuario (moodboard de 5 capturas), no propuesta desde cero
 - Protocolo A/B/C: opción elegida A ("Tu mascota, en grande") · descartadas: B ("El arco de tu plata" — anillo arcoíris, lavanda) y C ("Tu compañera con carita" — timeline editorial, blanco) — ambas quedan documentadas como alternativas válidas si se quiere revisar más adelante · página comparativa: `direcciones-abc.html` (raíz del proyecto)

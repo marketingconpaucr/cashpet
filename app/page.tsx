@@ -4,9 +4,10 @@
 // Copy 100% derivado de docs/copy/landing.md (marcado, trazado a FICHA-AVATAR.md).
 // Tokens visuales: components/landing/tokens.css (tematizado desde FICHA-ARTE.md).
 
+import { motion } from 'motion/react';
 import { Wallet, ClipboardList, Frown, ShoppingBag, Flame } from 'lucide-react';
 import { Mascota } from '@/components/Mascota';
-import { IconChip } from '@/components/landing/ui';
+import { CountUp, IconChip, SectionShell, useReveal, VIEWPORT_ONCE } from '@/components/landing/ui';
 import { Hero } from '@/components/landing/Hero';
 import { Problema } from '@/components/landing/Problema';
 import { Agitacion } from '@/components/landing/Agitacion';
@@ -25,6 +26,8 @@ const CTA_HREF = '/onboarding';
 const CTA_LABEL = 'Quiero mi mascota financiera';
 
 export default function LandingCashPet() {
+  const { contenedor, item } = useReveal();
+
   return (
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--text-primary)] [font-family:var(--font-body)]">
       {/* 1. HERO */}
@@ -79,7 +82,7 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
       <Agitacion
         frases={[
           'No es que no sepas ahorrar: es que nadie te avisa hasta que [b]ya gastaste[/b].',
-          'Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que se te escapan.',
+          'Un café y un domicilio de más por semana se sienten inofensivos — hasta que sumas [acento]el año completo[/acento].',
         ]}
         contraste={{
           labelHoy: 'Hoy',
@@ -89,16 +92,37 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
         }}
       />
 
-      {/* Puente visual entre Agitación y Solución — más mascota, menos texto */}
-      <div className="flex flex-col items-center gap-3 bg-[var(--surface-2)] py-10">
-        <Mascota size={72} />
-        <p
-          className="rounded-[var(--radius-card)] px-4 py-2 text-sm font-semibold"
-          style={{ background: 'var(--surface)', color: 'var(--accent)' }}
+      {/* Puente visual entre Agitación y Solución — el dato héroe del costo real (FICHA-AVATAR.md),
+          conteo animado (baseline de DESIGN-CORE), luego la mascota como alivio. Fondo hundido
+          propio para no fundirse ni con Agitación (elevada) ni con Solución (base). */}
+      <SectionShell elevacion="base" compacta className="bg-[var(--surface-2)]" ariaLabel="El costo real de no darte cuenta">
+        <motion.div
+          variants={contenedor}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT_ONCE}
+          className="mx-auto flex max-w-md flex-col items-center gap-2 text-center"
         >
-          &ldquo;Yo te aviso antes.&rdquo;
-        </p>
-      </div>
+          <motion.p variants={item} className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+            Lo que ya te está costando no darte cuenta
+          </motion.p>
+          <motion.p variants={item} className="mt-1 text-[48px] font-bold leading-none text-[var(--accent)] [font-family:var(--font-display)]">
+            <CountUp to={1800} prefix="+$" />
+          </motion.p>
+          <motion.p variants={item} className="text-sm text-[var(--text-secondary)]">
+            al año en gastos hormiga — hasta $2.400 si no los frenas
+          </motion.p>
+          <motion.div variants={item} className="mt-6 flex flex-col items-center gap-3">
+            <Mascota size={72} />
+            <p
+              className="rounded-[var(--radius-card)] px-4 py-2 text-sm font-semibold"
+              style={{ background: 'var(--surface)', color: 'var(--accent)' }}
+            >
+              &ldquo;Yo te aviso antes.&rdquo;
+            </p>
+          </motion.div>
+        </motion.div>
+      </SectionShell>
 
       {/* 4. SOLUCIÓN */}
       <Solucion
@@ -118,6 +142,37 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
         }}
       />
 
+      {/* Puente visual entre Solución y el carrusel — prueba de que el mecanismo es real, con una
+          escena DISTINTA a la del carrusel (el usuario notó que se repetía la misma captura) y a
+          la del hero. Fondo hundido propio para no fundirse con Solución (base). */}
+      <SectionShell elevacion="base" compacta className="bg-[var(--surface-2)]" ariaLabel="Prueba del mecanismo en acción">
+        <motion.div
+          variants={contenedor}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT_ONCE}
+          className="flex flex-col items-center gap-3"
+        >
+          <motion.div
+            variants={item}
+            className="relative aspect-[9/19.5] w-48 overflow-hidden rounded-[24px] border-4 shadow-[var(--shadow-2)]"
+            style={{ borderColor: 'color-mix(in oklab, var(--text-primary) 90%, var(--accent))' }}
+          >
+            <img
+              src="/mockups/mecanismo-impulso.png"
+              alt="La mascota de CashPet reaccionando a una compra por impulso"
+              width={192}
+              height={417}
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+          </motion.div>
+          <motion.p variants={item} className="max-w-[28ch] text-center text-sm font-medium text-[var(--text-secondary)]">
+            Así se ve en tu teléfono, en el momento exacto del gasto.
+          </motion.p>
+        </motion.div>
+      </SectionShell>
+
       {/* 5. LA APP POR DENTRO — placeholders honestos (screenshots reales: Sesión 5) */}
       <AppPorDentro
         tituloMarked="Tu día, con [acento]mascota incluida[/acento]"
@@ -125,7 +180,7 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
           { src: '/mockups/hoy.png', alt: 'Pantalla principal de CashPet con la mascota y la racha del día', label: 'Tu pantalla de cada día', nombrePantalla: 'Hoy' },
           { src: '/mockups/onboarding.png', alt: 'Pregunta del onboarding sobre el presupuesto diario', label: 'Así te pregunta al empezar', nombrePantalla: 'Onboarding' },
           { src: '/mockups/paywall.png', alt: 'Pantalla de planes anual y mensual', label: 'Elige tu plan en segundos', nombrePantalla: 'Paywall' },
-          { src: '/mockups/mecanismo.png', alt: 'La mascota reaccionando a un gasto de café', label: 'Así reacciona tu mascota', nombrePantalla: 'Mecanismo' },
+          { src: '/mockups/mecanismo.png', alt: 'La mascota reaccionando a un domicilio de más', label: 'Así reacciona tu mascota', nombrePantalla: 'Mecanismo' },
         ]}
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}

@@ -6,8 +6,8 @@
 // alternancia base/elevado, reveal con reduced-motion): las secciones componen,
 // no re-estilan. Consume SOLO los tokens de tokens.css.
 
-import { useEffect, useState, type ReactNode } from 'react';
-import { AnimatePresence, motion, useReducedMotion, type Variants } from 'motion/react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { AnimatePresence, animate, motion, useInView, useReducedMotion, type Variants } from 'motion/react';
 import { Check } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -71,6 +71,49 @@ export function Hairline({
     >
       {children}
     </div>
+  );
+}
+
+/* ── <CountUp> — conteo animado de un número héroe (baseline #2 de DESIGN-CORE:
+   "un '53' cuenta de 0 a 53, nunca estático"). Dispara una vez al entrar en
+   viewport; reduced-motion salta directo al valor final. Formato es-CO
+   (punto de miles) para que un dato como 1800 se lea "1.800". ── */
+export function CountUp({
+  to,
+  prefix = '',
+  suffix = '',
+  duration = 1.4,
+}: {
+  to: number;
+  prefix?: string;
+  suffix?: string;
+  duration?: number;
+}) {
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLSpanElement>(null);
+  const enVista = useInView(ref, { once: true, amount: 0.6 });
+  const [valor, setValor] = useState(reduce ? to : 0);
+
+  useEffect(() => {
+    if (reduce) {
+      setValor(to);
+      return;
+    }
+    if (!enVista) return;
+    const controles = animate(0, to, {
+      duration,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (v) => setValor(v),
+    });
+    return () => controles.stop();
+  }, [enVista, reduce, to, duration]);
+
+  return (
+    <span ref={ref}>
+      {prefix}
+      {Math.round(valor).toLocaleString('es-CO')}
+      {suffix}
+    </span>
   );
 }
 

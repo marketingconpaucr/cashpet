@@ -1000,12 +1000,15 @@ function check10() {
         let m;
         while ((m = voseoRe.exec(ln)) !== null) {
           // Guarda contra falsos positivos de CÓDIGO, no de prosa: "animate" del diccionario
-          // voseante ("¡animate!") colisiona letra por letra con la prop `animate` de Motion
-          // (motion/react, el motor de animación que este mismo SO manda usar — 22/51). Si el
-          // match viene seguido de `={` o `:` es sintaxis JSX/objeto (animate={{...}} / animate:),
-          // nunca prosa en español — se descarta sin tocar la detección real de voseo.
+          // voseante ("¡animate!") colisiona letra por letra con la función/prop `animate` de
+          // Motion (motion/react, el motor de animación que este mismo SO manda usar — 22/51).
+          // Se descarta cuando es sintaxis de código, nunca prosa en español: prop JSX/objeto
+          // (animate={{...}} / animate:), llamada de función (animate(0, to, ...)) o nombre
+          // importado (import { ..., animate, ... } from 'motion/react').
           const after = ln.slice(m.index + m[1].length);
-          if (/^\s*[={:]/.test(after)) continue;
+          const before = ln.slice(0, m.index);
+          if (/^\s*[={:(]/.test(after)) continue;
+          if (/^\s*import\s*\{[^}]*$/.test(before)) continue;
           voseoHits.push(`${rel(a.file)}:${i + 1} — voseo "${m[1]}" con registro=${registro} declarado en la ficha`);
         }
       });
