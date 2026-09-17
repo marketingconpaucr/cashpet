@@ -29,7 +29,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 
 ## 3. AGITACIÓN
 - `Cada gasto hormiga sin registrar sigue restando, aunque no lo veas ese mismo día.`
-- `En un año, esos $150 al mes que se te escapan suman [acento]$1.800[/acento] que nunca ahorraste.`
+- `Esos gastos hormiga que no registras pueden sumar más de [acento]$1.000 al año[/acento] sin que lo notes.`
 - `Otra hoja de cálculo no lo arregla: [b]más columnas no es más autocontrol[/b].`
 - Contraste — Hoy: `Revisas tu cuenta con miedo y no sabes en qué se fue la quincena.` · En 6 meses si nada cambia: `El mismo susto cada quincena — con 6 meses menos de ahorro.`
 
@@ -64,7 +64,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 ## 8. FAQ (objeciones de FICHA-AVATAR.md §Objeciones)
 1. **¿CashPet se conecta a mi cuenta bancaria?** → `No. [b]Nunca pedimos tus credenciales bancarias[/b]: anotas cada gasto tú mismo, en segundos, y tu mascota reacciona al instante.`
 2. **¿Y si lo dejo de usar a los 3 días, como con otras apps?** → `Por eso existe el Freno de 5 Segundos: no es una hoja de cálculo, es un juego con [b]rachas y una mascota que reacciona[/b] cada vez que gastas.`
-3. **¿Por qué pagar si lo que quiero es ahorrar?** → `Porque cuesta menos de $0.20 al día y te ayuda a [b]evitar $150-200 al mes en gastos hormiga[/b] — se paga solo en la primera semana.`
+3. **¿Por qué pagar si lo que quiero es ahorrar?** → `Porque cuesta menos de $0.20 al día y te ayuda a [b]frenar los gastos hormiga que hoy no ves[/b] — para la mayoría, eso alcanza para pagar la suscripción sola.`
 4. **¿La mascota me va a hacer sentir peor si gasto de más?** → `No. Tu mascota tiene 5 emociones distintas — te acompaña con humor, [b]nunca con culpa[/b]. La idea es que vuelvas mañana, no que te sientas mal hoy.`
 5. **¿Qué pasa si no me sirve?** → `Tienes 7 días de prueba gratis y, si pagas, 15 días más de Garantía de la Primera Racha: [b]un correo y te devolvemos todo[/b].`
 

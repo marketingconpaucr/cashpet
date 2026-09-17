@@ -5,6 +5,7 @@
 // Tokens visuales: components/landing/tokens.css (tematizado desde FICHA-ARTE.md).
 
 import { Wallet, ClipboardList, Frown, ShoppingBag } from 'lucide-react';
+import { Mascota } from '@/components/Mascota';
 import { Hero } from '@/components/landing/Hero';
 import { Problema } from '@/components/landing/Problema';
 import { Agitacion } from '@/components/landing/Agitacion';
@@ -34,7 +35,17 @@ export default function LandingCashPet() {
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         socialProof={<span>Sin conectar tu banco · 7 días gratis</span>}
-        visualPlaceholderSugerencia="captura de la pantalla principal con la mascota reaccionando a un gasto"
+        visual={
+          <div className="flex flex-col items-center gap-3 py-6">
+            <Mascota size={120} />
+            <div
+              className="rounded-[var(--radius-card)] px-4 py-3 text-sm font-semibold shadow-[var(--shadow-2)]"
+              style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}
+            >
+              &ldquo;¿Otro café? Ya van 3 esta semana&rdquo;
+            </div>
+          </div>
+        }
       />
 
       {/* 2. PROBLEMA */}
@@ -52,7 +63,7 @@ export default function LandingCashPet() {
       <Agitacion
         frases={[
           'Cada gasto hormiga sin registrar sigue restando, aunque no lo veas ese mismo día.',
-          'En un año, esos $150 al mes que se te escapan suman [acento]$1.800[/acento] que nunca ahorraste.',
+          'Esos gastos hormiga que no registras pueden sumar más de [acento]$1.000 al año[/acento] sin que lo notes.',
           'Otra hoja de cálculo no lo arregla: [b]más columnas no es más autocontrol[/b].',
         ]}
         contraste={{
@@ -85,10 +96,10 @@ export default function LandingCashPet() {
       <AppPorDentro
         tituloMarked="Tu día, con [acento]mascota incluida[/acento]"
         frames={[
-          { label: 'Tu pantalla de cada día', nombrePantalla: 'Hoy' },
-          { label: 'Así te pregunta al empezar', nombrePantalla: 'Onboarding' },
-          { label: 'Elige tu plan en segundos', nombrePantalla: 'Paywall' },
-          { label: 'Así reacciona tu mascota', nombrePantalla: 'Mecanismo' },
+          { src: '/mockups/hoy.png', alt: 'Pantalla principal de CashPet con la mascota y la racha del día', label: 'Tu pantalla de cada día', nombrePantalla: 'Hoy' },
+          { src: '/mockups/onboarding.png', alt: 'Pregunta del onboarding sobre el presupuesto diario', label: 'Así te pregunta al empezar', nombrePantalla: 'Onboarding' },
+          { src: '/mockups/paywall.png', alt: 'Pantalla de planes anual y mensual', label: 'Elige tu plan en segundos', nombrePantalla: 'Paywall' },
+          { src: '/mockups/mecanismo.png', alt: 'La mascota reaccionando a un gasto de café', label: 'Así reacciona tu mascota', nombrePantalla: 'Mecanismo' },
         ]}
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
@@ -121,6 +132,7 @@ export default function LandingCashPet() {
             'Historial completo de tus rachas',
             'Niveles y crecimiento de tu mascota',
             'Soporte prioritario por email',
+            'Garantía de la Primera Racha: 15 días',
           ],
         }}
         mensual={{
@@ -132,6 +144,7 @@ export default function LandingCashPet() {
             'Reacciones ilimitadas de tu mascota',
             'Historial completo de tus rachas',
             'Cancela cuando quieras',
+            'Garantía de la Primera Racha: 15 días',
           ],
         }}
       />
@@ -159,7 +172,7 @@ export default function LandingCashPet() {
           {
             pregunta: '¿Por qué pagar si lo que quiero es ahorrar?',
             respuestaMarked:
-              'Porque cuesta menos de $0.20 al día y te ayuda a [b]evitar $150-200 al mes en gastos hormiga[/b] — se paga solo en la primera semana.',
+              'Porque cuesta menos de $0.20 al día y te ayuda a [b]frenar los gastos hormiga que hoy no ves[/b] — para la mayoría, eso alcanza para pagar la suscripción sola.',
           },
           {
             pregunta: '¿La mascota me va a hacer sentir peor si gasto de más?',

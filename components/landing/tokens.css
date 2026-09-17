@@ -45,6 +45,13 @@
 
   /* ── DERIVADOS (no se tocan: se recalculan solos desde --accent) ── */
   --chip-bg: color-mix(in oklab, var(--accent) 10%, transparent);
+
+  /* ── MASCOTA (FICHA-ARTE.md — dispositivo ownable, propio de components/Mascota.tsx) ── */
+  --mascota-brote-1: #8ce0a0;
+  --mascota-brote-2: #6fd08a;
+  --mascota-moflete: #ff9ecf;
+  --mascota-blanco: #ffffff;
+  --mascota-linea: #2e2444;
 }
 
 /* ============================================================================
