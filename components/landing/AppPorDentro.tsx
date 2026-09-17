@@ -4,8 +4,10 @@
 // Carrusel de frames de teléfono 9:19.5 con scroll-snap + dots sincronizados
 // (IntersectionObserver) + mask-fade lateral (el corte nunca es seco) + CTA
 // mid-page con el MISMO verbo del hero (19). Sin screenshot → frame PLACEHOLDER
-// gris con el nombre de la pantalla futura (pendiente en ESTADO.md). Los
-// screenshots reales los toma la IA al cerrar la app (paso obligatorio de 19 §5).
+// gris con el nombre de la pantalla futura (pendiente en ESTADO.md). CashPet ya
+// carga capturas reales de las 4 vistas aprobadas en vista-previa-app.html
+// (Sesión 2) en public/mockups/ — el placeholder gris solo se ve si a un frame
+// le falta el `src`.
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';

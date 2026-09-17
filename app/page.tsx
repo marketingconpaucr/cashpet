@@ -34,7 +34,13 @@ export default function LandingCashPet() {
         subtitleMarked="El Freno de 5 Segundos: tu mascota reacciona [b]antes de que gastes de más[/b]."
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
-        socialProof={<span>Sin conectar tu banco · 7 días gratis</span>}
+        socialProof={
+          <span>
+            Sin conectar tu banco · 7 días gratis
+            <br />
+            El mismo mecanismo detrás de apps con más de 1 millón de usuarios pagos
+          </span>
+        }
         visual={
           <div className="flex flex-col items-center gap-3 py-6">
             <Mascota size={120} />
@@ -109,15 +115,6 @@ export default function LandingCashPet() {
       <Oferta
         tituloMarked="Empieza gratis. Sigue por [acento]menos de $0.20 al día[/acento]"
         trialDias={7}
-        stack={{
-          lineas: [
-            { resultado: 'CashPet Pro con el Freno de 5 Segundos (12 meses)', valor: '$107.88' },
-            { resultado: 'Historial de rachas y niveles de tu mascota', valor: '$19' },
-            { resultado: 'Guía «Cómo domar tus gastos hormiga»', valor: '$15' },
-          ],
-          totalTachado: '$141.88',
-          nota: 'Hoy: $5.83/mes (se cobra $69.99/año)',
-        }}
         anual={{
           nombre: 'Anual',
           badge: 'MÁS POPULAR',
@@ -182,7 +179,7 @@ export default function LandingCashPet() {
           {
             pregunta: '¿Qué pasa si no me sirve?',
             respuestaMarked:
-              'Tienes 7 días de prueba gratis y, si pagas, 15 días más de Garantía de la Primera Racha: [b]un correo y te devolvemos todo[/b].',
+              'Nada de riesgo: 7 días gratis para probar, y si después de pagar sientes que no era para ti, [b]un correo y te devolvemos todo[/b].',
           },
         ]}
       />
@@ -193,7 +190,7 @@ export default function LandingCashPet() {
         futurePacingMarked="Anotas un gasto, tu mascota reacciona, y por primera vez sientes que alguien más está cuidando tu plata contigo."
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
-        recap="Garantía de la Primera Racha · 7 días gratis"
+        recap="Sin conectar tu banco · Cancela cuando quieras"
         psMarked="PS: CashPet convierte tus gastos hormiga en una racha que cuidas, gracias al Freno de 5 Segundos. Sin conectar tu banco, sin letra chica."
       />
 
