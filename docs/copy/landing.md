@@ -14,34 +14,34 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 
 ---
 
-## 1. HERO
-- H1 marcado: `Una mascota que te [acento]frena[/acento] antes de gastar`
-- Subtítulo marcado: `El Freno de 5 Segundos: tu mascota reacciona [b]antes de que gastes de más[/b].`
+## 1. HERO (reescrito — el usuario dijo "no me convence de comprar", ver ESTADO.md)
+- H1 marcado: `La mascota que te [acento]quita la tarjeta[/acento] de las manos`
+- Subtítulo marcado: `El Freno de 5 Segundos actúa [b]antes de la compra que vas a lamentar.[/b]`
 - CTA: `Quiero mi mascota financiera` → `/onboarding`
-- Social proof (sin números falsos de CashPet — cero usuarios reales todavía; se cita a Cleo AI CON NOMBRE, dato real y sourceado en FICHA-MODELO.md, tras la 3ª revisión pedir que se nombrara la fuente): `Sin conectar tu banco · 7 días gratis` / `Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos`
-- Sugerencia de visual: captura de la pantalla principal con la mascota reaccionando a un gasto (placeholder honesto hasta tener screenshots reales — ver `vista-previa-app.html`)
+- Social proof (sin números falsos de CashPet — cero usuarios reales todavía; se cita a Cleo AI CON NOMBRE, dato real y sourceado en FICHA-MODELO.md): `Sin conectar tu banco · 7 días gratis` / `Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos`
+- Visual: la mascota (componente propio, no placeholder) + burbuja con su reacción a un gasto
 
-## 2. PROBLEMA — "¿Te suena?"
-1. (icon Wallet) `¿Llegas al día 20 sin saber en qué se fue tu sueldo?`
-2. (icon ClipboardList) `¿Te da pereza anotar cada gasto en una hoja de cálculo?`
-3. (icon Frown) `¿Sientes culpa apenas abres la app de tu banco?`
+## 2. PROBLEMA — "¿Te suena?" (preguntas más filosas, tomadas literal de FICHA-AVATAR.md)
+1. (icon Frown) `¿Sientes un microinfarto cada vez que abres la app de tu banco?`
+2. (icon Wallet) `¿Llegas al día 20 sin saber en qué se te evaporó el sueldo?`
+3. (icon ClipboardList) `Ya probaste Excel o YNAB, ¿y los abandonaste en 3 días?`
 4. (icon ShoppingBag) `¿Compras por impulso y te arrepientes minutos después?`
 
 ## 3. AGITACIÓN
-- `Cada gasto hormiga sin registrar sigue restando, aunque no lo veas ese mismo día.`
-- `Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que no ahorraste.` (cálculo simple mostrado, no una cifra suelta — corrección tras la 3ª revisión)
-- `Otra hoja de cálculo no lo arregla: [b]más columnas no es más autocontrol[/b].`
-- Contraste — Hoy: `Revisas tu cuenta con miedo y no sabes en qué se fue la quincena.` · En 6 meses si nada cambia: `El mismo susto cada quincena — con 6 meses menos de ahorro.`
+- `No es que no sepas ahorrar: es que nadie te avisa hasta que [b]ya gastaste[/b].`
+- `Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que se te escapan sin que lo notes.` (cálculo mostrado, no cifra suelta)
+- `Otra hoja de cálculo no lo arregla: [b]más columnas no te dan más autocontrol[/b].`
+- Contraste — Hoy: `Revisas tu cuenta con el corazón en la boca, sintiéndote una irresponsable.` · En 6 meses si nada cambia: `El mismo miedo, mes tras mes — hasta que decidas frenarlo hoy.`
 
 ## 4. SOLUCIÓN
-- Título marcado: `Tu dinero bajo control [acento]antes del primer gasto[/acento]`
+- Título marcado: `Alguien te detiene [acento]antes del error[/acento], no después`
 - Mecanismo: `el Freno de 5 Segundos`
-- Big idea marcada: `No te falta fuerza de voluntad: te falta [b]alguien que te avise a tiempo[/b]. El Freno actúa en el momento, no a fin de mes.`
+- Big idea marcada: `No te falta fuerza de voluntad: te falta [b]alguien que te detenga a tiempo[/b]. El Freno actúa en el momento exacto en que ibas a arrepentirte.`
 - Pasos:
   1. **Anota el gasto** — `Escribe o dicta lo que gastaste, en 5 segundos.`
-  2. **Tu mascota reacciona** — `Te felicita o te frena al instante, con humor.`
+  2. **Tu mascota te frena** — `Te dice la verdad con humor, antes de que sigas gastando.`
   3. **Sube tu racha** — `Cada día sin pasarte del límite, tu mascota crece.`
-- Antes/Después — Antes: `Gastos que se te escapan y descubres a fin de mes.` · Después: `Cada gasto con una reacción al instante — y una racha que cuidar.`
+- Antes/Después — Antes: `Descubres el daño a fin de mes, cuando ya no hay nada que hacer.` · Después: `Tu mascota te frena en el momento — antes de que la tarjeta salga de tu cartera.`
 
 ## 5. LA APP POR DENTRO (placeholders honestos — screenshots reales pendientes de Sesión 5)
 - Título marcado: `Tu día, con [acento]mascota incluida[/acento]`
@@ -49,7 +49,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 - CTA mid-page: `Quiero mi mascota financiera` → `/onboarding`
 
 ## 6. OFERTA (precio confirmado por el usuario 2026-09-17: $8.99/mes · $69.99/año)
-- Título marcado: `Empieza gratis. Sigue por [acento]menos de $0.20 al día[/acento]`
+- Título marcado: `Por menos de [acento]un café al día[/acento]`
 - Trial: 7 días
 - Sin stack de valor (se retiró: el kit Hormozi exige precios reales de bonos existentes, y CashPet no tiene guías/bonos reales todavía — inventarlos falló la revisión de copy, ver ESTADO.md)
 - Anual (badge MÁS POPULAR): $5.83/mes · se cobra $69.99/año · ahorro 35% · `menos de $0.20 al día` · CTA `Empezar mis 7 días gratis` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Niveles y crecimiento de tu mascota · Soporte prioritario por email · Garantía de la Primera Racha: 15 días
@@ -69,10 +69,10 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 5. **¿Qué pasa si no me sirve?** → `Tienes 7 días de prueba gratis y, si pagas, 15 días más de Garantía de la Primera Racha: [b]un correo y te devolvemos todo[/b].`
 
 ## 9. CTA FINAL EMOCIONAL
-- H2 marcado: `Imagina cerrar el mes [acento]sin sustos[/acento]`
-- Future pacing marcado: `Anotas un gasto, tu mascota reacciona, y por primera vez sientes que alguien más está cuidando tu dinero contigo.`
-- Recap: `Garantía de la Primera Racha · 7 días gratis`
-- PS marcado: `PS: CashPet convierte tus gastos hormiga en una racha que cuidas, gracias al Freno de 5 Segundos. Sin conectar tu banco, sin letra chica.`
+- H2 marcado: `Deja de gastar en [acento]piloto automático[/acento]`
+- Future pacing marcado: `Anotas el gasto, tu mascota te frena, y por primera vez sientes que tienes el control — no tus impulsos.`
+- Recap: `Sin conectar tu banco · Cancela cuando quieras`
+- PS marcado: `PS: Cada gasto hormiga que no frenas hoy es un peso menos mañana. El Freno de 5 Segundos se interpone entre tú y la compra que ibas a lamentar. Sin conectar tu banco, sin letra chica.`
 
 ## 10. FOOTER LEGAL
 - appName: `CashPet` · soporte: `soporte@cashpet.app` (⚠️ dominio real pendiente — ver Pendientes del usuario en ESTADO.md)

@@ -30,8 +30,8 @@ export default function LandingCashPet() {
       <Hero
         appName="CashPet"
         loginHref="/entrar"
-        h1Marked="Una mascota que te [acento]frena[/acento] antes de gastar"
-        subtitleMarked="El Freno de 5 Segundos: tu mascota reacciona [b]antes de que gastes de más[/b]."
+        h1Marked="La mascota que te [acento]quita la tarjeta[/acento] de las manos"
+        subtitleMarked="El Freno de 5 Segundos actúa [b]antes de la compra que vas a lamentar.[/b]"
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         socialProof={
@@ -58,9 +58,9 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
       <Problema
         titulo="¿Te suena?"
         preguntas={[
-          { icon: Wallet, textoMarked: '¿Llegas al día 20 sin saber en qué se fue tu sueldo?' },
-          { icon: ClipboardList, textoMarked: '¿Te da pereza anotar cada gasto en una hoja de cálculo?' },
-          { icon: Frown, textoMarked: '¿Sientes culpa apenas abres la app de tu banco?' },
+          { icon: Frown, textoMarked: '¿Sientes un microinfarto cada vez que abres la app de tu banco?' },
+          { icon: Wallet, textoMarked: '¿Llegas al día 20 sin saber en qué se te evaporó el sueldo?' },
+          { icon: ClipboardList, textoMarked: 'Ya probaste Excel o YNAB, ¿y los abandonaste en 3 días?' },
           { icon: ShoppingBag, textoMarked: '¿Compras por impulso y te arrepientes minutos después?' },
         ]}
       />
@@ -68,33 +68,33 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
       {/* 3. AGITACIÓN */}
       <Agitacion
         frases={[
-          'Cada gasto hormiga sin registrar sigue restando, aunque no lo veas ese mismo día.',
-          'Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que no ahorraste.',
-          'Otra hoja de cálculo no lo arregla: [b]más columnas no es más autocontrol[/b].',
+          'No es que no sepas ahorrar: es que nadie te avisa hasta que [b]ya gastaste[/b].',
+          'Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que se te escapan sin que lo notes.',
+          'Otra hoja de cálculo no lo arregla: [b]más columnas no te dan más autocontrol[/b].',
         ]}
         contraste={{
           labelHoy: 'Hoy',
-          hoy: 'Revisas tu cuenta con miedo y no sabes en qué se fue la quincena.',
+          hoy: 'Revisas tu cuenta con el corazón en la boca, sintiéndote una irresponsable.',
           labelFuturo: 'En 6 meses, si nada cambia',
-          futuro: 'El mismo susto cada quincena — con 6 meses menos de ahorro.',
+          futuro: 'El mismo miedo, mes tras mes — hasta que decidas frenarlo hoy.',
         }}
       />
 
       {/* 4. SOLUCIÓN */}
       <Solucion
-        tituloMarked="Tu dinero bajo control [acento]antes del primer gasto[/acento]"
+        tituloMarked="Alguien te detiene [acento]antes del error[/acento], no después"
         mecanismo="el Freno de 5 Segundos"
-        bigIdeaMarked="No te falta fuerza de voluntad: te falta [b]alguien que te avise a tiempo[/b]. El Freno actúa en el momento, no a fin de mes."
+        bigIdeaMarked="No te falta fuerza de voluntad: te falta [b]alguien que te detenga a tiempo[/b]. El Freno actúa en el momento exacto en que ibas a arrepentirte."
         pasos={[
           { titulo: 'Anota el gasto', detalle: 'Escribe o dicta lo que gastaste, en 5 segundos.' },
-          { titulo: 'Tu mascota reacciona', detalle: 'Te felicita o te frena al instante, con humor.' },
+          { titulo: 'Tu mascota te frena', detalle: 'Te dice la verdad con humor, antes de que sigas gastando.' },
           { titulo: 'Sube tu racha', detalle: 'Cada día sin pasarte del límite, tu mascota crece.' },
         ]}
         antesDespues={{
           labelAntes: 'Antes',
-          antes: 'Gastos que se te escapan y descubres a fin de mes.',
+          antes: 'Descubres el daño a fin de mes, cuando ya no hay nada que hacer.',
           labelDespues: 'Después',
-          despues: 'Cada gasto con una reacción al instante — y una racha que cuidar.',
+          despues: 'Tu mascota te frena en el momento — antes de que la tarjeta salga de tu cartera.',
         }}
       />
 
@@ -113,7 +113,7 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
 
       {/* 6. OFERTA — anual primero, trial 7 días (02C), precio confirmado 2026-09-17 */}
       <Oferta
-        tituloMarked="Empieza gratis. Sigue por [acento]menos de $0.20 al día[/acento]"
+        tituloMarked="Por menos de [acento]un café al día[/acento]"
         trialDias={7}
         anual={{
           nombre: 'Anual',
@@ -186,12 +186,12 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
 
       {/* 9. CTA FINAL */}
       <CtaFinal
-        h2Marked="Imagina cerrar el mes [acento]sin sustos[/acento]"
-        futurePacingMarked="Anotas un gasto, tu mascota reacciona, y por primera vez sientes que alguien más está cuidando tu dinero contigo."
+        h2Marked="Deja de gastar en [acento]piloto automático[/acento]"
+        futurePacingMarked="Anotas el gasto, tu mascota te frena, y por primera vez sientes que tienes el control — no tus impulsos."
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         recap="Sin conectar tu banco · Cancela cuando quieras"
-        psMarked="PS: CashPet convierte tus gastos hormiga en una racha que cuidas, gracias al Freno de 5 Segundos. Sin conectar tu banco, sin letra chica."
+        psMarked="PS: Cada gasto hormiga que no frenas hoy es un peso menos mañana. El Freno de 5 Segundos se interpone entre tú y la compra que ibas a lamentar. Sin conectar tu banco, sin letra chica."
       />
 
       {/* 10. FOOTER LEGAL — enlaces con stub real (contenido completo: Sesión 6/47) */}
