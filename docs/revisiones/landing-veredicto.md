@@ -1,14 +1,14 @@
 # VEREDICTO revisor-visual — landing
 Fecha: 2026-09-17 00:00
 Screenshot: docs/revisiones/landing-375.png
-Usabilidad: 29/40
-Craft: 15/20
-Copy (si vende): 18/20
-Fidelidad (si hubo referencia): N-A
+Usabilidad: 28/40
+Craft: 14/20
+Copy (si vende): 14/20
+Fidelidad (si hubo referencia): FIEL
 Veredicto: NO LISTA
 Top defectos:
-1. Prueba social ausente en toda la página (Agitación/Oferta): las cifras se suavizaron ("$1.000 al año", lenguaje de posibilidad) pero sigue sin haber ni un testimonio, rating o dato citado con fuente en ningún punto del scroll → agregar al menos 1 prueba verificable (testimonio real, rating de tienda, caso) antes de publicar.
-2. Copy eje "Especificidad y prueba" = 2/4 (regla de la Rúbrica 4: eje ≤2 se corrige aunque el total pase 16/20): el stack de valor de Oferta.tsx inventa precios individuales ($107.88/$19/$15) sin respaldo → o se sustituyen por precios reales de líneas de producto, o se retira el stack.
-3. FICHA-AVATAR.md sigue en estado BORRADOR ("Aprobada por el usuario: NO, pendiente confirmación") y toda la landing (hero, agitación, FAQ) ya está escrita sobre esa ficha sin aprobar → conseguir aprobación formal antes de dar la landing por lista, cualquier cambio de foco de avatar obliga a reescribir copy.
-4. components/landing/AppPorDentro.tsx líneas 6-9: el comentario de cabecera sigue diciendo "Sin screenshot → frame PLACEHOLDER gris... Los screenshots reales los toma la IA al cerrar la app (paso obligatorio de 19 §5)" pese a que los 4 frames ya cargan PNG reales desde app/page.tsx → actualizar el comentario para que no induzca a revertir a placeholders en un futuro cambio.
-5. Redundancia de la garantía: aparece como bullet en cada plan de Oferta, como sección propia inmediatamente después, de nuevo en el FAQ y otra vez en el PS del CTA final → 4 menciones seguidas del mismo beneficio sin variar ángulo se siente insistente al bajar por el scroll; recortar a 2-3 apariciones con enfoque distinto cada vez.
+1. [Hero, franja de prueba social] "El mismo mecanismo detrás de apps con más de 1 millón de usuarios pagos" es una métrica prestada sin nombrar la fuente (Cleo AI) — se lee como si CashPet ya tuviera esa escala → nombrar la fuente explícitamente o quitar la cifra y sostenerse solo en trial + garantía como prueba honesta de día 1.
+2. [Sección "El mecanismo" / Solución] Describe "Tu mascota reacciona" (paso 2) sin mostrar la mascota — el dispositivo ownable solo aparece en el Hero (120px) y dentro del mockup de "La app por dentro"; se diluye en el resto del scroll → agregar la mascota junto al paso 2 y en algún punto más del scroll (Agitación o Garantía).
+3. [Global, navegación] No hay atajos ni ancla de navegación por secciones (Cómo funciona / Precios / FAQ) para el usuario que vuelve a buscar algo puntual — código verificado, cero mini-nav → agregar una mini-nav de anclas sutil bajo el header.
+4. [Jerarquía entre secciones] Los H2 de las 7 secciones intermedias comparten el mismo tamaño (30/40px) sin ningún pico de énfasis adicional antes del CTA final invertido, aplanando el ritmo visual del scroll completo → variar tamaño/peso en 1-2 títulos clave (ej. Oferta) para crear jerarquía entre secciones.
+5. [Agitación] La cifra "$1.000 al año" sigue sin desglose ni fuente propia — mejora respecto a la versión anterior ($150-200/mes) pero todavía es un número puntual no verificable presentado como hecho → mostrar el cálculo simple detrás o suavizar a "cientos de dólares al año" sin cifra exacta.

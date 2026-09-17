@@ -18,7 +18,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 - H1 marcado: `Una mascota que te [acento]frena[/acento] antes de gastar`
 - Subtítulo marcado: `El Freno de 5 Segundos: tu mascota reacciona [b]antes de que gastes de más[/b].`
 - CTA: `Quiero mi mascota financiera` → `/onboarding`
-- Social proof (sin números falsos — cero usuarios reales todavía): `Sin conectar tu banco · 7 días gratis`
+- Social proof (sin números falsos de CashPet — cero usuarios reales todavía; se cita a Cleo AI CON NOMBRE, dato real y sourceado en FICHA-MODELO.md, tras la 3ª revisión pedir que se nombrara la fuente): `Sin conectar tu banco · 7 días gratis` / `Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos`
 - Sugerencia de visual: captura de la pantalla principal con la mascota reaccionando a un gasto (placeholder honesto hasta tener screenshots reales — ver `vista-previa-app.html`)
 
 ## 2. PROBLEMA — "¿Te suena?"
@@ -29,7 +29,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 
 ## 3. AGITACIÓN
 - `Cada gasto hormiga sin registrar sigue restando, aunque no lo veas ese mismo día.`
-- `Esos gastos hormiga que no registras pueden sumar más de [acento]$1.000 al año[/acento] sin que lo notes.`
+- `Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que no ahorraste.` (cálculo simple mostrado, no una cifra suelta — corrección tras la 3ª revisión)
 - `Otra hoja de cálculo no lo arregla: [b]más columnas no es más autocontrol[/b].`
 - Contraste — Hoy: `Revisas tu cuenta con miedo y no sabes en qué se fue la quincena.` · En 6 meses si nada cambia: `El mismo susto cada quincena — con 6 meses menos de ahorro.`
 

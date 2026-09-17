@@ -38,7 +38,7 @@ export default function LandingCashPet() {
           <span>
             Sin conectar tu banco · 7 días gratis
             <br />
-            El mismo mecanismo detrás de apps con más de 1 millón de usuarios pagos
+Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
           </span>
         }
         visual={
@@ -69,7 +69,7 @@ export default function LandingCashPet() {
       <Agitacion
         frases={[
           'Cada gasto hormiga sin registrar sigue restando, aunque no lo veas ese mismo día.',
-          'Esos gastos hormiga que no registras pueden sumar más de [acento]$1.000 al año[/acento] sin que lo notes.',
+          'Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que no ahorraste.',
           'Otra hoja de cálculo no lo arregla: [b]más columnas no es más autocontrol[/b].',
         ]}
         contraste={{
