@@ -303,6 +303,10 @@ function analizarTsx(file, src) {
   // literales largos (≥80 chars) fuera de elementos ya extraídos
   const literals = [];
   const litRe = /"((?:[^"\\\n]|\\.){80,})"|'((?:[^'\\\n]|\\.){80,})'|`((?:[^`\\]|\\.){80,})`/g;
+  // Prosa real en español usa palabras cortas frecuentes (que/para/con/una/más/así...).
+  // Código, JSDoc y className no las tienen — evita que un apóstrofe suelto en un comentario
+  // (ej. "front-end's") haga que la regex de comillas "trague" código entero como si fuera copy.
+  const PROSA_RE = /\b(que|para|con|una|uno|los|las|más|así|del|por|esto|esta|nunca|tu|te|se|no|es|al|si|en|un|le|lo)\b/i;
   let lm;
   while ((lm = litRe.exec(src)) !== null) {
     const val = (lm[1] ?? lm[2] ?? lm[3] ?? '').replace(/\s+/g, ' ').trim();
@@ -310,6 +314,17 @@ function analizarTsx(file, src) {
     const ctx = src.slice(Math.max(0, lm.index - 45), lm.index);
     if (/\b(import|from|require|href=|src=|url\(|class(Name)?\s*=)\s*$/.test(ctx)) continue;
     if (/\b(import|from)\b/.test(ctx)) continue;
+    // No es UI visible: dentro de un comentario de línea o de bloque.
+    const inicioLinea = src.lastIndexOf('\n', lm.index) + 1;
+    if (src.slice(inicioLinea, lm.index).includes('//')) continue;
+    const ultimoApertura = src.lastIndexOf('/*', lm.index);
+    const ultimoCierre = src.lastIndexOf('*/', lm.index);
+    if (ultimoApertura > ultimoCierre) continue;
+    // No es prosa en español (típico de una cadena de clases Tailwind u otro código).
+    if (!PROSA_RE.test(val)) continue;
+    // Restos de sintaxis JS/TS colados por un backtick o comilla sin cerrar cerca (plantillas
+    // literales con ${...}, código con llaves) — nunca aparecen en copy real de usuario.
+    if (/[{}]|=>|\$\{/.test(val)) continue;
     const dentro = elements.some((e) => lm.index >= e.innerStart && lm.index < e.innerEnd);
     if (dentro) continue;
     literals.push({ value: val, line: lineOf(src, lm.index) });
@@ -660,6 +675,13 @@ function check3() {
   for (const f of tsxAll) {
     const src = read(f); if (!src) continue;
     if (/GradientBorder/i.test(src)) { gbc++; hallazgos.push(`${rel(f)} — usa <GradientBorder…>`); }
+    // La técnica padding-box/border-box también vive en .tsx como template literal de estilo
+    // inline (el propio <Hairline> del kit canónico de landing la implementa así, no en .css) —
+    // sin este escaneo, cualquier proyecto que use el kit tal cual falla el gate igual.
+    if (/padding-box/.test(src) && /border-box/.test(src)) {
+      const ln = src.slice(0, src.search(/padding-box/)).split('\n').length;
+      hallazgos.push(`${rel(f)}:${ln} — hairline inline (padding-box/border-box)`);
+    }
   }
   const crits = []; const warns = []; const infos = [];
   if (!hallazgos.length) {
@@ -751,11 +773,28 @@ function check5() {
   if (SIN_SUP) return reporte(5, 'EMOJIS como elemento visual (55/CLAUDE.md — prohibidos en conversión)', { skip: SIN_SUP });
   const crits = [];
   for (const a of analisis) {
-    const lines = a.src.split('\n');
-    lines.forEach((ln, i) => {
-      const m = ln.match(EMOJI_RE);
-      if (m) crits.push(`${rel(a.file)}:${i + 1} — ${[...new Set(m)].join(' ')} (todo ícono es SVG de librería con chip, jamás un carácter emoji/dingbat — incluye ✓/✔ del sistema)`);
-    });
+    const src = a.src;
+    let idx = 0;
+    EMOJI_RE.lastIndex = 0;
+    let em;
+    const vistos = new Set();
+    while ((em = EMOJI_RE.exec(src)) !== null) {
+      idx = em.index;
+      // No es UI visible si el carácter cae DENTRO de un comentario — de línea (// antes, sin
+      // salto de línea de por medio) o de bloque (el /* más cercano hacia atrás está más cerca
+      // que el */ más cercano hacia atrás, sin importar si la línea sigue con un "*" de JSDoc o
+      // no). El kit mismo documenta "nunca el ✓ del sistema" dentro de un comentario así.
+      const inicioLinea = src.lastIndexOf('\n', idx) + 1;
+      if (src.slice(inicioLinea, idx).includes('//')) continue;
+      const ultimoApertura = src.lastIndexOf('/*', idx);
+      const ultimoCierre = src.lastIndexOf('*/', idx);
+      if (ultimoApertura > ultimoCierre) continue;
+      const line = src.slice(0, idx).split('\n').length;
+      const key = `${line}:${em[0]}`;
+      if (vistos.has(key)) continue;
+      vistos.add(key);
+      crits.push(`${rel(a.file)}:${line} — ${em[0]} (todo ícono es SVG de librería con chip, jamás un carácter emoji/dingbat — incluye ✓/✔ del sistema)`);
+    }
   }
   reporte(5, 'EMOJIS como elemento visual (55/CLAUDE.md — prohibidos en conversión)', {
     crits, ok: 'Cero emojis/dingbats (U+1F300-1FAFF, U+2600-27BF) en los .tsx de conversión.',
@@ -834,10 +873,16 @@ function check7() {
       }
     }
   }
-  // gradientes inline en tsx de conversión sobre elementos no-botón
+  // gradientes inline en tsx de conversión sobre elementos no-botón. Ventana de 4 líneas (no
+  // 1 sola): un objeto style formateado por Prettier separa `background:` de la línea del
+  // propio `radial-gradient(...)` — la coincidencia en una sola línea es un falso negativo
+  // sobre el propio patrón que trae Hero.tsx del kit canónico.
   for (const a of analisis) {
-    a.src.split('\n').forEach((ln, i) => {
-      if (/(radial|linear|conic)-gradient\(/.test(ln) && /background/i.test(ln) && !/btn|button/i.test(ln)) {
+    const lineas = a.src.split('\n');
+    lineas.forEach((ln, i) => {
+      if (!/(radial|linear|conic)-gradient\(/.test(ln)) return;
+      const ventana = lineas.slice(Math.max(0, i - 3), i + 1).join('\n');
+      if (/background/i.test(ventana) && !/btn|button/i.test(ventana)) {
         gradientesSeccion++;
         infos.push(`Gradiente inline: ${rel(a.file)}:${i + 1}`);
       }
@@ -954,6 +999,13 @@ function check10() {
         voseoRe.lastIndex = 0;
         let m;
         while ((m = voseoRe.exec(ln)) !== null) {
+          // Guarda contra falsos positivos de CÓDIGO, no de prosa: "animate" del diccionario
+          // voseante ("¡animate!") colisiona letra por letra con la prop `animate` de Motion
+          // (motion/react, el motor de animación que este mismo SO manda usar — 22/51). Si el
+          // match viene seguido de `={` o `:` es sintaxis JSX/objeto (animate={{...}} / animate:),
+          // nunca prosa en español — se descarta sin tocar la detección real de voseo.
+          const after = ln.slice(m.index + m[1].length);
+          if (/^\s*[={:]/.test(after)) continue;
           voseoHits.push(`${rel(a.file)}:${i + 1} — voseo "${m[1]}" con registro=${registro} declarado en la ficha`);
         }
       });

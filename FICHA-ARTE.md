@@ -3,7 +3,7 @@
 ## Referencia del usuario (CONTRATO — ver 16, protocolo obligatorio)
 - ¿Hay imagen(es) de referencia del usuario?: SÍ → 5 capturas (apps "Party Animals"/mascotas 3D, "lila", "Habitz", "SaveSmart") + ajuste propio pidiendo que la mascota "dé ganas de cuidarla"
 - Extracción (mirada con herramienta de imágenes):
-  - Modo: claro · Fondo: #FDF1E7 (crema durazno) · Superficie: #FFFFFF · Texto 1º/2º: #3A2A1E / #8A7A6C
+  - Modo: claro · Fondo: #FDF1E7 (crema durazno) · Superficie: #FFFFFF · Texto 1º/2º: #3A2A1E / #7A6A5C
   - Acento(s): #7C5CFC (violeta) — en CTA principal, chips de ícono, insight de racha, tabbar activa
   - Display: geométrica muy redondeada → Fredoka · Body: humanista redondeada → Nunito
   - Radio: cards 24px / botones 20px (casi píldora) · Espaciado: aireado
@@ -37,7 +37,7 @@
 - Estas 5 caras son variaciones del MISMO personaje (mismas orejitas/mofletes/brote) — cambian ojos, boca y cejas, nunca el diseño base
 
 ## Brand kit final (valores para globals.css/@theme)
-- Fondo: #FDF1E7 · Superficie: #FFFFFF · Hundido: #F7F1E9 · Texto 1º/2º: #3A2A1E / #8A7A6C
+- Fondo: #FDF1E7 · Superficie: #FFFFFF · Hundido: #F7F1E9 · Texto 1º/2º: #3A2A1E / #7A6A5C
 - Acento: #7C5CFC (SOLO en: CTA principal, tabbar activa, insights, chips) · 2ª nota: verde brote #8CE0A0 (solo en el detalle de "crecimiento" de la mascota, nunca en UI general)
 - Semánticos: éxito #7C5CFC (reutiliza el acento — app sin conexión bancaria, sin rojo de alarma a propósito) · error #E0574C · aviso #F5A623
 - Display: Fredoka (pesos 500/600/700) · Body: Nunito (pesos 400/600/700/800) · Escala: display 42px / title 25px / body 14.5px / label 11.5px
@@ -54,4 +54,4 @@
 - Registro anti-repetición: paleta violeta #7C5CFC + par Fredoka/Nunito anotados en ESTADO.md → vetados para el próximo proyecto del SO
 - Modo (claro/oscuro) DERIVADO por: las 5 capturas del usuario son predominantemente claras (4 de 5) y el usuario pidió explícitamente "más amigable a la vista" — claro gana
 
-## Idioma UI: Español (voseo/tuteo neutro LATAM, ver FICHA-AVATAR.md) · Fecha de cierre de la ficha: 2026-09-17 · Aprobada por el usuario: SÍ
+## Idioma UI: Español (tuteo neutro LATAM, nunca voseo — ver FICHA-AVATAR.md) · Fecha de cierre de la ficha: 2026-09-17 · Aprobada por el usuario: SÍ

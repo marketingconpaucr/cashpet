@@ -1,7 +1,7 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-16 | Sesión actual: 1
 
-⏸️ CHECKPOINT — Última acción completada: Sesión 2 CERRADA — usuario eligió Opción A, tour de la app (vista-previa-app.html) aprobado, FICHA-ARTE.md creada y aprobada / Siguiente acción exacta: mostrar el cierre de Sesión 2 al usuario y esperar su OK para arrancar Sesión 3 (página de ventas / landing)
+⏸️ CHECKPOINT — Última acción completada: Sesión 3 CERRADA — landing real construida en Next.js (app/page.tsx) desde el kit canónico, FICHA-MERCADO.md creada (plazos de garantía verificados contra Hotmart), auditoría de conversión en 0 críticos / Siguiente acción exacta: mostrar la landing corriendo al usuario y esperar su OK para arrancar Sesión 4 (onboarding, paywall y login)
 
 ## Qué es esta app (3 líneas máximo)
 Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario anota un gasto en segundos y la mascota reacciona (felicita o regaña con humor), genera rachas de ahorro y sube de nivel. Para adultos jóvenes en LATAM (22-35) que ganan bien pero sienten que el dinero "se les evapora". Monetización por suscripción ($8.99/mes o $69.99/año) vía Hotmart.
@@ -28,7 +28,9 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 ## Avatar y venta (Sesión 1 — NO cambiar sin validar)
 - FICHA-AVATAR.md: existe, estado BORRADOR — creada 2026-09-16, pendiente de aprobación explícita del usuario
 - Resumen: avatar "Camila", 26 años, diseñadora freelance LATAM · dolor #1: "no sé en qué se me fue el sueldo" · deseo #1: "llegar a fin de mes con plata de sobra" · nivel de consciencia: alto (4/5) · sofisticación: media-alta
-- Landing: no iniciada
+- FICHA-MERCADO.md: existe — precio anclado al plan medio de Cleo ($8.99), garantía de Hotmart verificada (15 días, secuencial a los 7 de prueba) — ver archivo para lo que falta (price parity, checkout real, conversión esperable: todo NO ENCONTRADO hasta tener cuenta de Hotmart y tráfico real)
+- Big Idea + mecanismo bautizado: "el Freno de 5 Segundos" (ver `docs/copy/landing.md`) — aparece en Hero, Solución y Oferta
+- Landing: CONSTRUIDA (Sesión 3) — `app/page.tsx`, Next.js real, 10 secciones canónicas, copy en `docs/copy/landing.md`, corre en `npm run dev` (puerto 3000). Screenshots reales del carrusel "La app por dentro": pendientes (placeholders honestos hasta Sesión 5)
 
 ## Estrategia de monetización (Sesión 1 — NO cambiar sin validar)
 - Modelo: Onboarding-first con trial (Modelo 2 de 02C) — decidido por la matriz de nicho "Finanzas" (primera victoria = diagnóstico inicial, paywall tras el diagnóstico) con tie-breaker de frecuencia diaria resuelto vía gamificación de constancia (24), no vía modelo de cobro
@@ -45,17 +47,17 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Notificaciones de re-enganche: pendiente de diseñar en Sesión 4-5 (tope ≤1-2/día)
 
 ## Secuencia maestra de construcción (NO saltar)
-- Estado de la secuencia: aún no se construye nada — en Sesión 1 (validación/avatar/monetización/arquitectura)
+- Estado de la secuencia: Landing lista tras Sesión 3. Sesión 4 sigue con el resto: onboarding, paywall y login
 - Ruta aprobada: `/` → `/onboarding` → `/paywall` → `/login` → `/app`
-- Landing: pendiente — protagonista: la reacción de la mascota a un gasto — CTA primario: pendiente de definir en Sesión 3
-- Onboarding: pendiente — primera decisión: ingresar presupuesto mensual aproximado
+- Landing: CONSTRUIDA — protagonista: la mascota reaccionando a un gasto (mecanismo "el Freno de 5 Segundos") — CTA primario: "Quiero mi mascota financiera" → `/onboarding`
+- Onboarding: pendiente (ruta `/onboarding` existe como stub) — primera decisión: ingresar presupuesto diario/mensual aproximado
 - Paywall: pendiente — oferta principal: $8.99/mes o $69.99/año con trial de 7 días
 - Login/Auth: pendiente — motivo de pedir cuenta: guardar historial de gastos, rachas y suscripción
 - App interna: pendiente — secciones (borrador, a confirmar en Sesión 5): Registro de gasto / Mascota+chat / Rachas y progreso
 - Servicios externos: pendiente — GitHub/Supabase/IA/Vercel/Resend/dominio/Hotmart
 
 ## Puertas de etapa (aprobación antes de avanzar)
-- Landing: no iniciada
+- Landing: construida, esperando OK del usuario para pasar a Onboarding
 - Onboarding: no iniciada
 - Paywall: no iniciada
 - Login/Auth: no iniciada
@@ -80,12 +82,13 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 ## Sesiones completadas ✅
 - Sesión 1 — Validación (idea traída por el usuario, no re-validada) · FICHA-AVATAR.md en borrador (Camila) · FICHA-MODELO.md aprobada (app modelo: Cleo AI) · modelo de negocio elegido: onboarding primero, pago después (precio ajustado luego a $8.99/$69.99, ver Estrategia de monetización) · gate de unit economics: PASA · auth y esquema de BD (`profiles`/`gastos` + RLS) diseñados — cerrada 2026-09-17
 - Sesión 2 — Identidad visual: comparativa A/B/C basada en referencias del usuario (no en líderes) · mascota rediseñada más tierna a pedido del usuario · Opción A elegida ("Tu mascota, en grande") · tour de la app aprobado · FICHA-ARTE.md cerrada y aprobada — cerrada 2026-09-17
+- Sesión 3 — Página de ventas: scaffold real de Next.js 16 + React 19 + Tailwind v4 + Motion + lucide-react instalado · kit canónico de landing copiado y tematizado con FICHA-ARTE · Big Idea + mecanismo "el Freno de 5 Segundos" bautizados · copy completo en `docs/copy/landing.md` derivado de FICHA-AVATAR.md · FICHA-MERCADO.md creada (plazos de garantía Hotmart verificados: 15 días, secuenciales a los 7 de prueba) · landing corriendo en `npm run dev`, verificada a 375px, auditoría de conversión en 0 críticos — cerrada 2026-09-17
 
 ## Sesión en progreso 🔧
-(ninguna — esperando OK del usuario para arrancar Sesión 3)
+(ninguna — esperando OK del usuario para arrancar Sesión 4)
 
 ## Próximas sesiones 📋
-- Sesión 3: página de ventas (landing) — 10 secciones canónicas, copy derivado de FICHA-AVATAR.md, estilo de FICHA-ARTE.md
+- Sesión 4: onboarding, paywall y login/auth — el resto del camino de venta hasta la app interna
 
 ## Decisiones de producto (fuera de la secuencia técnica)
 - Mascota: se queda en SVG vectorial (gratis, liviano, ya tierna) para el MVP. El usuario preguntó por mascotas 3D renderizadas tipo "Fluffy"/"Uni" (imágenes fijas por estado, no vectorial) — se explicó el costo (ilustrador o generación con IA, gasto real) y quedó como mejora FUTURA, no ahora. No re-litigar esto salvo que el usuario lo pida.
@@ -98,10 +101,19 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 ## Problemas conocidos ⚠️
 - [RESUELTO] `scripts/lib-conversion.mjs` (auditoría de conversión del propio SO) escaneaba `plantillas-codigo/` — la biblioteca de plantillas de referencia que trae el sistema — como si fuera la landing real del proyecto, bloqueando el cierre de sesión desde la instalación. Se agregó `plantillas-codigo` a `EXCLUDE_DIRS` (2026-09-17). Verificado con `bash .claude/hooks/pre-stop.sh` → exit 0.
 - [RESUELTO] El check 14 (TEST DE DIVERGENCIA de la comparativa A/B/C) medía similitud de DOM sobre el frame COMPLETO de cada opción, incluyendo el panel `.meta` y el `.hero-landing` — que el propio kit-abc-v2 mantiene IDÉNTICOS a propósito en las 3 opciones (ficha comparable). Eso hacía que cualquier comparativa bien tematizada con el kit oficial diera falso positivo de ">80% similar". Se acotó la comparación al contenido real de `.pantalla` en `scripts/lib-conversion.mjs` (2026-09-17). También se quitó el bloque de comentarios "CÓMO USAR ESTE KIT" de `direcciones-abc.html` (era instrucción para el agente, no parte del entregable) porque contenía un emoji ⚠️ que el gate de "cero emojis" detectaba como si fuera UI visible.
+- [RESUELTO — Sesión 3] Cuatro bugs más en `scripts/lib-conversion.mjs`, todos con el mismo patrón (el escáner trata código/comentarios como si fueran copy o UI visible), encontrados al construir la landing real con el kit canónico oficial del SO — es decir, afectan a CUALQUIER proyecto que use el kit tal cual, no solo a CashPet:
+  1. Voseo: `animate` está en el diccionario voseante ("¡animate!") pero colisiona con la prop `animate={{...}}` de Motion, que el propio SO manda usar. Se agregó una guarda: si el match viene seguido de `={` o `:` (sintaxis de código), se descarta.
+  2. Emojis: el check escaneaba línea por línea con una regex de inicio de línea que no detectaba comentarios de bloque `/* ... */` sin `*` de continuación (como en `ui.tsx`, que literalmente documenta "nunca el ✓ del sistema" dentro del comentario). Reescrito para detectar comentarios por posición de caracter, no por prefijo de línea.
+  3. Hairlines degradé: el check solo buscaba la técnica `padding-box`/`border-box` en archivos `.css` o un componente llamado `GradientBorder` — pero el `<Hairline>` del kit la implementa inline en `.tsx` con ese mismo nombre distinto. Se agregó el escaneo de `.tsx`.
+  4. Profundidad de fondo: el check exigía `background` y `radial-gradient(` en la MISMA línea, pero el propio `Hero.tsx` del kit los separa en dos líneas (formato Prettier). Se cambió a una ventana de 4 líneas.
+  5. Presupuesto de copy: la regex de "literal largo" no distinguía comillas/backticks dentro de comentarios o código de comillas de copy real, y a veces "tragaba" bloques enteros de código como si fueran un párrafo (por un apóstrofe suelto). Se agregaron tres guardas: no está dentro de un comentario, contiene palabras de prosa en español reales, y no contiene sintaxis de código (`{`, `}`, `=>`, `${`).
+  Los 5 fixes están en `scripts/lib-conversion.mjs`, verificados corriendo `bash scripts/audit-conversion.sh` antes y después (bajó de 13 a 0 críticos falsos, sin perder ninguna detección real — se probó con contenido real de la landing).
+
+- [EN CURSO] Veredicto del revisor-visual para la landing (`docs/revisiones/landing-veredicto.md`): el agente independiente está corriendo en background, lanzado el 2026-09-17 con el screenshot ya generado en `docs/revisiones/landing-375.png`. No se declara la landing definitivamente lista hasta que entregue "Veredicto: LISTA" con ≥36/40 y ≥16/20 — este renglón se borra apenas exista el archivo.
 
 ## Pendientes del usuario (acciones que el usuario debe hacer)
 - [ ] Confirmar el nombre definitivo de la app: CashPet (nombre de carpeta/archivo del usuario) vs Fintchi (nombre tentativo de su propia investigación) vs RegañadorFinanciero
-- [ ] Más adelante: crear cuentas de Hotmart, Supabase, Vercel, Resend y comprar el dominio (se le avisará con guía paso a paso cuando llegue el momento)
+- [ ] Más adelante: crear cuentas de Hotmart, Supabase, Vercel, Resend y comprar el dominio (se le avisará con guía paso a paso cuando llegue el momento). El footer de la landing usa `soporte@cashpet.app` como email de ejemplo — se actualiza al dominio real cuando se compre
 
 ## Notas para la próxima sesión
 - El usuario pegó el RESUMEN FINAL — IDEA VALIDADA completo (CashPet.pdf): no se debe re-validar la idea ni proponer alternativas de nicho. Sí falta verificación propia de revenue de competidores (Cleo/Duolingo) para completar FICHA-MODELO con fuentes públicas.
