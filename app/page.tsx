@@ -69,8 +69,7 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
       <Agitacion
         frases={[
           'No es que no sepas ahorrar: es que nadie te avisa hasta que [b]ya gastaste[/b].',
-          'Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que se te escapan sin que lo notes.',
-          'Otra hoja de cálculo no lo arregla: [b]más columnas no te dan más autocontrol[/b].',
+          'Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que se te escapan.',
         ]}
         contraste={{
           labelHoy: 'Hoy',
@@ -80,11 +79,22 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
         }}
       />
 
+      {/* Puente visual entre Agitación y Solución — más mascota, menos texto */}
+      <div className="flex flex-col items-center gap-3 bg-[var(--surface-2)] py-10">
+        <Mascota size={72} />
+        <p
+          className="rounded-[var(--radius-card)] px-4 py-2 text-sm font-semibold"
+          style={{ background: 'var(--surface)', color: 'var(--accent)' }}
+        >
+          &ldquo;Yo te aviso antes.&rdquo;
+        </p>
+      </div>
+
       {/* 4. SOLUCIÓN */}
       <Solucion
         tituloMarked="Alguien te detiene [acento]antes del error[/acento], no después"
         mecanismo="el Freno de 5 Segundos"
-        bigIdeaMarked="No te falta fuerza de voluntad: te falta [b]alguien que te detenga a tiempo[/b]. El Freno actúa en el momento exacto en que ibas a arrepentirte."
+        bigIdeaMarked="No te falta fuerza de voluntad: te falta [b]alguien que te detenga a tiempo[/b]."
         pasos={[
           { titulo: 'Anota el gasto', detalle: 'Escribe o dicta lo que gastaste, en 5 segundos.' },
           { titulo: 'Tu mascota te frena', detalle: 'Te dice la verdad con humor, antes de que sigas gastando.' },
@@ -158,28 +168,23 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
         items={[
           {
             pregunta: '¿CashPet se conecta a mi cuenta bancaria?',
-            respuestaMarked:
-              'No. [b]Nunca pedimos tus credenciales bancarias[/b]: anotas cada gasto tú mismo, en segundos, y tu mascota reacciona al instante.',
+            respuestaMarked: 'No. [b]Nunca pedimos tus credenciales bancarias[/b]: anotas cada gasto tú mismo, en segundos.',
           },
           {
-            pregunta: '¿Y si lo dejo de usar a los 3 días, como con otras apps?',
-            respuestaMarked:
-              'Por eso existe el Freno de 5 Segundos: no es una hoja de cálculo, es un juego con [b]rachas y una mascota que reacciona[/b] cada vez que gastas.',
+            pregunta: '¿Y si lo dejo de usar a los 3 días?',
+            respuestaMarked: 'No es una hoja de cálculo: es un juego con [b]rachas y una mascota que reacciona[/b] cada vez que gastas.',
           },
           {
-            pregunta: '¿Por qué pagar si lo que quiero es ahorrar?',
-            respuestaMarked:
-              'Porque cuesta menos de $0.20 al día y te ayuda a [b]frenar los gastos hormiga que hoy no ves[/b] — para la mayoría, eso alcanza para pagar la suscripción sola.',
+            pregunta: '¿Por qué pagar si quiero ahorrar?',
+            respuestaMarked: 'Cuesta menos de $0.20 al día y [b]frena los gastos hormiga que hoy no ves[/b] — se paga solo.',
           },
           {
-            pregunta: '¿La mascota me va a hacer sentir peor si gasto de más?',
-            respuestaMarked:
-              'No. Tu mascota tiene 5 emociones distintas — te acompaña con humor, [b]nunca con culpa[/b]. La idea es que vuelvas mañana, no que te sientas mal hoy.',
+            pregunta: '¿Me va a hacer sentir peor si gasto de más?',
+            respuestaMarked: 'No. Tu mascota tiene 5 emociones — te acompaña con humor, [b]nunca con culpa[/b].',
           },
           {
             pregunta: '¿Qué pasa si no me sirve?',
-            respuestaMarked:
-              'Nada de riesgo: 7 días gratis para probar, y si después de pagar sientes que no era para ti, [b]un correo y te devolvemos todo[/b].',
+            respuestaMarked: '7 días gratis, y si pagas y no te convence: [b]un correo y te devolvemos todo[/b].',
           },
         ]}
       />
@@ -187,11 +192,11 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
       {/* 9. CTA FINAL */}
       <CtaFinal
         h2Marked="Deja de gastar en [acento]piloto automático[/acento]"
-        futurePacingMarked="Anotas el gasto, tu mascota te frena, y por primera vez sientes que tienes el control — no tus impulsos."
+        futurePacingMarked="Anotas el gasto, tu mascota te frena, y por primera vez tienes el control — no tus impulsos."
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         recap="Sin conectar tu banco · Cancela cuando quieras"
-        psMarked="PS: Cada gasto hormiga que no frenas hoy es un peso menos mañana. El Freno de 5 Segundos se interpone entre tú y la compra que ibas a lamentar. Sin conectar tu banco, sin letra chica."
+        psMarked="PS: El Freno de 5 Segundos se interpone entre tú y la compra que ibas a lamentar. Sin conectar tu banco, sin letra chica."
       />
 
       {/* 10. FOOTER LEGAL — enlaces con stub real (contenido completo: Sesión 6/47) */}

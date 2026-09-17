@@ -27,16 +27,18 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 3. (icon ClipboardList) `Ya probaste Excel o YNAB, ¿y los abandonaste en 3 días?`
 4. (icon ShoppingBag) `¿Compras por impulso y te arrepientes minutos después?`
 
-## 3. AGITACIÓN
+## 3. AGITACIÓN (recortada a 2 frases — el usuario pidió menos texto, más visual)
 - `No es que no sepas ahorrar: es que nadie te avisa hasta que [b]ya gastaste[/b].`
-- `Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que se te escapan sin que lo notes.` (cálculo mostrado, no cifra suelta)
-- `Otra hoja de cálculo no lo arregla: [b]más columnas no te dan más autocontrol[/b].`
+- `Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que se te escapan.` (cálculo mostrado, no cifra suelta)
 - Contraste — Hoy: `Revisas tu cuenta con el corazón en la boca, sintiéndote una irresponsable.` · En 6 meses si nada cambia: `El mismo miedo, mes tras mes — hasta que decidas frenarlo hoy.`
+
+## Puente visual (NO es sección canónica — un respiro entre Agitación y Solución, más mascota/menos texto)
+- La mascota (componente propio) + burbuja: `"Yo te aviso antes."`
 
 ## 4. SOLUCIÓN
 - Título marcado: `Alguien te detiene [acento]antes del error[/acento], no después`
 - Mecanismo: `el Freno de 5 Segundos`
-- Big idea marcada: `No te falta fuerza de voluntad: te falta [b]alguien que te detenga a tiempo[/b]. El Freno actúa en el momento exacto en que ibas a arrepentirte.`
+- Big idea marcada (recortada a 1 frase): `No te falta fuerza de voluntad: te falta [b]alguien que te detenga a tiempo[/b].`
 - Pasos:
   1. **Anota el gasto** — `Escribe o dicta lo que gastaste, en 5 segundos.`
   2. **Tu mascota te frena** — `Te dice la verdad con humor, antes de que sigas gastando.`
@@ -61,18 +63,18 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 - Piso legal: `Respaldada por la garantía de reembolso de Hotmart de 15 días, además de tus 7 días de prueba gratis`
 - ⚠️ Ver `FICHA-MERCADO.md` §4: la prueba (7 días, sin cobro) y la garantía (15 días, desde el primer cobro) son ventanas SECUENCIALES, no la misma cifra — regla dura de 18-VENTA-HOTMART.md (garantía > prueba)
 
-## 8. FAQ (objeciones de FICHA-AVATAR.md §Objeciones)
-1. **¿CashPet se conecta a mi cuenta bancaria?** → `No. [b]Nunca pedimos tus credenciales bancarias[/b]: anotas cada gasto tú mismo, en segundos, y tu mascota reacciona al instante.`
-2. **¿Y si lo dejo de usar a los 3 días, como con otras apps?** → `Por eso existe el Freno de 5 Segundos: no es una hoja de cálculo, es un juego con [b]rachas y una mascota que reacciona[/b] cada vez que gastas.`
-3. **¿Por qué pagar si lo que quiero es ahorrar?** → `Porque cuesta menos de $0.20 al día y te ayuda a [b]frenar los gastos hormiga que hoy no ves[/b] — para la mayoría, eso alcanza para pagar la suscripción sola.`
-4. **¿La mascota me va a hacer sentir peor si gasto de más?** → `No. Tu mascota tiene 5 emociones distintas — te acompaña con humor, [b]nunca con culpa[/b]. La idea es que vuelvas mañana, no que te sientas mal hoy.`
-5. **¿Qué pasa si no me sirve?** → `Tienes 7 días de prueba gratis y, si pagas, 15 días más de Garantía de la Primera Racha: [b]un correo y te devolvemos todo[/b].`
+## 8. FAQ (objeciones de FICHA-AVATAR.md §Objeciones — respuestas recortadas al hueso)
+1. **¿CashPet se conecta a mi cuenta bancaria?** → `No. [b]Nunca pedimos tus credenciales bancarias[/b]: anotas cada gasto tú mismo, en segundos.`
+2. **¿Y si lo dejo de usar a los 3 días?** → `No es una hoja de cálculo: es un juego con [b]rachas y una mascota que reacciona[/b] cada vez que gastas.`
+3. **¿Por qué pagar si quiero ahorrar?** → `Cuesta menos de $0.20 al día y [b]frena los gastos hormiga que hoy no ves[/b] — se paga solo.`
+4. **¿Me va a hacer sentir peor si gasto de más?** → `No. Tu mascota tiene 5 emociones — te acompaña con humor, [b]nunca con culpa[/b].`
+5. **¿Qué pasa si no me sirve?** → `7 días gratis, y si pagas y no te convence: [b]un correo y te devolvemos todo[/b].`
 
 ## 9. CTA FINAL EMOCIONAL
 - H2 marcado: `Deja de gastar en [acento]piloto automático[/acento]`
-- Future pacing marcado: `Anotas el gasto, tu mascota te frena, y por primera vez sientes que tienes el control — no tus impulsos.`
+- Future pacing marcado: `Anotas el gasto, tu mascota te frena, y por primera vez tienes el control — no tus impulsos.`
 - Recap: `Sin conectar tu banco · Cancela cuando quieras`
-- PS marcado: `PS: Cada gasto hormiga que no frenas hoy es un peso menos mañana. El Freno de 5 Segundos se interpone entre tú y la compra que ibas a lamentar. Sin conectar tu banco, sin letra chica.`
+- PS marcado (recortado): `PS: El Freno de 5 Segundos se interpone entre tú y la compra que ibas a lamentar. Sin conectar tu banco, sin letra chica.`
 
 ## 10. FOOTER LEGAL
 - appName: `CashPet` · soporte: `soporte@cashpet.app` (⚠️ dominio real pendiente — ver Pendientes del usuario en ESTADO.md)
