@@ -1,6 +1,6 @@
 # FICHA DE AVATAR — CashPet
 
-- Estado: BORRADOR (10+ frases VoC con fuente: investigación de mercado del usuario, CashPet.pdf — falta tu aprobación explícita para pasar a APROBADA)
+- Estado: APROBADA (10+ frases VoC con fuente: investigación de mercado del usuario, CashPet.pdf — aprobada explícitamente por el usuario el 2026-09-17)
 
 ## El avatar (cliente ideal — UNA persona concreta)
 - Nombre/arquetipo: Camila · Edad: 26 · Situación: diseñadora gráfica, freelancer o empleada de agencia · País(es): LATAM (español)
@@ -64,4 +64,4 @@
 ## Cierre
 - INVENTARIO DE PRUEBA DÍA-1: investigación de mercado completa del usuario (CashPet.pdf) con veredicto 80/100, sin entrevistas propias ni beta contactada aún
 - ¿Hubo entrevistas del 44?: NO → hallazgos clave: N/A — la evidencia viene de investigación de mercado secundaria (reseñas de competidores) documentada en el PDF, no de entrevistas directas
-- Fecha de cierre: 2026-09-16 · Aprobada por el usuario: NO (pendiente confirmación)
+- Fecha de cierre: 2026-09-17 · Aprobada por el usuario: SÍ (confirmó el resumen de Camila tal cual se le presentó)
