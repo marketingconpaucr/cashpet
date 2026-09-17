@@ -24,6 +24,18 @@
 - 3 adjetivos de personalidad: tierna, cálida, juguetona
 - Compilación: spring suave (no rebote agresivo) · duración base ~220ms · exclamaciones máx 1/pantalla (la reacción de la mascota) · celebración de nivel: la mascota "crece" (brote más grande) · radio tendencial 20-24px
 
+## Sistema de emociones de la mascota (ver docs/revisiones/estados-mascota.html)
+> Origen: la plantilla Excel propia del usuario ("Mi_Presupuesto.xlsx") ya tenía un sistema de
+> mensajes con emoción según el gasto (comentarios condicionales por categoría y por mes). Se
+> adopta esa MISMA lógica de umbrales, traducida a 5 caras de la mascota — no una mascota única.
+- 🎉 Celebrando — gasto total < 70% del ingreso, o quedó muy por debajo del presupuesto de una categoría (equivale a "Woohoo, gastando menos del 70%" / "Bien, quedaste X% abajo" del Excel)
+- 😊 Feliz (default) — dentro de presupuesto con margen razonable
+- 😐 Neutral — gastó justo lo presupuestado (equivale a "😎 Gastaste justo lo presupuestado")
+- 😟 Preocupada — cerca del límite (70-100% del ingreso) o se pasó un poco del presupuesto de una categoría (equivale a "⚠️ Cuidado, estás cerca de gastar más de lo que ganas" / "Cuidado, te pasaste X%")
+- 😢 Triste — gastó más de lo que ganó ese mes (equivale a "Ya fue... gastaste más de lo que ganaste")
+- Regla de ahorro (afecta el diálogo, no la cara): sin ahorros → la mascota lo menciona con cariño, no con culpa ("¿y tus ahorros para este mes?"); con buen ahorro → la mascota se pone orgullosa (usa la cara Celebrando)
+- Estas 5 caras son variaciones del MISMO personaje (mismas orejitas/mofletes/brote) — cambian ojos, boca y cejas, nunca el diseño base
+
 ## Brand kit final (valores para globals.css/@theme)
 - Fondo: #FDF1E7 · Superficie: #FFFFFF · Hundido: #F7F1E9 · Texto 1º/2º: #3A2A1E / #8A7A6C
 - Acento: #7C5CFC (SOLO en: CTA principal, tabbar activa, insights, chips) · 2ª nota: verde brote #8CE0A0 (solo en el detalle de "crecimiento" de la mascota, nunca en UI general)
