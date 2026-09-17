@@ -4,8 +4,9 @@
 // Copy 100% derivado de docs/copy/landing.md (marcado, trazado a FICHA-AVATAR.md).
 // Tokens visuales: components/landing/tokens.css (tematizado desde FICHA-ARTE.md).
 
-import { Wallet, ClipboardList, Frown, ShoppingBag } from 'lucide-react';
+import { Wallet, ClipboardList, Frown, ShoppingBag, Flame } from 'lucide-react';
 import { Mascota } from '@/components/Mascota';
+import { IconChip } from '@/components/landing/ui';
 import { Hero } from '@/components/landing/Hero';
 import { Problema } from '@/components/landing/Problema';
 import { Agitacion } from '@/components/landing/Agitacion';
@@ -42,13 +43,22 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
           </span>
         }
         visual={
-          <div className="flex flex-col items-center gap-3 py-6">
+          <div className="relative flex flex-col items-center gap-3 px-6 py-10">
             <Mascota size={120} />
             <div
               className="rounded-[var(--radius-card)] px-4 py-3 text-sm font-semibold shadow-[var(--shadow-2)]"
               style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}
             >
               &ldquo;¿Otro café? Ya van 3 esta semana&rdquo;
+            </div>
+
+            {/* Card flotante: capa de profundidad — muestra el mecanismo de racha, no es un dato de uso real */}
+            <div className="absolute right-4 top-6 flex items-center gap-3 rounded-[var(--radius-card)] border border-[color-mix(in_oklab,var(--accent)_20%,transparent)] bg-[var(--surface)] px-4 py-3 shadow-[var(--shadow-2)] rotate-[4deg] sm:right-10">
+              <IconChip icon={Flame} />
+              <div className="text-left">
+                <p className="text-base font-bold leading-none text-[var(--text-primary)]">14 días</p>
+                <p className="mt-1 text-xs text-[var(--text-tertiary)]">de racha</p>
+              </div>
             </div>
           </div>
         }

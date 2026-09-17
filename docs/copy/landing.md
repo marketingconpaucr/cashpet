@@ -19,7 +19,7 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 - Subtítulo marcado: `El Freno de 5 Segundos actúa [b]antes de la compra que vas a lamentar.[/b]`
 - CTA: `Quiero mi mascota financiera` → `/onboarding`
 - Social proof (sin números falsos de CashPet — cero usuarios reales todavía; se cita a Cleo AI CON NOMBRE, dato real y sourceado en FICHA-MODELO.md): `Sin conectar tu banco · 7 días gratis` / `Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos`
-- Visual: la mascota (componente propio, no placeholder) + burbuja con su reacción a un gasto
+- Visual: la mascota (componente propio, no placeholder) + burbuja con su reacción a un gasto + card flotante de racha ("14 días · de racha", con ícono de llama) superpuesta con leve rotación — capa de profundidad pedida por el usuario ("menos plano"), ilustra el mecanismo de racha, no es un dato de uso real
 
 ## 2. PROBLEMA — "¿Te suena?" (preguntas más filosas, tomadas literal de FICHA-AVATAR.md)
 1. (icon Frown) `¿Sientes un microinfarto cada vez que abres la app de tu banco?`
