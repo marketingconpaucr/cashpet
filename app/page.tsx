@@ -128,7 +128,7 @@ export default function LandingCashPet() {
               className="rounded-[var(--radius-card)] px-4 py-2 text-sm font-semibold"
               style={{ background: 'var(--surface)', color: 'var(--accent)' }}
             >
-              &ldquo;Yo te aviso antes.&rdquo;
+              &ldquo;Yo aviso antes. Tú decides ignorarme.&rdquo;
             </p>
           </motion.div>
         </motion.div>

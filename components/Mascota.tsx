@@ -5,11 +5,6 @@
 export function Mascota({ size = 100 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Gastón, tu mascota financiera">
-      {/* Cola, curvándose detrás del cuerpo */}
-      <path
-        d="M82 84c14 2 18-14 10-24-3 8 0 16-12 16Z"
-        fill="var(--accent)"
-      />
       {/* Orejas puntiagudas de gato */}
       <path d="M15 30 29 3 41 28Z" fill="var(--accent)" />
       <path d="M85 30 71 3 59 28Z" fill="var(--accent)" />
@@ -17,16 +12,21 @@ export function Mascota({ size = 100 }: { size?: number }) {
       <path d="M79 26 71 11 65 25Z" fill="color-mix(in oklab, var(--accent) 55%, white)" />
       {/* Cuerpo/cabeza rechoncho */}
       <circle cx="50" cy="58" r="40" fill="var(--accent)" />
+      {/* Cola, dibujada DESPUÉS del cuerpo para que se note (antes quedaba tapada) */}
+      <path
+        d="M82 84c14 2 18-14 10-24-3 8 0 16-12 16Z"
+        fill="var(--accent)"
+      />
       {/* Cachetes/mofletes gorditos */}
       <circle cx="25" cy="70" r="9.5" fill="var(--mascota-moflete)" opacity="0.55" />
       <circle cx="75" cy="70" r="9.5" fill="var(--mascota-moflete)" opacity="0.55" />
-      {/* Bigotes */}
-      <path d="M20 62 4 60" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-      <path d="M19 66 3 66" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-      <path d="M20 70 4 73" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-      <path d="M80 62 96 60" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-      <path d="M81 66 97 66" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-      <path d="M80 70 96 73" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      {/* Bigotes (con aire contra el borde del viewBox) */}
+      <path d="M20 62 6 60" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      <path d="M19 66 5 66" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      <path d="M20 70 6 73" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      <path d="M80 62 94 60" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      <path d="M81 66 95 66" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+      <path d="M80 70 94 73" stroke="var(--mascota-linea)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
       {/* Ojos entrecerrados, con juicio: almendra chata, sin ceja separada (así se lee "sleepy/judging") */}
       <path d="M26 50.5q10-6 20 0q-10 5-20 0Z" fill="var(--mascota-linea)" />
       <path d="M54 50.5q10-6 20 0q-10 5-20 0Z" fill="var(--mascota-linea)" />

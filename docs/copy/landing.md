@@ -29,11 +29,11 @@ anota el gasto y su mascota reacciona al instante, antes de que llegue el arrepe
 
 ## 3. AGITACIÓN (recortada a 2 frases — el usuario pidió menos texto, más visual)
 - `No es que no sepas ahorrar: es que nadie te avisa hasta que [b]ya gastaste[/b].`
-- `Un café y un domicilio de más por semana ya son [acento]más de $500 al año[/acento] que se te escapan.` (cálculo mostrado, no cifra suelta)
+- `Un café y un domicilio de más por semana se sienten inofensivos — hasta que sumas [acento]el año completo[/acento].` (teaser: el número real se revela en el puente de abajo, no aquí — evita repetir la cifra dos veces)
 - Contraste — Hoy: `Revisas tu cuenta con el corazón en la boca, sintiéndote una irresponsable.` · En 6 meses si nada cambia: `El mismo miedo, mes tras mes — hasta que decidas frenarlo hoy.`
 
 ## Puente visual (NO es sección canónica — un respiro entre Agitación y Solución, más mascota/menos texto)
-- La mascota (componente propio) + burbuja: `"Yo te aviso antes."`
+- Gastón + burbuja: `"Yo aviso antes. Tú decides ignorarme."` (sarcástico, coherente con el resto de sus frases — antes decía "Yo te aviso antes.", tono demasiado tierno para el personaje)
 
 ## 4. SOLUCIÓN
 - Título marcado: `Alguien te detiene [acento]antes del error[/acento], no después`
