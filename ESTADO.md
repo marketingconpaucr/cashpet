@@ -1,7 +1,7 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-16 | Sesión actual: 1
 
-⏸️ CHECKPOINT — Última acción completada: FICHA-MODELO.md creada y aprobada por evidencia (Cleo AI, 2 señales de revenue independientes) / Siguiente acción exacta: mostrar el plano de Cleo y el eje de diferenciación al usuario, luego seguir Sesión 1 con el gate de unit economics (40), arquitectura y BD
+⏸️ CHECKPOINT — Última acción completada: Sesión 1 completa — gate de unit economics (40) pasado, auth y esquema de BD diseñados / Siguiente acción exacta: mostrar cierre de Sesión 1 al usuario y esperar su OK para arrancar Sesión 2 (identidad visual — FICHA-ARTE.md)
 
 ## Qué es esta app (3 líneas máximo)
 Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario anota un gasto en segundos y la mascota reacciona (felicita o regaña con humor), genera rachas de ahorro y sube de nivel. Para adultos jóvenes en LATAM (22-35) que ganan bien pero sienten que el dinero "se les evapora". Monetización por suscripción ($4.99/mes o $39.99/año) vía Hotmart.
@@ -33,7 +33,8 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Justificación: el nicho finanzas pide confianza antes de pedir la tarjeta; el uso diario se retiene con rachas, no con paywall temprano. Coincide con lo ya definido en la investigación del usuario (trial de 7 días, diagnóstico + gasto de prueba como primera victoria)
 - Diseño del paywall: aparece después de que el usuario registra su presupuesto + un gasto de prueba y recibe la primera reacción de la mascota (la "primera victoria" del punto 10 de la investigación)
 - Trial: 7 días — justificado porque el aha es inmediato (minutos), no requiere acumulación de datos
-- Pricing: $4.99/mes | $39.99/año (equivalente a $3.33/mes, mostrado como ahorro) — tomado del benchmark de la investigación del usuario; falta pasar el gate de unit economics (40) para confirmar margen con el costo real de IA
+- Pricing: $4.99/mes | $39.99/año (equivalente a $3.33/mes, mostrado como ahorro) — tomado del benchmark de la investigación del usuario
+- Gate de unit economics (40) — PASA: costo de IA estimado ~$0.15/usuario/mes (Haiku 4.5, ~120 reacciones/mes de ~500 tokens entrada + 150 salida) = ~3% del precio de catálogo (regla: debe ser <20% — sobra margen). Venta directa: neto ~$3.94 tras fee Hotmart+impuestos, menos COGS (~$0.60 IA+infra+email) = margen ~$3.34 (~85%). Peor caso, venta por afiliado al 50%: neto ~$1.44, margen ~$0.84 (~58%) — sigue siendo positivo, aunque ese es el escenario a vigilar si la mayoría de ventas viene de afiliados
 
 ## Gamificación y retención (loop documentado en Sesión 4; momentos construidos en Sesión 5)
 - Loop del hábito (Hooked): Gatillo [necesidad/impulso de gastar o hábito de revisar el día] → Acción [registrar el gasto en <5s] → Recompensa [reacción de la mascota + racha viva] → Inversión [la mascota sube de nivel / desbloquea personalidad]
@@ -66,15 +67,21 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Features del MVP (orden de prioridad): 1) registro de gasto en máx. 3 clics (o nota de voz), 2) mascota IA con personalidad fija que reacciona a cada gasto, 3) sistema de rachas/streaks por respetar el presupuesto
 - Explícitamente NO construir en el MVP: conexión automática con bancos, cursos en video, gráficos financieros complejos o predicciones de inversión (regla de la investigación del usuario, punto 11)
 - Modelo de IA: Claude Haiku 4.5 (`claude-haiku-4-5`) para las reacciones de la mascota — texto corto, personalidad definida por prompt, barato y rápido (~$1/$5 por millón de tokens); síncrono, sin necesidad de streaming largo por ser respuestas breves
+- Auth: magic link/OTP por email (passwordless), sin contraseñas — default del SO para venta por Hotmart. El usuario prueba todo el onboarding SIN cuenta (anónimo); la cuenta nace recién en el login post-compra (o al terminar el trial). Sesión larga (30-90 días). Passkeys se ofrecen más adelante, después de la primera victoria, no en el primer login
+- Esquema de base de datos (diseño, Sesión 1 — se crea en Supabase real en Sesión 6):
+  - `profiles` (id = auth.users.id · presupuesto_mensual numeric · mascota_personalidad text · mascota_nivel int default 1 · racha_actual int default 0 · racha_mas_larga int default 0 · ultima_actividad date · plan text check in ('trial','activo','cancelado','vencido') · trial_termina timestamptz · created_at/updated_at)
+  - `gastos` (id uuid · user_id references profiles(id) on delete cascade · monto numeric(10,2) check(monto>0) · categoria text · descripcion text · reaccion_ia text · gastado_en date default current_date · created_at timestamptz default now())
+  - Índices: `gastos(user_id, gastado_en desc)` para el historial · `gastos(user_id)` ya cubierto por el compuesto
+  - RLS: todas las tablas con policy `user_id = auth.uid()` (select/insert/update/delete) — un usuario nunca ve gastos de otro
+  - Durante el onboarding (sin cuenta), presupuesto + el gasto de prueba viven en el navegador (localStorage) y se migran a `profiles`/`gastos` recién al crear la cuenta — no se toca la base de datos hasta que hay usuario real
 
 ## Sesiones completadas ✅
-(ninguna cerrada todavía — Sesión 1 en curso)
+- Sesión 1 — Validación (idea traída por el usuario, no re-validada) · FICHA-AVATAR.md en borrador (Camila) · FICHA-MODELO.md aprobada (Cleo AI, revenue verificado) · monetización decidida (onboarding-first, $4.99/$39.99, trial 7 días) · gate de unit economics PASA (~3% de IA sobre precio, margen positivo incluso con afiliado al 50%) · auth (magic link passwordless) y esquema de BD (`profiles`/`gastos` + RLS) diseñados — verificado 2026-09-17
 
 ## Sesión en progreso 🔧
-- Sesión 1 — Validación, avatar, monetización y arquitectura. Hecho: idea validada (traída por el usuario, no se re-valida), FICHA-AVATAR.md en borrador, FICHA-MODELO.md aprobada (app modelo: Cleo AI). Falta: gate de unit economics (40), esquema de base de datos y método de auth
+(ninguna — esperando OK del usuario para arrancar Sesión 2)
 
 ## Próximas sesiones 📋
-- Sesión 1 (continuación): gate de unit economics (40) con el costo real de Claude Haiku 4.5, esquema de base de datos y método de auth
 - Sesión 2: identidad visual (FICHA-ARTE.md) y sistema de diseño
 - Sesión 3: página de ventas (landing)
 
