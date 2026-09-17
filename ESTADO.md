@@ -76,7 +76,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
   - Durante el onboarding (sin cuenta), presupuesto + el gasto de prueba viven en el navegador (localStorage) y se migran a `profiles`/`gastos` recién al crear la cuenta — no se toca la base de datos hasta que hay usuario real
 
 ## Sesiones completadas ✅
-- Sesión 1 — Validación (idea traída por el usuario, no re-validada) · FICHA-AVATAR.md en borrador (Camila) · FICHA-MODELO.md aprobada (Cleo AI, revenue verificado) · monetización decidida (onboarding-first, $4.99/$39.99, trial 7 días) · gate de unit economics PASA (~3% de IA sobre precio, margen positivo incluso con afiliado al 50%) · auth (magic link passwordless) y esquema de BD (`profiles`/`gastos` + RLS) diseñados — verificado 2026-09-17
+- Sesión 1 — Validación (idea traída por el usuario, no re-validada) · FICHA-AVATAR.md en borrador (Camila) · FICHA-MODELO.md aprobada (app modelo: Cleo AI) · modelo de negocio elegido: onboarding primero, pago después ($4.99/$39.99, trial 7 días) · gate de unit economics: PASA (~3% de IA sobre precio, margen positivo incluso con afiliado al 50%) · auth y esquema de BD (`profiles`/`gastos` + RLS) diseñados — cerrada 2026-09-17
 
 ## Sesión en progreso 🔧
 (ninguna — esperando OK del usuario para arrancar Sesión 2)
