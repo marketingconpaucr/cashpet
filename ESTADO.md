@@ -79,7 +79,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Sesión 3: página de ventas (landing)
 
 ## Problemas conocidos ⚠️
-(ninguno)
+- [RESUELTO] `scripts/lib-conversion.mjs` (auditoría de conversión del propio SO) escaneaba `plantillas-codigo/` — la biblioteca de plantillas de referencia que trae el sistema — como si fuera la landing real del proyecto, bloqueando el cierre de sesión desde la instalación. Se agregó `plantillas-codigo` a `EXCLUDE_DIRS` (2026-09-17). Verificado con `bash .claude/hooks/pre-stop.sh` → exit 0.
 
 ## Pendientes del usuario (acciones que el usuario debe hacer)
 - [ ] Confirmar el nombre definitivo de la app: CashPet (nombre de carpeta/archivo del usuario) vs Fintchi (nombre tentativo de su propia investigación) vs RegañadorFinanciero

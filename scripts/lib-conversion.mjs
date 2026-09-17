@@ -36,6 +36,10 @@ const rel = (f) => path.relative(ROOT, f) || path.basename(f);
 const EXCLUDE_DIRS = new Set([
   'node_modules', '.next', '.git', 'dist', 'build', 'out', 'coverage',
   '.vercel', '.turbo', '.cache', 'storybook-static',
+  // Biblioteca de plantillas de referencia del propio Sistema Operativo (copiar-desde, no auditar):
+  // ver docs/sistema/54-BANCO-DE-DIRECCIONES.md y las referencias a "plantillas-codigo/..." en
+  // docs/sistema/*.md. No es código del proyecto — no debe evaluarse como landing real.
+  'plantillas-codigo',
 ]);
 
 let CRIT = 0;
