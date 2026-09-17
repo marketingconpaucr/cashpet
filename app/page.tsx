@@ -211,9 +211,10 @@ export default function LandingCashPet() {
           nombre: 'Anual',
           badge: 'MÁS POPULAR',
           precioMes: '$5.83',
-          totalAnual: 'Se cobra $69.99/año',
+          sufijo: 'USD/mes',
+          totalAnual: 'Se cobra $69.99 USD/año',
           ahorro: '35% de descuento',
-          descomposicionDia: 'menos de $0.20 al día',
+          descomposicionDia: 'menos de $0.20 USD al día',
           ctaLabel: 'Empezar mis 7 días gratis',
           ctaHref: CTA_HREF,
           features: [
@@ -227,6 +228,7 @@ export default function LandingCashPet() {
         mensual={{
           nombre: 'Mensual',
           precioMes: '$8.99',
+          sufijo: 'USD/mes',
           ctaLabel: 'Elegir mensual',
           ctaHref: CTA_HREF,
           features: [
@@ -258,7 +260,7 @@ export default function LandingCashPet() {
           },
           {
             pregunta: '¿Por qué pagar si quiero ahorrar?',
-            respuestaMarked: 'Cuesta menos de $0.20 al día y [b]frena los gastos hormiga que hoy no ves[/b] — se paga solo.',
+            respuestaMarked: 'Cuesta menos de $0.20 USD al día y [b]frena los gastos hormiga que hoy no ves[/b] — se paga solo.',
           },
           {
             pregunta: '¿Me va a hacer sentir peor si gasto de más?',
