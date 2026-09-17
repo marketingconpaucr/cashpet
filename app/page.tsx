@@ -51,7 +51,8 @@ export default function LandingCashPet() {
           <span>
             Sin conectar tu banco · 7 días gratis
             <br />
-Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
+            Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos{' '}
+            <span className="text-[var(--text-tertiary)]">(dato público, Sacra, jul-2025)</span>
           </span>
         }
         visual={
@@ -240,8 +241,8 @@ Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos
       {/* 7. GARANTÍA */}
       <Garantia
         nombre="la Garantía de la Primera Racha"
-        condicionMarked="Si en tus primeros 15 días el Freno de 5 Segundos no te ayuda a [b]sentir más control sobre tu dinero[/b], te devolvemos todo. Sin preguntas."
-        pisoLegal="Respaldada por la garantía de reembolso de Hotmart de 15 días, además de tus 7 días de prueba gratis"
+        condicionMarked="Si en tus primeros 15 días de pago el Freno de 5 Segundos no te ayuda a [b]sentir más control sobre tu dinero[/b], te devolvemos todo. Sin preguntas."
+        pisoLegal="Respaldada por la garantía de reembolso de Hotmart: 15 días desde tu primer cobro, después de tus 7 días de prueba gratis"
       />
 
       {/* 8. FAQ — objeciones reales de FICHA-AVATAR.md */}
