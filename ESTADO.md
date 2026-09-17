@@ -20,10 +20,12 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - FICHA-ARTE.md: NO existe todavía — pendiente de que el usuario elija A/B/C en direcciones-abc.html
 - ¿Hubo referencia visual del usuario?: NO — usuario pidió que se le propongan direcciones (Ruta 1 del protocolo 54/16)
 - TABLA DE LÍDERES (16 PASO 0.2bis): Cleo AI (app modelo, FICHA-MODELO.md) · Duolingo (gamificación/rachas — ya referenciado como benchmark de mecánica) · Nubank (gigante fintech LATAM admirado por confianza/craft)
-- Comparativa A/B/C construida: `direcciones-abc.html` (raíz del proyecto, kit oficial `plantillas-codigo/direcciones-abc/plantilla.html`, marcador `data-kit="abc-v2"` intacto) — verificada visualmente en el navegador: 3 diseños divergentes, fuentes cargadas correctamente (Baloo 2/Nunito · Schibsted Grotesk/JetBrains Mono · Archivo/Instrument Sans), cero emojis como íconos
-  - Opción A "La mascota juguetona" — base Duolingo: blanco, verde #58CC02, redondeado, arquetipo Bufón
-  - Opción B "La consciencia con actitud" — base Cleo: oscuro, lima #CDFA4C, datos en monospace (estética ticket), arquetipo Forajido/Bufón irreverente
-  - Opción C "La claridad confiable" — base Nubank: blanco frío, violeta #820AD1, editorial/timeline, arquetipo Gente Común/Cuidador
+- REVISIÓN: el usuario NO quiso la fusión de líderes (Duolingo/Cleo/Nubank) — mandó 5 capturas propias (mascotas 3D con carita, app "Habitz" con blobs con carita, app "lila" con arco arcoíris lavanda, app "SaveSmart") pidiendo algo "más amigable a la vista". Pasa a RUTA 2 (referencia parcial del usuario = CONTRATO, 16 PASO 0): se re-tematizó `direcciones-abc.html` con la paleta/tipografía/mood de ESAS capturas — ya NO aplica la Tabla de Líderes de Cleo/Duolingo/Nubank para el look visual (sigue vigente solo para FICHA-MODELO/mecanismo de negocio, que es un tema aparte)
+- Tabla de extracción de las capturas del usuario: modo claro · fondos crema/lavanda/blanco · acento violeta #7C5CFC-#8B5CF6 (recurrente en 2 de 5 capturas) · display Fredoka (geométrica muy redondeada) + body Nunito · radios 20-24px y botones píldora · sombras suaves tintadas · mascota como blob/personaje con carita simple (2 puntos + sonrisa) · dataviz distintiva: arco/anillo con degradé arcoíris · mood: tierna, cálida, juguetona
+- Comparativa A/B/C reconstruida sobre esas capturas (mismo kit `plantillas-codigo/direcciones-abc/plantilla.html`, marcador `data-kit="abc-v2"` intacto) — verificada visualmente: fuentes Fredoka/Nunito cargadas, cero emojis, 3 DOMs divergentes (65-70% similitud, bajo el umbral de 80%)
+  - Opción A "Tu mascota, en grande" — fondo durazno, mascota 3D grande como hero de la pantalla (inspirado en las capturas de mascotas 3D)
+  - Opción B "El arco de tu plata" — lavanda, anillo con degradé arcoíris como dato principal (inspirado en "lila")
+  - Opción C "Tu compañera con carita" — blanco, la mascota como carita simple acompañando cada gasto en una línea de tiempo (inspirado en "Habitz")
 - Resumen: pendiente de elección del usuario
 - Personalidad: pendiente (se compila con 11-DISENO-EMOCIONAL.md una vez elegida la dirección)
 - REGISTRO ANTI-REPETICIÓN: pendiente (se fija al cerrar FICHA-ARTE.md)
