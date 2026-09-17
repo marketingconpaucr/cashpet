@@ -85,12 +85,18 @@
 - Motion signature: easing suave (ease-out) · stagger ~60ms entre cards · firma: Gastón "respira"/parpadea sutil en estados idle (a implementar en código real, Sesión 5)
 
 ## Nota técnica (no reabre la ficha — ajuste de accesibilidad, no de identidad)
-- El acento de la landing (`--accent` en tokens.css) se oscureció de #7C5CFC a #7154E5 (~9%) para
-  que el texto crema del botón CTA pase contraste AA 4.5:1 (un primer ajuste a #7758F2/~4% no
-  alcanzó: el revisor-visual midió ~4.2-4.3:1 con el texto real de --bg, más claro que blanco
-  puro — se recalculó con el color de texto exacto en vez de asumir blanco). Sigue siendo "el
-  mismo violeta" a efectos de identidad — la app/onboarding/paywall pueden seguir usando #7C5CFC
-  si no tienen el mismo problema de contraste; esto es una corrección puntual de la landing.
+- El acento (`--accent` en `components/landing/tokens.css`) se oscureció de #7C5CFC a #7154E5
+  (~9%) para que el texto crema del botón CTA pase contraste AA 4.5:1 (un primer ajuste a
+  #7758F2/~4% no alcanzó: el revisor-visual midió ~4.2-4.3:1 con el texto real de --bg, más
+  claro que blanco puro — se recalculó con el color de texto exacto en vez de asumir blanco).
+  Sigue siendo "el mismo violeta" a efectos de identidad. **Corrección 2026-09-17:** `tokens.css`
+  es un ÚNICO archivo importado una vez en `app/globals.css` — no hay una copia separada por
+  ruta — así que este ajuste NO es exclusivo de la landing: `--accent` vale #7154E5 en TODA la
+  app (landing, onboarding, paywall), verificado con cálculo de contraste real (#FDF1E7 sobre
+  #7154E5 = 4.61:1, pasa AA). La frase anterior ("la app/onboarding pueden seguir usando
+  #7C5CFC") era incorrecta y causó un defecto falso en la 5ª revisión del onboarding (el
+  revisor midió contra el hex documentado aquí, no contra el CSS real) — no hace falta ningún
+  cambio de código, el color ya es el correcto en las tres pantallas.
 
 ## Trazabilidad y vetos
 - Ruta de diseño: RUTA 2 — referencia parcial del usuario (moodboard de 5 capturas), no propuesta desde cero

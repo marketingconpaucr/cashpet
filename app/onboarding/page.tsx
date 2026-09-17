@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Moon, ShoppingBag, Sparkles, Sunrise, Sun, Sunset } from 'lucide-react';
 import { Mascota, type EmocionMascota } from '@/components/Mascota';
-import { CtaButton } from '@/components/landing/ui';
+import { CtaButton, Hairline } from '@/components/landing/ui';
 import {
   BarraMiniVisual,
   ChipOpcion,
@@ -122,6 +122,11 @@ export default function OnboardingPage() {
   const [pais, setPais] = useState<PaisMoneda | null>(null);
   const [otroPaisTexto, setOtroPaisTexto] = useState('');
   const [mostrarOtroPais, setMostrarOtroPais] = useState(false);
+  const [busquedaPais, setBusquedaPais] = useState('');
+  const paisesFiltrados = useMemo(
+    () => PAISES.filter((p) => p.nombre.toLowerCase().includes(busquedaPais.trim().toLowerCase())),
+    [busquedaPais]
+  );
 
   const [dolor, setDolor] = useState<string | null>(null);
 
@@ -147,9 +152,20 @@ export default function OnboardingPage() {
   // avisaban nada cuando faltaba completar algo) — mensaje + sacudida breve, nunca silencio.
   const [errorCategorias, setErrorCategorias] = useState(false);
   const [errorGasto, setErrorGasto] = useState<string | null>(null);
+  const [errorPais, setErrorPais] = useState(false);
 
   const avanzar = () => setIndice((i) => Math.min(i + 1, PASOS.length - 1));
   const atras = () => setIndice((i) => Math.max(i - 1, 0));
+
+  const confirmarOtroPais = () => {
+    if (!otroPaisTexto.trim()) {
+      setErrorPais(true);
+      setTimeout(() => setErrorPais(false), 2000);
+      return;
+    }
+    setPais(null);
+    avanzar();
+  };
 
   const seleccionDolor = useSeleccionUnica((v) => {
     setDolor(v);
@@ -162,6 +178,15 @@ export default function OnboardingPage() {
 
   const toggleCategoria = (label: string) => {
     setCategorias((prev) => (prev.includes(label) ? prev.filter((c) => c !== label) : [...prev, label]));
+  };
+
+  const confirmarCategorias = () => {
+    if (categorias.length === 0 && !otraCategoria) {
+      setErrorCategorias(true);
+      setTimeout(() => setErrorCategorias(false), 2000);
+      return;
+    }
+    avanzar();
   };
 
   const reaccionar = () => {
@@ -204,10 +229,21 @@ export default function OnboardingPage() {
     // propia secuencia visual — no un timeout aparte aquí.
   }, [paso]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const mostrarAtras = paso !== 'bienvenida' && paso !== 'loading' && indice > 1;
+  const mostrarAtras = paso !== 'bienvenida' && paso !== 'loading' && indice > 0;
 
   return (
-    <div className="flex min-h-dvh flex-col bg-[var(--bg)] text-[var(--text-primary)] [font-family:var(--font-body)]">
+    <div className="relative flex min-h-dvh flex-col bg-[var(--bg)] text-[var(--text-primary)] [font-family:var(--font-body)]">
+      {/* Fondo con profundidad: mesh sutil del acento, nunca fill plano (mismo patrón del Hero de la landing) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0"
+        style={{
+          background:
+            'radial-gradient(600px 360px at 15% 0%, color-mix(in oklab, var(--accent) 10%, transparent) 0%, transparent 60%), ' +
+            'radial-gradient(520px 420px at 100% 100%, color-mix(in oklab, var(--accent-2) 8%, transparent) 0%, transparent 55%)',
+        }}
+      />
+      <div className="relative flex min-h-dvh flex-1 flex-col">
       {paso !== 'bienvenida' && paso !== 'loading' && (
         <EncabezadoOnboarding porcentaje={PROGRESO[paso]} onAtras={atras} mostrarAtras={mostrarAtras} />
       )}
@@ -235,9 +271,18 @@ export default function OnboardingPage() {
           <PantallaPregunta tituloMarked="¿En qué país estás?" subcopy="Así te muestro todo en tu moneda.">
             {!mostrarOtroPais ? (
               <>
-                {PAISES.map((p) => (
+                <input
+                  type="text"
+                  value={busquedaPais}
+                  onChange={(e) => setBusquedaPais(e.target.value)}
+                  placeholder="Busca tu país"
+                  className="mb-1 h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-base text-[var(--text-primary)] shadow-[var(--shadow-1)] outline-none focus:border-[var(--accent)]"
+                />
+                <ChipOpcion indice={0} label="Otro país" seleccionado={mostrarOtroPais} onClick={() => setMostrarOtroPais(true)} />
+                {paisesFiltrados.map((p, i) => (
                   <ChipOpcion
                     key={p.nombre}
+                    indice={i + 1}
                     label={p.nombre}
                     seleccionado={pais?.nombre === p.nombre}
                     onClick={() => {
@@ -246,40 +291,57 @@ export default function OnboardingPage() {
                     }}
                   />
                 ))}
-                <ChipOpcion label="Otro país" seleccionado={mostrarOtroPais} onClick={() => setMostrarOtroPais(true)} />
               </>
             ) : (
-              <div className="flex flex-col gap-3">
+              <form
+                className="flex flex-col gap-3"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  confirmarOtroPais();
+                }}
+              >
                 <input
                   type="text"
                   autoFocus
                   value={otroPaisTexto}
                   onChange={(e) => setOtroPaisTexto(e.target.value)}
                   placeholder="Escribe tu país"
-                  className="h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-base text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+                  className="h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-base text-[var(--text-primary)] shadow-[var(--shadow-1)] outline-none focus:border-[var(--accent)]"
                 />
                 <p className="text-xs text-[var(--text-tertiary)]">Por ahora te mostramos los montos en USD — lo ajustamos si hace falta.</p>
-                <CtaButton href="#" alto={56}>
-                  <span
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (!otroPaisTexto.trim()) return;
-                      setPais(null);
-                      avanzar();
-                    }}
-                  >
-                    Continuar
-                  </span>
-                </CtaButton>
-              </div>
+                <motion.div animate={errorPais ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }} transition={{ duration: 0.4 }}>
+                  <CtaButton href="#" alto={56}>
+                    <span
+                      onClick={(e) => {
+                        e.preventDefault();
+                        confirmarOtroPais();
+                      }}
+                    >
+                      Continuar
+                    </span>
+                  </CtaButton>
+                </motion.div>
+                {errorPais && <p className="text-center text-sm font-medium text-[var(--accent)]">Escribe el nombre de tu país</p>}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMostrarOtroPais(false);
+                    setOtroPaisTexto('');
+                    setErrorPais(false);
+                  }}
+                  className="mt-1 text-center text-sm font-medium text-[var(--text-tertiary)] underline-offset-2 hover:underline"
+                >
+                  ‹ Elegir de la lista
+                </button>
+              </form>
             )}
           </PantallaPregunta>
         )}
 
         {paso === 'dolor' && (
           <PantallaPregunta tituloMarked="¿Cuándo sientes que se te evapora el dinero?">
-            {OPCIONES_DOLOR.map((op) => (
-              <ChipOpcion key={op} label={op} seleccionado={seleccionDolor.elegido === op} onClick={() => seleccionDolor.elegir(op)} />
+            {OPCIONES_DOLOR.map((op, i) => (
+              <ChipOpcion key={op} indice={i} label={op} seleccionado={seleccionDolor.elegido === op} onClick={() => seleccionDolor.elegir(op)} />
             ))}
           </PantallaPregunta>
         )}
@@ -305,17 +367,7 @@ export default function OnboardingPage() {
               <div>
                 <motion.div animate={errorCategorias ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }} transition={{ duration: 0.4 }}>
                   <CtaButton href="#" alto={52} fullMobile>
-                    <span
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (categorias.length === 0 && !otraCategoria) {
-                          setErrorCategorias(true);
-                          setTimeout(() => setErrorCategorias(false), 500);
-                          return;
-                        }
-                        avanzar();
-                      }}
-                    >
+                    <span onClick={(e) => { e.preventDefault(); confirmarCategorias(); }}>
                       Continuar
                     </span>
                   </CtaButton>
@@ -326,29 +378,48 @@ export default function OnboardingPage() {
               </div>
             }
           >
-            {OPCIONES_CATEGORIA.map((op) => (
-              <ChipOpcion key={op} label={op} seleccionado={categorias.includes(op)} onClick={() => toggleCategoria(op)} />
+            {OPCIONES_CATEGORIA.map((op, i) => (
+              <ChipOpcion key={op} indice={i} label={op} seleccionado={categorias.includes(op)} onClick={() => toggleCategoria(op)} />
             ))}
             {!mostrarOtraCategoria ? (
-              <ChipOpcion label="Otra cosa" seleccionado={false} onClick={() => setMostrarOtraCategoria(true)} />
+              <ChipOpcion indice={OPCIONES_CATEGORIA.length} label="Otra cosa" seleccionado={false} onClick={() => setMostrarOtraCategoria(true)} />
             ) : (
-              <input
-                type="text"
-                autoFocus
-                value={otraCategoria}
-                onChange={(e) => setOtraCategoria(e.target.value)}
-                placeholder="¿En qué más?"
-                className="h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-base text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
-              />
+              <form
+                className="flex flex-col gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  confirmarCategorias();
+                }}
+              >
+                <input
+                  type="text"
+                  autoFocus
+                  value={otraCategoria}
+                  onChange={(e) => setOtraCategoria(e.target.value)}
+                  placeholder="¿En qué más?"
+                  className="h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-base text-[var(--text-primary)] shadow-[var(--shadow-1)] outline-none focus:border-[var(--accent)]"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMostrarOtraCategoria(false);
+                    setOtraCategoria('');
+                  }}
+                  className="text-center text-sm font-medium text-[var(--text-tertiary)] underline-offset-2 hover:underline"
+                >
+                  ‹ Elegir de la lista
+                </button>
+              </form>
             )}
           </PantallaPregunta>
         )}
 
         {paso === 'momento' && (
           <PantallaPregunta tituloMarked="¿En qué momento sueles gastar sin pensarlo?">
-            {OPCIONES_MOMENTO.map((op) => (
+            {OPCIONES_MOMENTO.map((op, i) => (
               <ChipOpcion
                 key={op.label}
+                indice={i}
                 label={op.label}
                 icon={op.icon}
                 seleccionado={seleccionMomento.elegido === op.label}
@@ -373,50 +444,63 @@ export default function OnboardingPage() {
         )}
 
         {paso === 'activacion' && (
-          <div className="flex flex-1 flex-col px-4 pt-6">
-            <h1 className="text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]">
-              Anota tu primer gasto
-            </h1>
-            <p className="mt-2 text-sm text-[var(--text-secondary)]">Cualquiera de hoy — así ves a Gastón reaccionar de verdad.</p>
-
+          <div className={`flex flex-1 flex-col px-4 ${reaccion ? 'pt-6' : 'justify-center pb-16'}`}>
             {!reaccion ? (
-              <div className="mt-8 flex flex-col gap-3">
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  autoFocus
-                  value={gastoMonto}
-                  onChange={(e) => setGastoMonto(e.target.value)}
-                  placeholder={`Monto (${monedaActual.moneda})`}
-                  className="h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-base text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
-                />
-                <div className="flex flex-col gap-3">
-                  {OPCIONES_CATEGORIA.slice(0, 4).map((op) => (
-                    <ChipOpcion key={op} label={op} icon={ShoppingBag} seleccionado={gastoCategoria === op} onClick={() => setGastoCategoria(op)} />
-                  ))}
-                </div>
-                <div className="mt-4 pb-[max(16px,env(safe-area-inset-bottom))]">
-                  <motion.div animate={errorGasto ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }} transition={{ duration: 0.4 }}>
-                    <CtaButton href="#" alto={56}>
-                      <span onClick={(e) => { e.preventDefault(); reaccionar(); }}>Anotar gasto</span>
-                    </CtaButton>
-                  </motion.div>
-                  {errorGasto && <p className="mt-2 text-center text-sm font-medium text-[var(--accent)]">{errorGasto}</p>}
-                </div>
-              </div>
+              <>
+                <h1 className="text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]">
+                  Anota tu primer gasto
+                </h1>
+                <p className="mt-2 text-sm text-[var(--text-secondary)]">Cualquiera de hoy — así ves a Gastón reaccionar de verdad.</p>
+                <form
+                  className="mt-8 flex flex-col gap-3"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    reaccionar();
+                  }}
+                >
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    autoFocus
+                    value={gastoMonto}
+                    onChange={(e) => setGastoMonto(e.target.value)}
+                    placeholder={`Monto (${monedaActual.moneda})`}
+                    className="h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 text-base text-[var(--text-primary)] shadow-[var(--shadow-1)] outline-none focus:border-[var(--accent)]"
+                  />
+                  <div className="flex flex-col gap-3">
+                    {OPCIONES_CATEGORIA.slice(0, 4).map((op, i) => (
+                      <ChipOpcion key={op} indice={i} label={op} icon={ShoppingBag} seleccionado={gastoCategoria === op} onClick={() => setGastoCategoria(op)} />
+                    ))}
+                  </div>
+                  <div className="mt-4 pb-[max(16px,env(safe-area-inset-bottom))]">
+                    <motion.div animate={errorGasto ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }} transition={{ duration: 0.4 }}>
+                      <CtaButton href="#" alto={56}>
+                        <span onClick={(e) => { e.preventDefault(); reaccionar(); }}>Anotar gasto</span>
+                      </CtaButton>
+                    </motion.div>
+                    {errorGasto && <p className="mt-2 text-center text-sm font-medium text-[var(--accent)]">{errorGasto}</p>}
+                  </div>
+                </form>
+              </>
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-8 flex flex-1 flex-col items-center justify-center text-center"
+                className="flex flex-1 flex-col items-center justify-center text-center"
               >
+                <h1 className="text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]">
+                  Así te habla Gastón
+                </h1>
+                <p className="mt-2 max-w-[30ch] text-sm text-[var(--text-secondary)]">Esto va a hacer con cada gasto que anotes.</p>
                 <Mascota size={110} emocion={reaccion} />
-                <p className="mt-5 max-w-[30ch] rounded-[var(--radius-card)] bg-[var(--surface)] px-4 py-3 text-[15px] font-semibold shadow-[var(--shadow-1)]">
-                  {reaccion === 'celebrando' && '"¡Eso sí es control! Vas muy por debajo de tu límite."'}
-                  {reaccion === 'feliz' && '"Anotado. Vas bien, dentro de tu límite de hoy."'}
-                  {reaccion === 'desconfiada' && '"Mmm, ya casi tocas tu límite de hoy. Te sigo de cerca."'}
-                  {reaccion === 'decepcionada' && '"Eso ya se pasó de tu límite de hoy. No voy a llorar, pero lo anoté."'}
-                </p>
+                <Hairline surface="surface" className="mt-5 max-w-[30ch] shadow-[var(--shadow-1)]">
+                  <p className="px-4 py-3 text-[15px] font-semibold">
+                    {reaccion === 'celebrando' && '"¡Eso sí es control! Vas muy por debajo de tu límite."'}
+                    {reaccion === 'feliz' && '"Anotado. Vas bien, dentro de tu límite de hoy."'}
+                    {reaccion === 'desconfiada' && '"Mmm, ya casi tocas tu límite de hoy. Te sigo de cerca."'}
+                    {reaccion === 'decepcionada' && '"Eso ya se pasó de tu límite de hoy. No voy a llorar, pero lo anoté."'}
+                  </p>
+                </Hairline>
                 <div className="mt-8 w-full pb-[max(16px,env(safe-area-inset-bottom))]">
                   <CtaButton href="#" alto={56}>
                     <span onClick={(e) => { e.preventDefault(); avanzar(); }}>Seguir</span>
@@ -450,6 +534,7 @@ export default function OnboardingPage() {
           />
         )}
       </TransicionPaso>
+      </div>
     </div>
   );
 }

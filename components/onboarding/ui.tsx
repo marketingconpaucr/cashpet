@@ -9,7 +9,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Check, ChevronLeft } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { CtaButton } from '@/components/landing/ui';
+import { CtaButton, Hairline } from '@/components/landing/ui';
 import { Mascota, type EmocionMascota } from '@/components/Mascota';
 
 /* ── <BarraProgreso> — línea fina 2px, % real, ENDOWED PROGRESS (nunca arranca en 0%) ── */
@@ -62,25 +62,32 @@ export function EncabezadoOnboarding({
   );
 }
 
-/* ── <ChipOpcion> — selección única: tap → check inmediato → auto-avanza (250-400ms) ── */
+/* ── <ChipOpcion> — selección única: tap → check inmediato → auto-avanza (250-400ms).
+   `indice` (opcional) da el stagger de entrada de 50-80ms por ítem (baseline de movimiento). ── */
 export function ChipOpcion({
   label,
   icon: Icono,
   seleccionado,
   onClick,
+  indice = 0,
 }: {
   label: string;
   icon?: LucideIcon;
   seleccionado: boolean;
   onClick: () => void;
+  indice?: number;
 }) {
+  const reduce = useReducedMotion();
   return (
     <motion.button
       type="button"
+      initial={reduce ? false : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay: reduce ? 0 : indice * 0.06, ease: [0.16, 1, 0.3, 1] }}
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
       aria-pressed={seleccionado}
-      className={`flex h-14 w-full items-center gap-3 rounded-[var(--radius-button)] border px-4 text-left text-base font-medium transition-colors duration-150 [touch-action:manipulation] ${
+      className={`flex h-14 w-full items-center gap-3 rounded-[var(--radius-button)] border px-4 text-left text-base font-medium shadow-[var(--shadow-1)] transition-colors duration-150 [touch-action:manipulation] ${
         seleccionado
           ? 'border-[var(--accent)] bg-[color-mix(in_oklab,var(--accent)_10%,transparent)] text-[var(--text-primary)]'
           : 'border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] text-[var(--text-primary)]'
@@ -130,13 +137,19 @@ export function PantallaPregunta({
   /** CTA fijo abajo — solo para selección múltiple o input libre (nunca en selección única). */
   ctaFijo?: ReactNode;
 }) {
+  // Sin CTA fijo (selección única, auto-avanza) el bloque se centra verticalmente: con solo
+  // 4-5 chips cortos, anclarlo arriba dejaba ~1/3 de la pantalla vacío (vacío muerto, 32).
+  // Gastón chico arriba del título llena ese aire con identidad, no con relleno vacío.
   return (
-    <div className="flex flex-1 flex-col px-4 pt-6">
-      <h1 className="text-balance text-[28px] font-bold leading-[1.15] text-[var(--text-primary)] [font-family:var(--font-display)]">
-        {tituloMarked}
-      </h1>
-      {subcopy && <p className="mt-2 text-sm text-[var(--text-secondary)]">{subcopy}</p>}
-      <div className="mt-8 flex flex-col gap-3">{children}</div>
+    <div className={`flex flex-1 flex-col px-4 ${ctaFijo ? 'pt-6' : 'justify-center pb-16'}`}>
+      <div>
+        {!ctaFijo && <Mascota size={56} emocion="neutral" />}
+        <h1 className={`text-balance text-[28px] font-bold leading-[1.15] text-[var(--text-primary)] [font-family:var(--font-display)] ${!ctaFijo ? 'mt-4' : ''}`}>
+          {tituloMarked}
+        </h1>
+        {subcopy && <p className="mt-2 text-sm text-[var(--text-secondary)]">{subcopy}</p>}
+        <div className="mt-8 flex flex-col gap-3">{children}</div>
+      </div>
       {ctaFijo && <div className="mt-auto pt-8 pb-[max(16px,env(safe-area-inset-bottom))]">{ctaFijo}</div>}
     </div>
   );
@@ -163,9 +176,32 @@ export function PantallaReconocimiento({
   ctaLabel?: string;
   onContinuar: () => void;
 }) {
+  const reduce = useReducedMotion();
+  // El reconocimiento "celebrando" es el único HITO real del recorrido (cierre del
+  // diagnóstico) — se distingue del resto con un destello + entrada spring, nunca solo
+  // el fade genérico que comparten las demás pantallas de reconocimiento.
+  const esHito = emocion === 'celebrando';
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-      <Mascota size={84} emocion={emocion} />
+      <div className="relative flex items-center justify-center">
+        {esHito && !reduce && (
+          <motion.span
+            aria-hidden="true"
+            className="absolute size-32 rounded-full"
+            style={{ background: 'radial-gradient(circle, color-mix(in oklab, var(--accent) 35%, transparent) 0%, transparent 70%)' }}
+            initial={{ scale: 0.4, opacity: 0.9 }}
+            animate={{ scale: 1.8, opacity: 0 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          />
+        )}
+        <motion.div
+          initial={esHito && !reduce ? { scale: 0.6, opacity: 0 } : false}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={esHito ? { type: 'spring', stiffness: 260, damping: 14 } : undefined}
+        >
+          <Mascota size={esHito ? 96 : 84} emocion={emocion} />
+        </motion.div>
+      </div>
       <h2 className="mt-5 text-balance text-2xl font-bold leading-tight text-[var(--text-primary)] [font-family:var(--font-display)]">
         {tituloMarked}
       </h2>
@@ -185,22 +221,24 @@ export function PantallaReconocimiento({
 export function BarraMiniVisual({ etiqueta, valor, total }: { etiqueta: string; valor: number; total: number }) {
   const pct = total > 0 ? Math.round((valor / total) * 100) : 0;
   return (
-    <div className="rounded-[var(--radius-card)] bg-[var(--surface)] p-4 shadow-[var(--shadow-1)]">
-      <div className="flex items-baseline justify-between">
-        <span className="text-sm text-[var(--text-secondary)]">{etiqueta}</span>
-        <span className="text-lg font-bold tabular-nums text-[var(--accent)]">
-          {valor}/{total}
-        </span>
+    <Hairline surface="surface" className="shadow-[var(--shadow-1)]">
+      <div className="p-4">
+        <div className="flex items-baseline justify-between">
+          <span className="text-sm text-[var(--text-secondary)]">{etiqueta}</span>
+          <span className="text-lg font-bold tabular-nums text-[var(--accent)]">
+            {valor}/{total}
+          </span>
+        </div>
+        <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]">
+          <motion.div
+            className="h-full rounded-full bg-[var(--accent)]"
+            initial={{ width: 0 }}
+            animate={{ width: `${pct}%` }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          />
+        </div>
       </div>
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]">
-        <motion.div
-          className="h-full rounded-full bg-[var(--accent)]"
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        />
-      </div>
-    </div>
+    </Hairline>
   );
 }
 
@@ -227,8 +265,9 @@ export function SliderCompromiso({
   feedback: string;
 }) {
   return (
-    <div className="flex flex-1 flex-col px-4 pt-6">
-      <h1 className="text-balance text-[28px] font-bold leading-[1.15] text-[var(--text-primary)] [font-family:var(--font-display)]">
+    <div className="flex flex-1 flex-col justify-center px-4 pb-16">
+      <Mascota size={56} emocion="neutral" />
+      <h1 className="mt-4 text-balance text-[28px] font-bold leading-[1.15] text-[var(--text-primary)] [font-family:var(--font-display)]">
         {tituloMarked}
       </h1>
       <div className="mt-10 flex flex-col items-center">
@@ -244,7 +283,7 @@ export function SliderCompromiso({
         step={step}
         value={valor}
         onChange={(e) => onCambiar(Number(e.target.value))}
-        className="mt-8 h-2 w-full appearance-none rounded-full bg-[color-mix(in_oklab,var(--accent)_18%,transparent)] accent-[var(--accent)]"
+        className="mt-8 h-2 w-full appearance-none rounded-full bg-[color-mix(in_oklab,var(--accent)_18%,transparent)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_15%,transparent)] accent-[var(--accent)]"
         aria-label="Presupuesto máximo por día"
       />
       <div className="mt-2 flex justify-between text-xs text-[var(--text-tertiary)]">
@@ -252,7 +291,7 @@ export function SliderCompromiso({
         <span>{formatear(max)}</span>
       </div>
       <p className="mt-4 text-center text-sm font-medium text-[var(--accent)]">{feedback}</p>
-      <div className="mt-auto pt-8 pb-[max(16px,env(safe-area-inset-bottom))]">
+      <div className="mt-10 pb-[max(16px,env(safe-area-inset-bottom))]">
         <CtaButton href="#" alto={56}>
           <span onClick={(e) => { e.preventDefault(); onFijar(); }}>Fijar mi límite</span>
         </CtaButton>
@@ -296,9 +335,16 @@ export function PantallaLoading({
         setPorcentaje(Math.round(8 + (92 * (i + 1)) / lineas.length));
       }, pasoMs * i)
     );
+    // El último ítem queda "activo" (pulsando) hasta este punto — sin este paso nunca
+    // llega a mostrar su check de completado antes de navegar al paywall.
+    const completar = setTimeout(() => {
+      setActivaIdx(lineas.length);
+      setPorcentaje(100);
+    }, Math.max(duracionMs - 400, pasoMs * (lineas.length - 1) + 300));
     const done = setTimeout(onCompletar, duracionMs + 400);
     return () => {
       timers.forEach(clearTimeout);
+      clearTimeout(completar);
       clearTimeout(done);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
