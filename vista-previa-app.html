@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="es" data-kit="abc-v2">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tour de CashPet — dirección A elegida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Construido a partir de direcciones-abc.html (opción A ya elegida), duplicando el frame del
+     teléfono para 4 vistas nuevas — mismo sistema, mismos tokens. Marcador data-kit="abc-v2"
+     conservado a propósito. -->
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background:
+      radial-gradient(1100px 520px at 12% -6%, #f7f7f9, transparent 62%),
+      radial-gradient(900px 460px at 92% 4%, #e2e2e9, transparent 58%),
+      linear-gradient(180deg, #ededf0, #e4e4e9);
+    color: #1c1c1f;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 32px 20px 64px;
+  }
+  .cabecera { max-width: 1180px; margin: 0 auto 12px; }
+  .cabecera h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+  .cabecera p.sub { margin-top: 6px; font-size: 14px; color: #55555c; max-width: 70ch; }
+  .salidas { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .salidas span {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid #c9c9cf; border-radius: 999px;
+    padding: 6px 12px; font-size: 12.5px; font-weight: 600; color: #3a3a40;
+    background: #f7f7f8;
+  }
+  .salidas b { color: #1c1c1f; }
+  .aviso-fuentes { max-width: 1180px; margin: 10px auto 28px; font-size: 12.5px; color: #6a6a72; }
+
+  .vistas { max-width: 1180px; margin: 0 auto; display: grid; gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); }
+  .vista { display: flex; flex-direction: column; gap: 10px; }
+  .rotulo-vista { text-align: center; font-size: 13px; font-weight: 700; color: #1c1c1f; }
+
+  /* ── tokens de la dirección elegida (A — "Tu mascota, en grande") ── */
+  .op-a {
+    --bg: #fdf1e7; --surface: #ffffff; --text-1: #3a2a1e; --text-2: #8a7a6c;
+    --accent: #7c5cfc; --radius-card: 24px; --radius-btn: 20px;
+    --font-display: 'Fredoka', monospace; --font-body: 'Nunito', monospace;
+    --shadow-tinta: 124 92 252;
+  }
+
+  .telefono {
+    width: 310px; margin: 0 auto; aspect-ratio: 9 / 19.5;
+    border: 10px solid #101014; border-radius: 46px;
+    box-shadow: 0 24px 60px rgb(20 18 24 / 0.28);
+    overflow: hidden; position: relative; display: flex; flex-direction: column;
+    background: var(--bg);
+  }
+  .statusbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 22px 6px; font-size: 13px; font-weight: 600;
+    font-variant-numeric: tabular-nums; color: var(--text-1);
+  }
+  .statusbar .der { display: flex; align-items: center; gap: 5px; }
+  .home-indicator {
+    position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+    width: 116px; height: 5px; border-radius: 999px; opacity: 0.85; background: var(--text-1);
+  }
+  .pantalla { flex: 1; display: flex; flex-direction: column; overflow: hidden;
+              font-family: var(--font-body); color: var(--text-1); padding: 0 18px; }
+
+  .chip-icono { display: inline-flex; align-items: center; justify-content: center;
+                width: 40px; height: 40px; flex-shrink: 0;
+                border-radius: var(--radius-btn);
+                background: color-mix(in oklab, var(--accent) 10%, transparent);
+                border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent); }
+  .cta { display: flex; align-items: center; justify-content: center;
+         height: 48px; font-size: 15px; font-weight: 600; letter-spacing: 0.01em;
+         border-radius: var(--radius-btn); background: var(--accent); color: var(--bg);
+         box-shadow: 0 8px 22px color-mix(in oklab, var(--accent) 30%, transparent); }
+
+  .tabbar { display: flex; align-items: stretch; justify-content: space-around;
+            margin: 12px -18px 0; padding: 8px 8px 16px;
+            border-top: 1px solid color-mix(in oklab, var(--text-2) 18%, transparent);
+            background: color-mix(in oklab, var(--surface) 88%, transparent); }
+  .tabbar a { display: flex; flex-direction: column; align-items: center; gap: 3px;
+              font-size: 9.5px; font-weight: 600; color: var(--text-2); text-decoration: none; }
+  .tabbar .tab-chip { display: flex; align-items: center; justify-content: center;
+                       width: 36px; height: 26px; border-radius: 9px; }
+  .tabbar a.activa { color: var(--accent); }
+  .tabbar a.activa .tab-chip { background: color-mix(in oklab, var(--accent) 14%, transparent); }
+
+  h3.titulo { font-family: var(--font-display); font-size: 24px; font-weight: 700;
+              line-height: 1.14; letter-spacing: -0.01em; margin-top: 4px; }
+  .saludo { margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--text-2); }
+
+  .heroe { margin-top: 14px; border-radius: var(--radius-card);
+           border: 1.5px solid transparent;
+           background: linear-gradient(var(--surface), var(--surface)) padding-box,
+                        linear-gradient(135deg, color-mix(in oklab, var(--accent) 45%, transparent), transparent 60%) border-box;
+           box-shadow: 0 10px 26px -10px rgb(var(--shadow-tinta) / 0.22);
+           padding: 16px; text-align: center; }
+  .heroe .label { font-size: 11.5px; font-weight: 600; color: var(--text-2); margin-top: 8px; }
+  .heroe .dato { font-family: var(--font-display); font-size: 42px; font-weight: 700;
+                 line-height: 1.05; font-variant-numeric: tabular-nums; text-align: center; }
+  .heroe .dato small { font-size: 15px; font-weight: 600; color: var(--text-2); }
+  .heroe .insight { margin-top: 4px; font-size: 12.5px; color: var(--accent); font-weight: 600; }
+
+  .card { margin-top: 10px; background: var(--surface); border-radius: var(--radius-card);
+          border: 1px solid color-mix(in oklab, var(--text-2) 22%, transparent);
+          padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start; }
+  .card h4 { font-size: 14px; font-weight: 700; }
+  .card p { margin-top: 2px; font-size: 12.5px; color: var(--text-2); line-height: 1.45; }
+
+  /* mascota reusable (misma cara en las 4 vistas) */
+  .mascota-svg circle:nth-child(1), .mascota-svg circle:nth-child(2) { fill: var(--accent); }
+
+  /* ── Vista 2: ONBOARDING ── */
+  .dots { display: flex; gap: 6px; justify-content: center; margin-top: 14px; }
+  .dots span { width: 22px; height: 5px; border-radius: 999px; background: color-mix(in oklab, var(--text-2) 25%, transparent); }
+  .dots span.activo { background: var(--accent); width: 30px; }
+  .pregunta { text-align: center; margin-top: 16px; }
+  .opcion-quiz { margin-top: 10px; border-radius: var(--radius-btn);
+                 background: var(--surface); border: 1.5px solid color-mix(in oklab, var(--text-2) 20%, transparent);
+                 padding: 14px 16px; font-size: 14.5px; font-weight: 700; text-align: center; }
+  .opcion-quiz.elegida { border-color: var(--accent); color: var(--accent);
+                          background: color-mix(in oklab, var(--accent) 8%, var(--surface)); }
+
+  /* ── Vista 3: PAYWALL ── */
+  .plan { margin-top: 10px; border-radius: var(--radius-card); padding: 14px 16px;
+          background: var(--surface); border: 1.5px solid color-mix(in oklab, var(--text-2) 20%, transparent);
+          display: flex; align-items: center; justify-content: space-between; }
+  .plan.recomendado { border: 1.5px solid transparent;
+    background: linear-gradient(var(--surface), var(--surface)) padding-box,
+                linear-gradient(135deg, var(--accent), color-mix(in oklab, var(--accent) 40%, transparent)) border-box;
+    box-shadow: 0 10px 26px -10px rgb(var(--shadow-tinta) / 0.3); position: relative; }
+  .plan .badge { position: absolute; top: -10px; left: 14px; background: var(--accent); color: var(--bg);
+                 font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+  .plan .nombre { font-size: 14px; font-weight: 700; }
+  .plan .precio { font-size: 12.5px; color: var(--text-2); margin-top: 2px; }
+  .plan .ahorro { font-size: 11px; font-weight: 700; color: var(--accent); }
+
+  /* ── Vista 4: MECANISMO — reacción de la mascota, en grande ── */
+  .globo { margin-top: 18px; background: var(--surface); border-radius: var(--radius-card) var(--radius-card) var(--radius-card) 6px;
+           border: 1.5px solid color-mix(in oklab, var(--accent) 25%, transparent);
+           box-shadow: 0 10px 26px -10px rgb(var(--shadow-tinta) / 0.25);
+           padding: 14px 16px; font-size: 15px; font-weight: 700; text-align: center; }
+</style>
+</head>
+<body>
+
+<header class="cabecera">
+  <h1>Así se vería CashPet por dentro, con la Opción A que elegiste</h1>
+  <p class="sub">4 pantallas clave con el mismo estilo (fondo durazno, violeta, tu mascota con orejitas y mofletes) — para que lo veas aplicado a toda la app, no solo a una pantalla.</p>
+  <div class="salidas" role="list">
+    <span role="listitem"><b>1 · Me encanta</b> — seguimos con este estilo</span>
+    <span role="listitem"><b>2 · Ajusta un detalle</b> (color, fuente, una vista)</span>
+    <span role="listitem"><b>3 · Prefiero repensar</b> el estilo</span>
+  </div>
+</header>
+<p class="aviso-fuentes">Ábrelo con conexión a internet para que cargue la tipografía Fredoka/Nunito.</p>
+
+<div class="vistas">
+
+  <!-- VISTA 1 — M0: la pantalla de cada día -->
+  <div class="vista op-a">
+    <p class="rotulo-vista">Tu pantalla de cada día</p>
+    <div class="telefono">
+      <div class="statusbar"><span>9:41</span><span class="der"><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="0.8"/><rect x="4.5" y="5" width="3" height="6" rx="0.8"/><rect x="9" y="3" width="3" height="8" rx="0.8"/><rect x="13.5" y="0.5" width="3" height="10.5" rx="0.8"/></svg><svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 4.2a9.5 9.5 0 0 1 13 0"/><path d="M3.8 6.6a6.2 6.2 0 0 1 8.4 0"/><path d="M6.2 9a2.8 2.8 0 0 1 3.6 0"/></svg><svg width="25" height="12" viewBox="0 0 25 12" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="15" height="8" rx="1.6" fill="currentColor"/><rect x="22.5" y="3.8" width="2" height="4.4" rx="1" fill="currentColor" opacity="0.4"/></svg></span></div>
+      <div class="pantalla">
+        <p class="saludo">Martes 6 de agosto</p>
+        <h3 class="titulo">Hola, Camila</h3>
+        <div class="heroe">
+          <svg class="mascota-svg" width="72" height="72" viewBox="0 0 100 100" style="margin:0 auto;display:block;">
+            <circle cx="26" cy="24" r="11"/><circle cx="74" cy="24" r="11"/>
+            <circle cx="26" cy="24" r="5.5" fill="#a894fd"/><circle cx="74" cy="24" r="5.5" fill="#a894fd"/>
+            <path d="M50 6c-5 1-7 6-4 11 5-1 8-6 4-11Z" fill="#8ce0a0"/>
+            <path d="M50 6c5 1 7 6 4 11-5-1-8-6-4-11Z" fill="#6fd08a"/>
+            <circle cx="50" cy="56" r="38" fill="var(--accent)"/>
+            <circle cx="24" cy="64" r="6.5" fill="#ff9ecf" opacity="0.55"/><circle cx="76" cy="64" r="6.5" fill="#ff9ecf" opacity="0.55"/>
+            <ellipse cx="36" cy="52" rx="8.5" ry="10.5" fill="#fff"/><ellipse cx="64" cy="52" rx="8.5" ry="10.5" fill="#fff"/>
+            <circle cx="37.5" cy="55.5" r="5" fill="#2e2444"/><circle cx="65.5" cy="55.5" r="5" fill="#2e2444"/>
+            <circle cx="35.5" cy="50.5" r="1.8" fill="#fff"/><circle cx="63.5" cy="50.5" r="1.8" fill="#fff"/>
+            <path d="M40 68q10 8 20 0" stroke="#2e2444" stroke-width="3" stroke-linecap="round" fill="none"/>
+          </svg>
+          <p class="label">Racha sin pasarte del límite</p>
+          <p class="dato">12 <small>días</small></p>
+          <p class="insight">↑ tu mascota subió a nivel 4</p>
+        </div>
+        <div class="card">
+          <span class="chip-icono"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7c5cfc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <div><h4>Te quedan $23 para hoy</h4><p>De tu presupuesto diario de $35 — vas bien</p></div>
+        </div>
+        <div class="cta">Anotar un gasto</div>
+        <nav class="tabbar">
+          <a class="activa"><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg></span>Hoy</a>
+          <a><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 2.6 6.9L22 9.3l-5.4 4.6 1.8 7.1L12 17l-6.4 4 1.8-7.1L2 9.3l7.4-.4Z"/></svg></span>Rachas</a>
+          <a><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M4 21c0-4.5 3.6-7 8-7s8 2.5 8 7"/></svg></span>Mascota</a>
+          <a><span class="tab-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></span>Perfil</a>
+        </nav>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+  <!-- VISTA 2 — ONBOARDING -->
+  <div class="vista op-a">
+    <p class="rotulo-vista">Así te pregunta al empezar</p>
+    <div class="telefono">
+      <div class="statusbar"><span>9:41</span><span class="der"><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="0.8"/><rect x="4.5" y="5" width="3" height="6" rx="0.8"/><rect x="9" y="3" width="3" height="8" rx="0.8"/><rect x="13.5" y="0.5" width="3" height="10.5" rx="0.8"/></svg><svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 4.2a9.5 9.5 0 0 1 13 0"/><path d="M3.8 6.6a6.2 6.2 0 0 1 8.4 0"/><path d="M6.2 9a2.8 2.8 0 0 1 3.6 0"/></svg><svg width="25" height="12" viewBox="0 0 25 12" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="15" height="8" rx="1.6" fill="currentColor"/><rect x="22.5" y="3.8" width="2" height="4.4" rx="1" fill="currentColor" opacity="0.4"/></svg></span></div>
+      <div class="pantalla">
+        <div class="dots" style="margin-top:16px;">
+          <span class="activo"></span><span></span><span></span><span></span>
+        </div>
+        <div class="pregunta">
+          <svg class="mascota-svg" width="64" height="64" viewBox="0 0 100 100" style="margin:18px auto 0;display:block;">
+            <circle cx="26" cy="24" r="11"/><circle cx="74" cy="24" r="11"/>
+            <circle cx="26" cy="24" r="5.5" fill="#a894fd"/><circle cx="74" cy="24" r="5.5" fill="#a894fd"/>
+            <path d="M50 6c-5 1-7 6-4 11 5-1 8-6 4-11Z" fill="#8ce0a0"/>
+            <path d="M50 6c5 1 7 6 4 11-5-1-8-6-4-11Z" fill="#6fd08a"/>
+            <circle cx="50" cy="56" r="38" fill="var(--accent)"/>
+            <circle cx="24" cy="64" r="6.5" fill="#ff9ecf" opacity="0.55"/><circle cx="76" cy="64" r="6.5" fill="#ff9ecf" opacity="0.55"/>
+            <ellipse cx="36" cy="52" rx="8.5" ry="10.5" fill="#fff"/><ellipse cx="64" cy="52" rx="8.5" ry="10.5" fill="#fff"/>
+            <circle cx="37.5" cy="55.5" r="5" fill="#2e2444"/><circle cx="65.5" cy="55.5" r="5" fill="#2e2444"/>
+            <circle cx="35.5" cy="50.5" r="1.8" fill="#fff"/><circle cx="63.5" cy="50.5" r="1.8" fill="#fff"/>
+            <path d="M40 68q10 8 20 0" stroke="#2e2444" stroke-width="3" stroke-linecap="round" fill="none"/>
+          </svg>
+          <h3 class="titulo" style="font-size:19px;margin-top:12px;">¿Cuánto querés gastar como máximo por día?</h3>
+        </div>
+        <div class="opcion-quiz">$20 al día</div>
+        <div class="opcion-quiz elegida">$35 al día</div>
+        <div class="opcion-quiz">$50 al día</div>
+        <div class="opcion-quiz">Prefiero calcularlo yo</div>
+        <div class="cta" style="margin-top:auto;">Siguiente</div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+  <!-- VISTA 3 — PAYWALL -->
+  <div class="vista op-a">
+    <p class="rotulo-vista">Aquí eliges tu plan</p>
+    <div class="telefono">
+      <div class="statusbar"><span>9:41</span><span class="der"><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="0.8"/><rect x="4.5" y="5" width="3" height="6" rx="0.8"/><rect x="9" y="3" width="3" height="8" rx="0.8"/><rect x="13.5" y="0.5" width="3" height="10.5" rx="0.8"/></svg><svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 4.2a9.5 9.5 0 0 1 13 0"/><path d="M3.8 6.6a6.2 6.2 0 0 1 8.4 0"/><path d="M6.2 9a2.8 2.8 0 0 1 3.6 0"/></svg><svg width="25" height="12" viewBox="0 0 25 12" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="15" height="8" rx="1.6" fill="currentColor"/><rect x="22.5" y="3.8" width="2" height="4.4" rx="1" fill="currentColor" opacity="0.4"/></svg></span></div>
+      <div class="pantalla">
+        <svg class="mascota-svg" width="56" height="56" viewBox="0 0 100 100" style="margin:14px auto 0;display:block;">
+          <circle cx="26" cy="24" r="11"/><circle cx="74" cy="24" r="11"/>
+          <circle cx="26" cy="24" r="5.5" fill="#a894fd"/><circle cx="74" cy="24" r="5.5" fill="#a894fd"/>
+          <path d="M50 6c-5 1-7 6-4 11 5-1 8-6 4-11Z" fill="#8ce0a0"/>
+          <path d="M50 6c5 1 7 6 4 11-5-1-8-6-4-11Z" fill="#6fd08a"/>
+          <circle cx="50" cy="56" r="38" fill="var(--accent)"/>
+          <circle cx="24" cy="64" r="6.5" fill="#ff9ecf" opacity="0.55"/><circle cx="76" cy="64" r="6.5" fill="#ff9ecf" opacity="0.55"/>
+          <ellipse cx="36" cy="52" rx="8.5" ry="10.5" fill="#fff"/><ellipse cx="64" cy="52" rx="8.5" ry="10.5" fill="#fff"/>
+          <circle cx="37.5" cy="55.5" r="5" fill="#2e2444"/><circle cx="65.5" cy="55.5" r="5" fill="#2e2444"/>
+          <circle cx="35.5" cy="50.5" r="1.8" fill="#fff"/><circle cx="63.5" cy="50.5" r="1.8" fill="#fff"/>
+          <path d="M40 68q10 8 20 0" stroke="#2e2444" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </svg>
+        <h3 class="titulo" style="text-align:center;font-size:19px;margin-top:8px;">Tu mascota ya está lista para acompañarte</h3>
+        <p style="text-align:center;font-size:12.5px;color:var(--text-2);margin-top:4px;">7 días gratis, cancela cuando quieras</p>
+        <div class="plan recomendado" style="margin-top:18px;">
+          <span class="badge">Recomendado</span>
+          <div><p class="nombre">Anual</p><p class="precio">$3.33/mes</p></div>
+          <p class="ahorro">Ahorras 33%</p>
+        </div>
+        <div class="plan">
+          <div><p class="nombre">Mensual</p><p class="precio">$4.99/mes</p></div>
+        </div>
+        <div class="cta" style="margin-top:auto;">Empezar mi prueba gratis</div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+  <!-- VISTA 4 — MECANISMO: la mascota reacciona a un gasto -->
+  <div class="vista op-a">
+    <p class="rotulo-vista">Así reacciona tu mascota</p>
+    <div class="telefono">
+      <div class="statusbar"><span>9:41</span><span class="der"><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="3" height="4" rx="0.8"/><rect x="4.5" y="5" width="3" height="6" rx="0.8"/><rect x="9" y="3" width="3" height="8" rx="0.8"/><rect x="13.5" y="0.5" width="3" height="10.5" rx="0.8"/></svg><svg width="16" height="11" viewBox="0 0 16 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 4.2a9.5 9.5 0 0 1 13 0"/><path d="M3.8 6.6a6.2 6.2 0 0 1 8.4 0"/><path d="M6.2 9a2.8 2.8 0 0 1 3.6 0"/></svg><svg width="25" height="12" viewBox="0 0 25 12" aria-hidden="true"><rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="15" height="8" rx="1.6" fill="currentColor"/><rect x="22.5" y="3.8" width="2" height="4.4" rx="1" fill="currentColor" opacity="0.4"/></svg></span></div>
+      <div class="pantalla" style="justify-content:center;">
+        <svg class="mascota-svg" width="120" height="120" viewBox="0 0 100 100" style="margin:0 auto;display:block;">
+          <circle cx="26" cy="24" r="11"/><circle cx="74" cy="24" r="11"/>
+          <circle cx="26" cy="24" r="5.5" fill="#a894fd"/><circle cx="74" cy="24" r="5.5" fill="#a894fd"/>
+          <path d="M50 6c-5 1-7 6-4 11 5-1 8-6 4-11Z" fill="#8ce0a0"/>
+          <path d="M50 6c5 1 7 6 4 11-5-1-8-6-4-11Z" fill="#6fd08a"/>
+          <circle cx="50" cy="56" r="38" fill="var(--accent)"/>
+          <circle cx="24" cy="64" r="6.5" fill="#ff9ecf" opacity="0.55"/><circle cx="76" cy="64" r="6.5" fill="#ff9ecf" opacity="0.55"/>
+          <ellipse cx="36" cy="52" rx="8.5" ry="10.5" fill="#fff"/><ellipse cx="64" cy="52" rx="8.5" ry="10.5" fill="#fff"/>
+          <circle cx="37.5" cy="55.5" r="5" fill="#2e2444"/><circle cx="65.5" cy="55.5" r="5" fill="#2e2444"/>
+          <circle cx="35.5" cy="50.5" r="1.8" fill="#fff"/><circle cx="63.5" cy="50.5" r="1.8" fill="#fff"/>
+          <path d="M40 68q10 8 20 0" stroke="#2e2444" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </svg>
+        <div class="globo">"¿Otro café de $4.50? Ya van 3 esta semana — pero todavía vas bien"</div>
+        <p style="text-align:center;font-size:12px;color:var(--text-2);margin-top:10px;">Café · $4.50 · categoría Antojos</p>
+        <div class="cta" style="margin-top:20px;">Listo, seguimos</div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer style="max-width:1180px;margin:40px auto 0;font-size:12.5px;color:#6a6a72;border-top:1px solid #d0d0d6;padding-top:14px;line-height:1.6;">
+  Tour construido sobre la Opción A ya elegida (direcciones-abc.html) — mismos tokens, misma
+  mascota, mismas fuentes. Marcador data-kit="abc-v2" intacto. Al aprobar, esto se vuelca en
+  FICHA-ARTE.md y queda como dirección definitiva del proyecto.
+</footer>
+
+</body>
+</html>

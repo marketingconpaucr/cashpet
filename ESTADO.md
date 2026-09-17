@@ -1,7 +1,7 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-16 | Sesión actual: 1
 
-⏸️ CHECKPOINT — Última acción completada: Sesión 2 iniciada — comparativa direcciones-abc.html construida (3 fusiones: A=Duolingo, B=Cleo, C=Nubank), verificada visualmente en el navegador (fuentes cargadas, sin emojis, 3 diseños divergentes) / Siguiente acción exacta: esperar que el usuario elija A/B/C (o combine/ajuste/pida otras 3) y luego cerrar FICHA-ARTE.md con la dirección elegida
+⏸️ CHECKPOINT — Última acción completada: Sesión 2 CERRADA — usuario eligió Opción A, tour de la app (vista-previa-app.html) aprobado, FICHA-ARTE.md creada y aprobada / Siguiente acción exacta: mostrar el cierre de Sesión 2 al usuario y esperar su OK para arrancar Sesión 3 (página de ventas / landing)
 
 ## Qué es esta app (3 líneas máximo)
 Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario anota un gasto en segundos y la mascota reacciona (felicita o regaña con humor), genera rachas de ahorro y sube de nivel. Para adultos jóvenes en LATAM (22-35) que ganan bien pero sienten que el dinero "se les evapora". Monetización por suscripción ($4.99/mes o $39.99/año) vía Hotmart.
@@ -16,20 +16,14 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Brecha LATAM confirmada: sí — verificado con fuentes públicas propias: Cleo AI (el modelo elegido, ver FICHA-MODELO.md) factura $280M ARR (jul-2025, fuente Sacra) solo en inglés/EE.UU.-UK, sin presencia en español/LATAM
 - Precio de referencia del mercado: $5-$15/mes (benchmark de la investigación del usuario)
 
-## Dirección de Arte (Sesión 2 — NO cambiar sin justificación)
-- FICHA-ARTE.md: NO existe todavía — pendiente de que el usuario elija A/B/C en direcciones-abc.html
-- ¿Hubo referencia visual del usuario?: NO — usuario pidió que se le propongan direcciones (Ruta 1 del protocolo 54/16)
-- TABLA DE LÍDERES (16 PASO 0.2bis): Cleo AI (app modelo, FICHA-MODELO.md) · Duolingo (gamificación/rachas — ya referenciado como benchmark de mecánica) · Nubank (gigante fintech LATAM admirado por confianza/craft)
-- REVISIÓN: el usuario NO quiso la fusión de líderes (Duolingo/Cleo/Nubank) — mandó 5 capturas propias (mascotas 3D con carita, app "Habitz" con blobs con carita, app "lila" con arco arcoíris lavanda, app "SaveSmart") pidiendo algo "más amigable a la vista". Pasa a RUTA 2 (referencia parcial del usuario = CONTRATO, 16 PASO 0): se re-tematizó `direcciones-abc.html` con la paleta/tipografía/mood de ESAS capturas — ya NO aplica la Tabla de Líderes de Cleo/Duolingo/Nubank para el look visual (sigue vigente solo para FICHA-MODELO/mecanismo de negocio, que es un tema aparte)
-- Tabla de extracción de las capturas del usuario: modo claro · fondos crema/lavanda/blanco · acento violeta #7C5CFC-#8B5CF6 (recurrente en 2 de 5 capturas) · display Fredoka (geométrica muy redondeada) + body Nunito · radios 20-24px y botones píldora · sombras suaves tintadas · mascota como blob/personaje con carita simple (2 puntos + sonrisa) · dataviz distintiva: arco/anillo con degradé arcoíris · mood: tierna, cálida, juguetona
-- AJUSTE del usuario sobre la mascota: pidió explícitamente que "dé ganas de cuidarla" — se rediseñó el personaje (antes: círculo liso con 2 puntos y sonrisa) a un diseño más tierno: orejitas redondas tipo osito, mofletes rosados, ojos grandes con brillo (kawaii), y un brotecito verde en la cabeza (metáfora de que crece con el ahorro, ligado a "tu mascota sube de nivel"). Aplicado consistente en las 3 opciones (grande en A, chip en B y C) — esta versión del personaje es la base a mantener al cerrar FICHA-ARTE.md
-- Comparativa A/B/C reconstruida sobre esas capturas (mismo kit `plantillas-codigo/direcciones-abc/plantilla.html`, marcador `data-kit="abc-v2"` intacto) — verificada visualmente: fuentes Fredoka/Nunito cargadas, cero emojis, 3 DOMs divergentes (65-70% similitud, bajo el umbral de 80%)
-  - Opción A "Tu mascota, en grande" — fondo durazno, mascota 3D grande como hero de la pantalla (inspirado en las capturas de mascotas 3D)
-  - Opción B "El arco de tu plata" — lavanda, anillo con degradé arcoíris como dato principal (inspirado en "lila")
-  - Opción C "Tu compañera con carita" — blanco, la mascota como carita simple acompañando cada gasto en una línea de tiempo (inspirado en "Habitz")
-- Resumen: pendiente de elección del usuario
-- Personalidad: pendiente (se compila con 11-DISENO-EMOCIONAL.md una vez elegida la dirección)
-- REGISTRO ANTI-REPETICIÓN: pendiente (se fija al cerrar FICHA-ARTE.md)
+## Dirección de Arte (Sesión 2 — CERRADA, cosa juzgada — no reabrir sin pedirlo el usuario)
+- FICHA-ARTE.md: existe y APROBADA — cerrada 2026-09-17
+- Resumen: fondo #FDF1E7 (crema durazno) · superficie #FFFFFF · acento #7C5CFC (violeta) · 2ª nota #8CE0A0 (verde brote, solo en la mascota) · Display "Fredoka" · Body "Nunito" · radio 20-24px
+- Personalidad: tierna · cálida · juguetona
+- Mascota (dispositivo ownable): blob violeta con orejitas de osito, mofletes rosados, ojos grandes con brillo y un brote verde que "crece" con el nivel — vectorial (SVG), no 3D renderizado (decisión de costo, ver Decisiones de producto)
+- Ruta de diseño: RUTA 2 (referencia parcial del usuario — 5 capturas: mascotas 3D, "lila", "Habitz", "SaveSmart") — NO se usó la Tabla de Líderes Cleo/Duolingo/Nubank para el look (esa tabla sigue vigente solo para el mecanismo de negocio en FICHA-MODELO.md)
+- Comparativa: `direcciones-abc.html` (A elegida · B "arco arcoíris lavanda" y C "carita editorial blanca" descartadas, documentadas ahí) · Tour aprobado: `vista-previa-app.html`
+- REGISTRO ANTI-REPETICIÓN: paleta violeta #7C5CFC + par Fredoka/Nunito quedan vetados para el próximo proyecto del SO
 
 ## Avatar y venta (Sesión 1 — NO cambiar sin validar)
 - FICHA-AVATAR.md: existe, estado BORRADOR — creada 2026-09-16, pendiente de aprobación explícita del usuario
@@ -85,13 +79,13 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 
 ## Sesiones completadas ✅
 - Sesión 1 — Validación (idea traída por el usuario, no re-validada) · FICHA-AVATAR.md en borrador (Camila) · FICHA-MODELO.md aprobada (app modelo: Cleo AI) · modelo de negocio elegido: onboarding primero, pago después ($4.99/$39.99, trial 7 días) · gate de unit economics: PASA (~3% de IA sobre precio, margen positivo incluso con afiliado al 50%) · auth y esquema de BD (`profiles`/`gastos` + RLS) diseñados — cerrada 2026-09-17
+- Sesión 2 — Identidad visual: comparativa A/B/C basada en referencias del usuario (no en líderes) · mascota rediseñada más tierna a pedido del usuario · Opción A elegida ("Tu mascota, en grande") · tour de la app aprobado · FICHA-ARTE.md cerrada y aprobada — cerrada 2026-09-17
 
 ## Sesión en progreso 🔧
-(ninguna — esperando OK del usuario para arrancar Sesión 2)
+(ninguna — esperando OK del usuario para arrancar Sesión 3)
 
 ## Próximas sesiones 📋
-- Sesión 2: identidad visual (FICHA-ARTE.md) y sistema de diseño
-- Sesión 3: página de ventas (landing)
+- Sesión 3: página de ventas (landing) — 10 secciones canónicas, copy derivado de FICHA-AVATAR.md, estilo de FICHA-ARTE.md
 
 ## Decisiones de producto (fuera de la secuencia técnica)
 - Mascota: se queda en SVG vectorial (gratis, liviano, ya tierna) para el MVP. El usuario preguntó por mascotas 3D renderizadas tipo "Fluffy"/"Uni" (imágenes fijas por estado, no vectorial) — se explicó el costo (ilustrador o generación con IA, gasto real) y quedó como mejora FUTURA, no ahora. No re-litigar esto salvo que el usuario lo pida.
