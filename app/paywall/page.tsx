@@ -9,10 +9,10 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { Calendar, Lock, MapPin, ShieldCheck, Tag, Wallet } from 'lucide-react';
+import { Calendar, ChevronLeft, Lock, MapPin, ShieldCheck, Tag, Wallet } from 'lucide-react';
 import { Accent, CtaButton, Hairline } from '@/components/landing/ui';
 import { Mascota } from '@/components/Mascota';
-import { TransicionPaso } from '@/components/onboarding/ui';
+import { BarraProgreso, TransicionPaso } from '@/components/onboarding/ui';
 import { CerrarPaywall, CheckItem, FilaRecap, NodoTimeline, PlanCard } from '@/components/paywall/ui';
 
 interface DatosOnboarding {
@@ -50,6 +50,9 @@ function formatoMoneda(v: number, moneda: string): string {
 const PASOS = ['recap', 'timeline', 'precio'] as const;
 type Paso = (typeof PASOS)[number];
 
+// Endowed progress (A1/50-DISENO): nunca arranca en 0%.
+const PROGRESO: Record<Paso, number> = { recap: 35, timeline: 70, precio: 100 };
+
 export default function PaywallPage() {
   const router = useRouter();
   const [indice, setIndice] = useState(0);
@@ -68,6 +71,7 @@ export default function PaywallPage() {
   }, []);
 
   const avanzar = () => setIndice((i) => Math.min(i + 1, PASOS.length - 1));
+  const atras = () => setIndice((i) => Math.max(i - 1, 0));
   const cerrar = () => router.push('/');
 
   const moneda = datos?.moneda ?? 'USD';
@@ -85,14 +89,25 @@ export default function PaywallPage() {
         }}
       />
       <div className="relative flex min-h-dvh flex-1 flex-col">
-        <header className="flex items-center justify-between px-2 pt-3">
+        <header className="flex items-center gap-2 px-2 pt-3">
           <CerrarPaywall onClick={cerrar} />
-          <span className="pr-4 text-sm font-semibold text-[var(--text-secondary)] [font-family:var(--font-display)]">CashPet</span>
+          {indice > 0 && (
+            <button
+              type="button"
+              onClick={atras}
+              aria-label="Atrás"
+              className="flex size-11 shrink-0 items-center justify-center text-[var(--text-secondary)] [touch-action:manipulation]"
+            >
+              <ChevronLeft size={20} aria-hidden="true" />
+            </button>
+          )}
+          <BarraProgreso porcentaje={PROGRESO[paso]} />
+          <span className="pl-1 pr-2 text-sm font-semibold text-[var(--text-secondary)] [font-family:var(--font-display)]">CashPet</span>
         </header>
 
         <TransicionPaso pasoKey={paso}>
           {paso === 'recap' && (
-            <div className="flex flex-1 flex-col px-4 pt-4">
+            <div className="flex flex-1 flex-col justify-center px-4 pb-16">
               <Mascota size={72} emocion="celebrando" />
               <h1 className="mt-4 text-balance text-[30px] font-bold leading-[1.15] [font-family:var(--font-display)]">
                 Tu <Accent>Freno de 5 Segundos</Accent> está listo
@@ -115,15 +130,15 @@ export default function PaywallPage() {
               </div>
 
               <div className="mt-8 w-full pb-[max(16px,env(safe-area-inset-bottom))]">
-                <CtaButton href="#" alto={56}>
-                  <span onClick={(e) => { e.preventDefault(); avanzar(); }}>Ver cómo funciona</span>
+                <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); avanzar(); }}>
+                  Ver cómo funciona
                 </CtaButton>
               </div>
             </div>
           )}
 
           {paso === 'timeline' && (
-            <div className="flex flex-1 flex-col px-4 pt-4">
+            <div className="flex flex-1 flex-col justify-center px-4 pb-16">
               <h1 className="text-balance text-[30px] font-bold leading-[1.15] [font-family:var(--font-display)]">
                 Así es tu <Accent>prueba gratis</Accent>
               </h1>
@@ -156,8 +171,8 @@ export default function PaywallPage() {
               </button>
 
               <div className="mt-10 w-full pb-[max(16px,env(safe-area-inset-bottom))]">
-                <CtaButton href="#" alto={56}>
-                  <span onClick={(e) => { e.preventDefault(); avanzar(); }}>Ver los planes</span>
+                <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); avanzar(); }}>
+                  Ver los planes
                 </CtaButton>
               </div>
             </div>
@@ -168,6 +183,9 @@ export default function PaywallPage() {
               <h1 className="text-balance text-[30px] font-bold leading-[1.15] [font-family:var(--font-display)]">
                 Actívalo con <Accent>7 días gratis</Accent>
               </h1>
+              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+                Menos de $0.30 al día para dejar de regalar $150-200 al mes en gastos hormiga.
+              </p>
 
               <ul className="mt-4 flex flex-col gap-2">
                 <CheckItem>El Freno de 5 Segundos activo en cada gasto</CheckItem>
@@ -195,12 +213,12 @@ export default function PaywallPage() {
 
               <div className="mt-6 w-full">
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.3 }}>
-                  <CtaButton href="#" alto={56}>
-                    <span onClick={(e) => { e.preventDefault(); router.push('/entrar'); }}>Empezar mis 7 días gratis</span>
+                  <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); router.push('/entrar'); }}>
+                    Empezar mis 7 días gratis
                   </CtaButton>
                 </motion.div>
                 <p className="mt-2 text-center text-[13px] text-[var(--text-secondary)]">
-                  Cancela cuando quieras · Te avisamos antes del cobro
+                  Día 7: se cobra {plan === 'anual' ? '$69.99' : '$8.99'} · cancela antes sin costo
                 </p>
               </div>
 

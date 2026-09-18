@@ -292,8 +292,8 @@ export default function OnboardingPage() {
               que ibas a lamentar.
             </p>
             <div className="mt-8 w-full pb-[max(16px,env(safe-area-inset-bottom))]">
-              <CtaButton href="#" alto={56}>
-                <span onClick={(e) => { e.preventDefault(); avanzar(); }}>Empezar</span>
+              <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); avanzar(); }}>
+                Empezar
               </CtaButton>
             </div>
           </div>
@@ -345,15 +345,8 @@ export default function OnboardingPage() {
                 />
                 <p className="text-xs text-[var(--text-tertiary)]">Por ahora te mostramos los montos en USD — lo ajustamos si hace falta.</p>
                 <motion.div animate={errorPais ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }} transition={{ duration: 0.4 }}>
-                  <CtaButton href="#" alto={56}>
-                    <span
-                      onClick={(e) => {
-                        e.preventDefault();
-                        confirmarOtroPais();
-                      }}
-                    >
-                      Continuar
-                    </span>
+                  <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); confirmarOtroPais(); }}>
+                    Continuar
                   </CtaButton>
                 </motion.div>
                 {errorPais && <p className="text-center text-sm font-medium text-[var(--accent)]">Escribe el nombre de tu país</p>}
@@ -401,10 +394,8 @@ export default function OnboardingPage() {
             ctaFijo={
               <div>
                 <motion.div animate={errorCategorias ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }} transition={{ duration: 0.4 }}>
-                  <CtaButton href="#" alto={52} fullMobile>
-                    <span onClick={(e) => { e.preventDefault(); confirmarCategorias(); }}>
-                      Continuar
-                    </span>
+                  <CtaButton href="#" alto={52} fullMobile onClick={(e) => { e.preventDefault(); confirmarCategorias(); }}>
+                    Continuar
                   </CtaButton>
                 </motion.div>
                 {errorCategorias && (
@@ -509,8 +500,8 @@ export default function OnboardingPage() {
                   </div>
                   <div className="mt-4 pb-[max(16px,env(safe-area-inset-bottom))]">
                     <motion.div animate={errorGasto ? { x: [0, -8, 8, -6, 6, 0] } : { x: 0 }} transition={{ duration: 0.4 }}>
-                      <CtaButton href="#" alto={56}>
-                        <span onClick={(e) => { e.preventDefault(); reaccionar(); }}>Anotar gasto</span>
+                      <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); reaccionar(); }}>
+                        Anotar gasto
                       </CtaButton>
                     </motion.div>
                     {errorGasto && <p className="mt-2 text-center text-sm font-medium text-[var(--accent)]">{errorGasto}</p>}
@@ -537,8 +528,8 @@ export default function OnboardingPage() {
                   </p>
                 </Hairline>
                 <div className="mt-8 w-full pb-[max(16px,env(safe-area-inset-bottom))]">
-                  <CtaButton href="#" alto={56}>
-                    <span onClick={(e) => { e.preventDefault(); avanzar(); }}>Seguir</span>
+                  <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); avanzar(); }}>
+                    Seguir
                   </CtaButton>
                 </div>
               </motion.div>

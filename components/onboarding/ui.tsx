@@ -208,8 +208,8 @@ export function PantallaReconocimiento({
       <p className="mt-3 max-w-[38ch] text-[15px] leading-relaxed text-[var(--text-secondary)]">{cuerpo}</p>
       {dato && <div className="mt-5 w-full">{dato}</div>}
       <div className="mt-8 w-full pb-[max(16px,env(safe-area-inset-bottom))]">
-        <CtaButton href="#" alto={56}>
-          <span onClick={(e) => { e.preventDefault(); onContinuar(); }}>{ctaLabel}</span>
+        <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); onContinuar(); }}>
+          {ctaLabel}
         </CtaButton>
       </div>
     </div>
@@ -292,8 +292,8 @@ export function SliderCompromiso({
       </div>
       <p className="mt-4 text-center text-sm font-medium text-[var(--accent)]">{feedback}</p>
       <div className="mt-10 pb-[max(16px,env(safe-area-inset-bottom))]">
-        <CtaButton href="#" alto={56}>
-          <span onClick={(e) => { e.preventDefault(); onFijar(); }}>Fijar mi límite</span>
+        <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); onFijar(); }}>
+          Fijar mi límite
         </CtaButton>
       </div>
     </div>
