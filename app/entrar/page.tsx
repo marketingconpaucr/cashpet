@@ -9,8 +9,8 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { motion, useReducedMotion, type Variants } from 'motion/react';
-import { AlertCircle, ChevronLeft, Loader2, Lock, Mail } from 'lucide-react';
-import { Accent, CtaButton } from '@/components/landing/ui';
+import { AlertCircle, ChevronLeft, Loader2, Lock } from 'lucide-react';
+import { Accent, CtaButton, Hairline } from '@/components/landing/ui';
 import { Mascota } from '@/components/Mascota';
 
 const REENVIO_SEGUNDOS = 60;
@@ -28,6 +28,7 @@ export default function EntrarPage() {
   const [estado, setEstado] = useState<'idle' | 'enviando' | 'enviado'>('idle');
   const [segundosRestantes, setSegundosRestantes] = useState(0);
   const [reenviando, setReenviando] = useState(false);
+  const [reenviado, setReenviado] = useState(false);
 
   useEffect(() => {
     if (segundosRestantes <= 0) return;
@@ -57,18 +58,22 @@ export default function EntrarPage() {
         className="pointer-events-none fixed inset-0"
         style={{
           background:
-            'radial-gradient(600px 360px at 15% 0%, color-mix(in oklab, var(--accent) 10%, transparent) 0%, transparent 60%), ' +
-            'radial-gradient(520px 420px at 100% 100%, color-mix(in oklab, var(--accent-2) 8%, transparent) 0%, transparent 55%)',
+            'radial-gradient(600px 360px at 15% 0%, color-mix(in oklab, var(--accent) 14%, transparent) 0%, transparent 60%), ' +
+            'radial-gradient(520px 420px at 100% 100%, color-mix(in oklab, var(--accent-2) 12%, transparent) 0%, transparent 55%)',
         }}
       />
       <div className="relative flex min-h-dvh flex-1 flex-col">
         <header className="flex items-center px-2 pt-3">
-          <a href="/" aria-label="Volver al inicio" className="flex size-11 items-center justify-center text-[var(--text-secondary)]">
-            <ChevronLeft size={22} aria-hidden="true" />
+          <a
+            href="/"
+            aria-label="Volver al inicio"
+            className="flex size-11 items-center justify-center rounded-full bg-[var(--surface-2)] text-[var(--text-secondary)]"
+          >
+            <ChevronLeft size={20} aria-hidden="true" />
           </a>
         </header>
 
-        <div className="flex flex-1 flex-col px-6 pt-10 pb-16">
+        <div className="flex flex-1 flex-col justify-center px-6 pb-16">
           {estado !== 'enviado' ? (
             <motion.div
               variants={reduce ? undefined : CONTENEDOR}
@@ -88,49 +93,54 @@ export default function EntrarPage() {
                 Para guardarlo y verlo en cualquier dispositivo.
               </motion.p>
 
-              <motion.form variants={reduce ? undefined : ITEM} onSubmit={enviarEnlace} className="mt-8 flex flex-col gap-3">
-                <label htmlFor="correo" className="text-xs font-medium text-[var(--text-tertiary)]">
-                  Correo electrónico
-                </label>
-                <input
-                  id="correo"
-                  type="email"
-                  autoFocus
-                  autoComplete="email"
-                  inputMode="email"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (error) setError(null);
-                  }}
-                  placeholder="tu@correo.com"
-                  aria-invalid={!!error}
-                  className={`-mt-2 h-14 w-full rounded-[var(--radius-button)] border bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:bg-[var(--surface)] ${
-                    error
-                      ? 'border-[var(--error)] focus:border-[var(--error)]'
-                      : 'border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] focus:border-[var(--accent)]'
-                  }`}
-                />
-                {error && (
-                  <p role="alert" className="flex items-center gap-1.5 text-sm font-medium text-[var(--error)]">
-                    <AlertCircle size={15} aria-hidden="true" />
-                    {error} (ej. tu@correo.com)
-                  </p>
-                )}
+              <motion.form variants={reduce ? undefined : ITEM} onSubmit={enviarEnlace} noValidate className="mt-8">
+                <Hairline surface="surface" emphasis className="shadow-[var(--shadow-1)]">
+                  <div className="flex flex-col gap-3 p-3">
+                    <label htmlFor="correo" className="text-xs font-medium text-[var(--text-tertiary)]">
+                      Correo electrónico
+                    </label>
+                    <input
+                      id="correo"
+                      type="email"
+                      autoFocus
+                      autoComplete="email"
+                      inputMode="email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (error) setError(null);
+                      }}
+                      placeholder="tu@correo.com"
+                      aria-invalid={!!error}
+                      aria-describedby={error ? 'correo-error' : undefined}
+                      className={`-mt-2 h-14 w-full rounded-[var(--radius-button)] border bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:bg-[var(--surface)] ${
+                        error
+                          ? 'border-[var(--error)] focus:border-[var(--error)]'
+                          : 'border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] focus:border-[var(--accent)]'
+                      }`}
+                    />
+                    {error && (
+                      <p id="correo-error" role="alert" className="flex items-center gap-1.5 text-sm font-medium text-[var(--error)]">
+                        <AlertCircle size={15} aria-hidden="true" />
+                        {error} (ej. tu@correo.com)
+                      </p>
+                    )}
 
-                <div className={estado === 'enviando' ? 'pointer-events-none opacity-70' : ''}>
-                  <CtaButton href="#" alto={56} onClick={enviarEnlace}>
-                    <span className="inline-flex items-center gap-2">
-                      {estado === 'enviando' && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}
-                      {estado === 'enviando' ? 'Enviando…' : 'Enviarme mi enlace de acceso'}
-                    </span>
-                  </CtaButton>
-                </div>
+                    <div className={estado === 'enviando' ? 'pointer-events-none opacity-70' : ''}>
+                      <CtaButton href="#" alto={56} submit>
+                        <span className="inline-flex items-center gap-2 text-base">
+                          {estado === 'enviando' && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}
+                          {estado === 'enviando' ? 'Enviando…' : 'Enviarme mi enlace de acceso'}
+                        </span>
+                      </CtaButton>
+                    </div>
+                  </div>
+                </Hairline>
               </motion.form>
 
               <motion.p
                 variants={reduce ? undefined : ITEM}
-                className="mt-4 flex items-center gap-2 text-[13px] text-[var(--text-secondary)]"
+                className="mt-4 flex items-center gap-2 text-sm text-[var(--text-secondary)]"
               >
                 <Lock size={14} aria-hidden="true" />
                 Sin contraseñas: te llegará un enlace de un solo uso.
@@ -143,16 +153,19 @@ export default function EntrarPage() {
               transition={{ duration: 0.3 }}
               className="flex flex-col items-center text-center"
             >
-              <span className="flex size-16 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]">
-                <Mail size={28} color="var(--accent)" aria-hidden="true" />
-              </span>
-              <h1 className="mt-5 text-balance text-[26px] font-bold leading-[1.15] [font-family:var(--font-display)]">
+              <Mascota size={80} emocion="feliz" />
+              <h1 className="mt-5 text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]">
                 Revisa tu correo
               </h1>
-              <p className="mt-2 max-w-[32ch] text-sm text-[var(--text-secondary)]">
-                Te enviamos el enlace a <span className="font-semibold text-[var(--text-primary)]">{email}</span>
-              </p>
-              <p className="mt-2 text-xs text-[var(--text-tertiary)]">¿No lo ves? Revisa spam o promociones.</p>
+
+              <Hairline surface="surface" emphasis className="mt-4 shadow-[var(--shadow-1)]">
+                <div className="px-4 py-3">
+                  <p className="text-sm text-[var(--text-secondary)]">
+                    Te enviamos el enlace a <span className="font-semibold text-[var(--text-primary)]">{email}</span>
+                  </p>
+                  <p className="mt-2 text-xs text-[var(--text-tertiary)]">¿No lo ves? Revisa spam o promociones.</p>
+                </div>
+              </Hairline>
 
               <motion.button
                 type="button"
@@ -162,12 +175,20 @@ export default function EntrarPage() {
                   setReenviando(true);
                   setTimeout(() => {
                     setReenviando(false);
+                    setReenviado(true);
                     setSegundosRestantes(REENVIO_SEGUNDOS);
+                    setTimeout(() => setReenviado(false), 3000);
                   }, 1000);
                 }}
                 className="mt-8 h-11 px-2 text-sm font-medium text-[var(--accent)] disabled:text-[var(--text-tertiary)] [touch-action:manipulation]"
               >
-                {segundosRestantes > 0 ? `Reenviar en ${segundosRestantes}s` : reenviando ? 'Reenviando…' : 'Reenviar enlace'}
+                {reenviando
+                  ? 'Reenviando…'
+                  : reenviado
+                    ? 'Enlace reenviado ✓'
+                    : segundosRestantes > 0
+                      ? `Reenviar en ${segundosRestantes}s`
+                      : 'Reenviar enlace'}
               </motion.button>
 
               <motion.button
