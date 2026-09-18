@@ -47,7 +47,7 @@ export default function EntrarPage() {
     setTimeout(() => {
       setEstado('enviado');
       setSegundosRestantes(REENVIO_SEGUNDOS);
-    }, 700);
+    }, 1000);
   };
 
   return (
@@ -68,7 +68,7 @@ export default function EntrarPage() {
           </a>
         </header>
 
-        <div className="flex flex-1 flex-col px-6 pt-14 pb-16">
+        <div className="flex flex-1 flex-col px-6 pt-10 pb-16">
           {estado !== 'enviado' ? (
             <motion.div
               variants={reduce ? undefined : CONTENEDOR}
@@ -76,7 +76,7 @@ export default function EntrarPage() {
               animate="visible"
             >
               <motion.div variants={reduce ? undefined : ITEM}>
-                <Mascota size={72} emocion="feliz" />
+                <Mascota size={88} emocion="feliz" />
               </motion.div>
               <motion.h1
                 variants={reduce ? undefined : ITEM}
@@ -89,17 +89,23 @@ export default function EntrarPage() {
               </motion.p>
 
               <motion.form variants={reduce ? undefined : ITEM} onSubmit={enviarEnlace} className="mt-8 flex flex-col gap-3">
+                <label htmlFor="correo" className="text-xs font-medium text-[var(--text-tertiary)]">
+                  Correo electrónico
+                </label>
                 <input
+                  id="correo"
                   type="email"
                   autoFocus
                   autoComplete="email"
                   inputMode="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError(null);
+                  }}
                   placeholder="tu@correo.com"
-                  aria-label="Correo electrónico"
                   aria-invalid={!!error}
-                  className={`h-14 w-full rounded-[var(--radius-button)] border bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:bg-[var(--surface)] ${
+                  className={`-mt-2 h-14 w-full rounded-[var(--radius-button)] border bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:bg-[var(--surface)] ${
                     error
                       ? 'border-[var(--error)] focus:border-[var(--error)]'
                       : 'border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] focus:border-[var(--accent)]'
@@ -146,6 +152,7 @@ export default function EntrarPage() {
               <p className="mt-2 max-w-[32ch] text-sm text-[var(--text-secondary)]">
                 Te enviamos el enlace a <span className="font-semibold text-[var(--text-primary)]">{email}</span>
               </p>
+              <p className="mt-2 text-xs text-[var(--text-tertiary)]">¿No lo ves? Revisa spam o promociones.</p>
 
               <motion.button
                 type="button"
@@ -156,7 +163,7 @@ export default function EntrarPage() {
                   setTimeout(() => {
                     setReenviando(false);
                     setSegundosRestantes(REENVIO_SEGUNDOS);
-                  }, 700);
+                  }, 1000);
                 }}
                 className="mt-8 h-11 px-2 text-sm font-medium text-[var(--accent)] disabled:text-[var(--text-tertiary)] [touch-action:manipulation]"
               >
