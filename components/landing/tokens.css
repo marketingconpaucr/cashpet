@@ -45,6 +45,11 @@
   --shadow-1: 0 1px 2px rgb(124 92 252 / 0.08);
   --shadow-2: 0 12px 32px -12px rgb(124 92 252 / 0.24);
 
+  /* ── SEMÁNTICOS (FICHA-ARTE.md — éxito reutiliza --accent a propósito, sin rojo de
+     alarma para una app sin conexión bancaria; error/aviso sí necesitan su propio hue) ── */
+  --error: #e0574c;
+  --aviso: #f5a623;
+
   /* ── DERIVADOS (no se tocan: se recalculan solos desde --accent) ── */
   --chip-bg: color-mix(in oklab, var(--accent) 10%, transparent);
 

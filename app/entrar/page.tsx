@@ -9,7 +9,7 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { motion } from 'motion/react';
-import { Lock, Mail } from 'lucide-react';
+import { AlertCircle, ChevronLeft, Lock, Mail } from 'lucide-react';
 import { Accent, CtaButton } from '@/components/landing/ui';
 import { Mascota } from '@/components/Mascota';
 
@@ -20,6 +20,7 @@ export default function EntrarPage() {
   const [error, setError] = useState<string | null>(null);
   const [estado, setEstado] = useState<'idle' | 'enviando' | 'enviado'>('idle');
   const [segundosRestantes, setSegundosRestantes] = useState(0);
+  const [reenviando, setReenviando] = useState(false);
 
   useEffect(() => {
     if (segundosRestantes <= 0) return;
@@ -54,9 +55,9 @@ export default function EntrarPage() {
         }}
       />
       <div className="relative flex min-h-dvh flex-1 flex-col">
-        <header className="flex items-center px-4 pt-3">
-          <a href="/" aria-label="Volver al inicio" className="flex size-11 items-center justify-center">
-            <span aria-hidden="true" className="size-6 rounded-lg bg-[var(--accent)]" />
+        <header className="flex items-center px-2 pt-3">
+          <a href="/" aria-label="Volver al inicio" className="flex size-11 items-center justify-center text-[var(--text-secondary)]">
+            <ChevronLeft size={22} aria-hidden="true" />
           </a>
         </header>
 
@@ -81,9 +82,19 @@ export default function EntrarPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="tu@correo.com"
                   aria-label="Correo electrónico"
-                  className="h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:border-[var(--accent)] focus:bg-[var(--surface)]"
+                  aria-invalid={!!error}
+                  className={`h-14 w-full rounded-[var(--radius-button)] border bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:bg-[var(--surface)] ${
+                    error
+                      ? 'border-[var(--error)] focus:border-[var(--error)]'
+                      : 'border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] focus:border-[var(--accent)]'
+                  }`}
                 />
-                {error && <p className="text-sm font-medium text-[var(--accent)]">{error}</p>}
+                {error && (
+                  <p role="alert" className="flex items-center gap-1.5 text-sm font-medium text-[var(--error)]">
+                    <AlertCircle size={15} aria-hidden="true" />
+                    {error}
+                  </p>
+                )}
 
                 <CtaButton href="#" alto={56} onClick={enviarEnlace}>
                   {estado === 'enviando' ? 'Enviando…' : 'Enviarme mi enlace de acceso'}
@@ -114,17 +125,28 @@ export default function EntrarPage() {
 
               <button
                 type="button"
-                disabled={segundosRestantes > 0}
+                disabled={segundosRestantes > 0 || reenviando}
                 onClick={() => {
-                  setEstado('enviando');
+                  setReenviando(true);
                   setTimeout(() => {
-                    setEstado('enviado');
+                    setReenviando(false);
                     setSegundosRestantes(REENVIO_SEGUNDOS);
                   }, 700);
                 }}
                 className="mt-8 h-11 px-2 text-sm font-medium text-[var(--accent)] disabled:text-[var(--text-tertiary)] [touch-action:manipulation]"
               >
-                {segundosRestantes > 0 ? `Reenviar en ${segundosRestantes}s` : 'Reenviar enlace'}
+                {segundosRestantes > 0 ? `Reenviar en ${segundosRestantes}s` : reenviando ? 'Reenviando…' : 'Reenviar enlace'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setEstado('idle');
+                  setSegundosRestantes(0);
+                }}
+                className="mt-2 h-11 px-2 text-sm text-[var(--text-tertiary)] underline-offset-2 hover:underline [touch-action:manipulation]"
+              >
+                ¿Correo equivocado? Cambiarlo
               </button>
             </motion.div>
           )}
