@@ -26,10 +26,27 @@ export function CerrarPaywall({ onClick }: { onClick: () => void }) {
 }
 
 /* ── <FilaRecap> — una respuesta REAL del usuario (nunca genérica), en la pantalla 1.
-   Fondo hundido (surface-2) — es un dato ya guardado, no un campo editable. ── */
-export function FilaRecap({ icon: Icono, label, valor }: { icon: LucideIcon; label: string; valor: string }) {
+   Fondo hundido (surface-2) — es un dato ya guardado, no un campo editable. `indice`
+   da el stagger de entrada de 50-80ms por ítem (baseline de movimiento). ── */
+export function FilaRecap({
+  icon: Icono,
+  label,
+  valor,
+  indice = 0,
+}: {
+  icon: LucideIcon;
+  label: string;
+  valor: string;
+  indice?: number;
+}) {
+  const reduce = useReducedMotion();
   return (
-    <div className="flex items-start gap-3 rounded-[var(--radius-button)] bg-[var(--surface-2)] px-4 py-3">
+    <motion.div
+      initial={reduce ? false : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay: reduce ? 0 : indice * 0.06, ease: [0.16, 1, 0.3, 1] }}
+      className="flex items-start gap-3 rounded-[var(--radius-button)] bg-[var(--surface-2)] px-4 py-3"
+    >
       <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]">
         <Icono size={18} strokeWidth={2} color="var(--accent)" aria-hidden="true" />
       </span>
@@ -37,20 +54,26 @@ export function FilaRecap({ icon: Icono, label, valor }: { icon: LucideIcon; lab
         <p className="text-xs text-[var(--text-tertiary)]">{label}</p>
         <p className="text-[15px] font-semibold leading-snug text-[var(--text-primary)]">{valor}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 /* ── <CheckItem> — checkmark custom (círculo acento 12% + Check SVG), NUNCA el ✓ del
-   sistema ni emoji (regla dura del 55, C2 variante d). ── */
-export function CheckItem({ children }: { children: ReactNode }) {
+   sistema ni emoji (regla dura del 55, C2 variante d). `indice` da el stagger. ── */
+export function CheckItem({ children, indice = 0 }: { children: ReactNode; indice?: number }) {
+  const reduce = useReducedMotion();
   return (
-    <li className="flex items-center gap-3 text-[15px] text-[var(--text-primary)]">
+    <motion.li
+      initial={reduce ? false : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay: reduce ? 0 : indice * 0.06, ease: [0.16, 1, 0.3, 1] }}
+      className="flex items-center gap-3 text-[15px] text-[var(--text-primary)]"
+    >
       <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--accent)_14%,transparent)]">
         <Check size={14} strokeWidth={3} color="var(--accent)" aria-hidden="true" />
       </span>
       {children}
-    </li>
+    </motion.li>
   );
 }
 
@@ -102,6 +125,7 @@ export function PlanCard({
   badge,
   seleccionado,
   onClick,
+  indice = 0,
 }: {
   nombre: string;
   precioMes: string;
@@ -109,12 +133,18 @@ export function PlanCard({
   badge?: string;
   seleccionado: boolean;
   onClick: () => void;
+  indice?: number;
 }) {
+  const reduce = useReducedMotion();
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
       aria-pressed={seleccionado}
+      initial={reduce ? false : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay: reduce ? 0 : indice * 0.06, ease: [0.16, 1, 0.3, 1] }}
+      whileTap={{ scale: 0.97 }}
       className={`relative flex w-full flex-col rounded-[var(--radius-card)] border px-4 py-3.5 text-left transition-colors duration-150 [touch-action:manipulation] ${
         seleccionado
           ? 'border-[var(--accent)] bg-[color-mix(in_oklab,var(--accent)_7%,transparent)]'
@@ -135,6 +165,6 @@ export function PlanCard({
         </span>
       </div>
       <p className="mt-1 text-[13px] text-[var(--text-secondary)]">{detalle}</p>
-    </button>
+    </motion.button>
   );
 }

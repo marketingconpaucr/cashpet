@@ -115,14 +115,16 @@ export default function PaywallPage() {
               <p className="mt-2 text-sm text-[var(--text-secondary)]">Hecho con tus 6 respuestas.</p>
 
               <div className="mt-6 flex flex-col gap-2">
-                <FilaRecap icon={MapPin} label="Tu país" valor={datos?.pais ?? 'Sin datos'} />
+                <FilaRecap indice={0} icon={MapPin} label="Tu país" valor={datos?.pais ?? 'Sin datos'} />
                 <FilaRecap
+                  indice={1}
                   icon={Tag}
                   label="Categorías de riesgo identificadas"
                   valor={cantidadCategorias > 0 ? `${cantidadCategorias} categorías` : 'Sin datos'}
                 />
-                <FilaRecap icon={Calendar} label="Tu momento de riesgo" valor={datos?.momento ?? 'Sin datos'} />
+                <FilaRecap indice={2} icon={Calendar} label="Tu momento de riesgo" valor={datos?.momento ?? 'Sin datos'} />
                 <FilaRecap
+                  indice={3}
                   icon={Wallet}
                   label="Tu límite diario"
                   valor={datos ? formatoMoneda(datos.presupuestoDiario, moneda) : 'Sin datos'}
@@ -139,7 +141,8 @@ export default function PaywallPage() {
 
           {paso === 'timeline' && (
             <div className="flex flex-1 flex-col justify-center px-4 pb-16">
-              <h1 className="text-balance text-[30px] font-bold leading-[1.15] [font-family:var(--font-display)]">
+              <Mascota size={56} emocion="neutral" />
+              <h1 className="mt-4 text-balance text-[30px] font-bold leading-[1.15] [font-family:var(--font-display)]">
                 Así es tu <Accent>prueba gratis</Accent>
               </h1>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">7 días completos antes de que se cobre nada.</p>
@@ -155,8 +158,9 @@ export default function PaywallPage() {
                 />
               </div>
 
-              <button
+              <motion.button
                 type="button"
+                whileTap={{ scale: 0.97 }}
                 onClick={() => setAvisoEmail((v) => !v)}
                 className="mt-8 flex items-center gap-3 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface)] px-4 py-3 text-left [touch-action:manipulation]"
                 aria-pressed={avisoEmail}
@@ -168,7 +172,7 @@ export default function PaywallPage() {
                   {avisoEmail && <span className="size-2 rounded-[2px] bg-[var(--bg)]" />}
                 </span>
                 <span className="text-sm text-[var(--text-primary)]">¿Te avisamos por correo antes del cobro?</span>
-              </button>
+              </motion.button>
 
               <div className="mt-10 w-full pb-[max(16px,env(safe-area-inset-bottom))]">
                 <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); avanzar(); }}>
@@ -180,7 +184,8 @@ export default function PaywallPage() {
 
           {paso === 'precio' && (
             <div className="flex flex-1 flex-col px-4 pt-4">
-              <h1 className="text-balance text-[30px] font-bold leading-[1.15] [font-family:var(--font-display)]">
+              <Mascota size={48} emocion="feliz" />
+              <h1 className="mt-3 text-balance text-[30px] font-bold leading-[1.15] [font-family:var(--font-display)]">
                 Actívalo con <Accent>7 días gratis</Accent>
               </h1>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
@@ -188,13 +193,14 @@ export default function PaywallPage() {
               </p>
 
               <ul className="mt-4 flex flex-col gap-2">
-                <CheckItem>El Freno de 5 Segundos activo en cada gasto</CheckItem>
-                <CheckItem>Rachas y niveles de Gastón</CheckItem>
-                <CheckItem>Tus categorías de riesgo vigiladas</CheckItem>
+                <CheckItem indice={0}>El Freno de 5 Segundos activo en cada gasto</CheckItem>
+                <CheckItem indice={1}>Rachas y niveles de Gastón</CheckItem>
+                <CheckItem indice={2}>Tus categorías de riesgo vigiladas</CheckItem>
               </ul>
 
               <div className="mt-6 flex flex-col gap-3">
                 <PlanCard
+                  indice={3}
                   nombre="Anual"
                   precioMes="$5.83"
                   detalle="Se cobra $69.99/año"
@@ -203,6 +209,7 @@ export default function PaywallPage() {
                   onClick={() => setPlan('anual')}
                 />
                 <PlanCard
+                  indice={4}
                   nombre="Mensual"
                   precioMes="$8.99"
                   detalle="Se cobra cada mes"
@@ -222,13 +229,13 @@ export default function PaywallPage() {
                 </p>
               </div>
 
-              <div className="mt-4 flex items-center justify-center gap-4">
+              {/* "Restaurar compra" se agrega recién cuando Hotmart esté conectado (Sesión 6):
+                  mostrarlo ahora sin una compra real que restaurar sería un mock deshonesto
+                  (defecto real de la 2ª revisión — hacía exactamente lo mismo que "Ahora no",
+                  sin verificar ni restaurar nada). Ver ESTADO.md → Problemas conocidos. */}
+              <div className="mt-4 flex items-center justify-center">
                 <button type="button" onClick={cerrar} className="flex h-11 items-center px-2 text-sm text-[var(--text-tertiary)] [touch-action:manipulation]">
                   Ahora no
-                </button>
-                <span className="text-[var(--text-tertiary)]" aria-hidden="true">·</span>
-                <button type="button" onClick={cerrar} className="flex h-11 items-center px-2 text-sm text-[var(--text-tertiary)] [touch-action:manipulation]">
-                  Restaurar compra
                 </button>
               </div>
 
