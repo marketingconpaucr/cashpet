@@ -8,14 +8,21 @@
 // que sí es una validación real.
 
 import { useEffect, useState, type FormEvent } from 'react';
-import { motion } from 'motion/react';
-import { AlertCircle, ChevronLeft, Lock, Mail } from 'lucide-react';
+import { motion, useReducedMotion, type Variants } from 'motion/react';
+import { AlertCircle, ChevronLeft, Loader2, Lock, Mail } from 'lucide-react';
 import { Accent, CtaButton } from '@/components/landing/ui';
 import { Mascota } from '@/components/Mascota';
 
 const REENVIO_SEGUNDOS = 60;
 
+const CONTENEDOR: Variants = { hidden: {}, visible: { transition: { staggerChildren: 0.07 } } };
+const ITEM: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } },
+};
+
 export default function EntrarPage() {
+  const reduce = useReducedMotion();
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [estado, setEstado] = useState<'idle' | 'enviando' | 'enviado'>('idle');
@@ -61,18 +68,27 @@ export default function EntrarPage() {
           </a>
         </header>
 
-        <div className="flex flex-1 flex-col justify-center px-6 pb-16">
+        <div className="flex flex-1 flex-col px-6 pt-14 pb-16">
           {estado !== 'enviado' ? (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-              <Mascota size={72} emocion="feliz" />
-              <h1 className="mt-4 text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]">
+            <motion.div
+              variants={reduce ? undefined : CONTENEDOR}
+              initial={reduce ? false : 'hidden'}
+              animate="visible"
+            >
+              <motion.div variants={reduce ? undefined : ITEM}>
+                <Mascota size={72} emocion="feliz" />
+              </motion.div>
+              <motion.h1
+                variants={reduce ? undefined : ITEM}
+                className="mt-4 text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]"
+              >
                 Entra a tu <Accent>plan</Accent>
-              </h1>
-              <p className="mt-2 text-sm text-[var(--text-secondary)]">
+              </motion.h1>
+              <motion.p variants={reduce ? undefined : ITEM} className="mt-2 text-sm text-[var(--text-secondary)]">
                 Para guardarlo y verlo en cualquier dispositivo.
-              </p>
+              </motion.p>
 
-              <form onSubmit={enviarEnlace} className="mt-8 flex flex-col gap-3">
+              <motion.form variants={reduce ? undefined : ITEM} onSubmit={enviarEnlace} className="mt-8 flex flex-col gap-3">
                 <input
                   type="email"
                   autoFocus
@@ -92,19 +108,27 @@ export default function EntrarPage() {
                 {error && (
                   <p role="alert" className="flex items-center gap-1.5 text-sm font-medium text-[var(--error)]">
                     <AlertCircle size={15} aria-hidden="true" />
-                    {error}
+                    {error} (ej. tu@correo.com)
                   </p>
                 )}
 
-                <CtaButton href="#" alto={56} onClick={enviarEnlace}>
-                  {estado === 'enviando' ? 'Enviando…' : 'Enviarme mi enlace de acceso'}
-                </CtaButton>
-              </form>
+                <div className={estado === 'enviando' ? 'pointer-events-none opacity-70' : ''}>
+                  <CtaButton href="#" alto={56} onClick={enviarEnlace}>
+                    <span className="inline-flex items-center gap-2">
+                      {estado === 'enviando' && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}
+                      {estado === 'enviando' ? 'Enviando…' : 'Enviarme mi enlace de acceso'}
+                    </span>
+                  </CtaButton>
+                </div>
+              </motion.form>
 
-              <p className="mt-4 flex items-center gap-2 text-[13px] text-[var(--text-secondary)]">
+              <motion.p
+                variants={reduce ? undefined : ITEM}
+                className="mt-4 flex items-center gap-2 text-[13px] text-[var(--text-secondary)]"
+              >
                 <Lock size={14} aria-hidden="true" />
                 Sin contraseñas: te llegará un enlace de un solo uso.
-              </p>
+              </motion.p>
             </motion.div>
           ) : (
             <motion.div
@@ -123,8 +147,9 @@ export default function EntrarPage() {
                 Te enviamos el enlace a <span className="font-semibold text-[var(--text-primary)]">{email}</span>
               </p>
 
-              <button
+              <motion.button
                 type="button"
+                whileTap={{ scale: 0.97 }}
                 disabled={segundosRestantes > 0 || reenviando}
                 onClick={() => {
                   setReenviando(true);
@@ -136,10 +161,11 @@ export default function EntrarPage() {
                 className="mt-8 h-11 px-2 text-sm font-medium text-[var(--accent)] disabled:text-[var(--text-tertiary)] [touch-action:manipulation]"
               >
                 {segundosRestantes > 0 ? `Reenviar en ${segundosRestantes}s` : reenviando ? 'Reenviando…' : 'Reenviar enlace'}
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
                 type="button"
+                whileTap={{ scale: 0.97 }}
                 onClick={() => {
                   setEstado('idle');
                   setSegundosRestantes(0);
@@ -147,7 +173,7 @@ export default function EntrarPage() {
                 className="mt-2 h-11 px-2 text-sm text-[var(--text-tertiary)] underline-offset-2 hover:underline [touch-action:manipulation]"
               >
                 ¿Correo equivocado? Cambiarlo
-              </button>
+              </motion.button>
             </motion.div>
           )}
         </div>
