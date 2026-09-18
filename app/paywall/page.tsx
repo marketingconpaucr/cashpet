@@ -60,6 +60,7 @@ export default function PaywallPage() {
   const [datos, setDatos] = useState<DatosOnboarding | null>(null);
   const [plan, setPlan] = useState<'anual' | 'mensual'>('anual');
   const [avisoEmail, setAvisoEmail] = useState(true);
+  const [activando, setActivando] = useState(false);
 
   useEffect(() => {
     try {
@@ -73,6 +74,16 @@ export default function PaywallPage() {
   const avanzar = () => setIndice((i) => Math.min(i + 1, PASOS.length - 1));
   const atras = () => setIndice((i) => Math.max(i - 1, 0));
   const cerrar = () => router.push('/');
+
+  // Estado de carga reservado para cuando el CTA dispare un request real a Hotmart
+  // (Sesión 6) — por ahora solo cubre el hueco de feedback entre el tap y la navegación
+  // mock a /entrar, para que el botón nunca se sienta "muerto" al tocarlo.
+  const activarTrial = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    if (activando) return;
+    setActivando(true);
+    setTimeout(() => router.push('/entrar'), 500);
+  };
 
   const moneda = datos?.moneda ?? 'USD';
   const cantidadCategorias = datos?.categorias?.length ?? 0;
@@ -195,10 +206,9 @@ export default function PaywallPage() {
               <ul className="mt-4 flex flex-col gap-2">
                 <CheckItem indice={0}>El Freno de 5 Segundos activo en cada gasto</CheckItem>
                 <CheckItem indice={1}>Rachas y niveles de Gastón</CheckItem>
-                <CheckItem indice={2}>Tus categorías de riesgo vigiladas</CheckItem>
               </ul>
 
-              <div className="mt-6 flex flex-col gap-3">
+              <div className="mt-5 flex flex-col gap-3">
                 <PlanCard
                   indice={3}
                   nombre="Anual"
@@ -220,8 +230,8 @@ export default function PaywallPage() {
 
               <div className="mt-6 w-full">
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.3 }}>
-                  <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); router.push('/entrar'); }}>
-                    Empezar mis 7 días gratis
+                  <CtaButton href="#" alto={56} onClick={activarTrial}>
+                    {activando ? 'Activando…' : 'Empezar mis 7 días gratis'}
                   </CtaButton>
                 </motion.div>
                 <p className="mt-2 text-center text-[13px] text-[var(--text-secondary)]">
@@ -229,25 +239,25 @@ export default function PaywallPage() {
                 </p>
               </div>
 
+              <Hairline surface="surface" className="mt-4">
+                <div className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-[var(--text-primary)]">
+                  <Lock size={16} aria-hidden="true" />
+                  <span>Pago seguro</span>
+                  <span aria-hidden="true">·</span>
+                  <ShieldCheck size={16} aria-hidden="true" />
+                  <span>Garantía de 15 días</span>
+                </div>
+              </Hairline>
+
               {/* "Restaurar compra" se agrega recién cuando Hotmart esté conectado (Sesión 6):
                   mostrarlo ahora sin una compra real que restaurar sería un mock deshonesto
                   (defecto real de la 2ª revisión — hacía exactamente lo mismo que "Ahora no",
                   sin verificar ni restaurar nada). Ver ESTADO.md → Problemas conocidos. */}
-              <div className="mt-4 flex items-center justify-center">
+              <div className="mt-3 mb-4 flex items-center justify-center">
                 <button type="button" onClick={cerrar} className="flex h-11 items-center px-2 text-sm text-[var(--text-tertiary)] [touch-action:manipulation]">
                   Ahora no
                 </button>
               </div>
-
-              <Hairline surface="surface" className="mt-2 mb-4">
-                <div className="flex items-center justify-center gap-2 px-4 py-3 text-xs text-[var(--text-secondary)]">
-                  <Lock size={14} aria-hidden="true" />
-                  <span>Pago seguro</span>
-                  <span aria-hidden="true">·</span>
-                  <ShieldCheck size={14} aria-hidden="true" />
-                  <span>Garantía de 15 días</span>
-                </div>
-              </Hairline>
             </div>
           )}
         </TransicionPaso>
