@@ -19,6 +19,7 @@ import {
   formatoMoneda,
   guardarDatosApp,
   iconoCategoria,
+  nombreMoneda,
   simboloMoneda,
   sumaPorTipo,
   textoReaccion,
@@ -110,22 +111,28 @@ export default function InicioPage() {
   };
 
   const anotarGasto = () => {
-    // Todas las monedas de la app usan maximumFractionDigits: 0 (lib/datosApp.ts) — sin
-    // centavos. Parsear solo dígitos evita el bug real de la 10ª revisión: `parseFloat`
-    // con reemplazo de coma→punto interpretaba "25.000" o "25,000" (el usuario separando
-    // miles, como ve el propio límite formateado: "₡25 000") como 25 en vez de 25 000 —
-    // corrupción silenciosa de un monto real, sin ningún error visible.
-    const soloDigitos = monto.replace(/[^\d]/g, '');
-    const valor = soloDigitos ? parseInt(soloDigitos, 10) : NaN;
+    // El monto en la moneda PRINCIPAL de esta app nunca lleva centavos (maximumFractionDigits:
+    // 0 en lib/datosApp.ts) — parsear solo dígitos evita el bug real de la 10ª revisión:
+    // `parseFloat` con reemplazo de coma→punto interpretaba "25.000" (separador de miles)
+    // como 25 en vez de 25 000. Pero el monto en la moneda SECUNDARIA (USD) sí puede llevar
+    // centavos reales ("$12.50") — usar el mismo parseo de dígitos ahí reinterpretaba el
+    // punto decimal como separador de miles y guardaba $12.50 como 1250 (bug real de la
+    // 12ª revisión, ~100x inflado y sin aviso). Cada moneda necesita su propio parseo.
+    const usaSecundaria = monedaGasto === 'secundaria' && Boolean(datos.monedaSecundaria);
+    const valor = usaSecundaria
+      ? parseFloat(monto.replace(',', '.').replace(/[^\d.]/g, ''))
+      : (() => {
+          const soloDigitos = monto.replace(/[^\d]/g, '');
+          return soloDigitos ? parseInt(soloDigitos, 10) : NaN;
+        })();
     if (!Number.isFinite(valor) || valor <= 0) {
       setError('Escribe cuánto gastaste');
       setCampoError('monto');
       setTimeout(() => { setError(null); setCampoError(null); }, 2000);
       return;
     }
-    // El tipo de cambio sí puede tener decimales (ej. 530,50) — a diferencia del monto,
-    // que nunca lleva centavos en esta app.
-    const usaSecundaria = monedaGasto === 'secundaria' && Boolean(datos.monedaSecundaria);
+    // El tipo de cambio sí puede tener decimales (ej. 530,50) — a diferencia del monto
+    // principal, que nunca lleva centavos en esta app.
     let tasa = 0;
     if (usaSecundaria) {
       tasa = parseFloat(tipoCambio.replace(',', '.').replace(/[^\d.]/g, ''));
@@ -350,7 +357,7 @@ export default function InicioPage() {
                           monedaGasto === opcion ? 'bg-[var(--surface)] text-[var(--accent)] shadow-[var(--shadow-1)]' : 'text-[var(--text-tertiary)]'
                         }`}
                       >
-                        {opcion === 'principal' ? simboloMoneda(datos.moneda) : simboloMoneda(monedaSec)} {opcion === 'principal' ? datos.moneda : monedaSec}
+                        {opcion === 'principal' ? simboloMoneda(datos.moneda) : simboloMoneda(monedaSec)} {opcion === 'principal' ? nombreMoneda(datos.moneda) : nombreMoneda(monedaSec)}
                       </button>
                     ))}
                   </div>

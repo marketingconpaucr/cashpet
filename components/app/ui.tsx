@@ -77,7 +77,10 @@ export function BarraPresupuestoDia({ gastado, limite, formatear }: { gastado: n
   return (
     <Hairline surface="surface" className="shadow-[var(--shadow-1)]">
       <div className="p-4">
-        <span className="text-xs text-[var(--text-secondary)]">Llevas hoy</span>
+        {/* "· libre" aclara que el dato héroe excluye los gastos fijos del mes (que se
+            resumen en Progreso) — sin esto, un gasto "Fijo" en la lista de abajo no
+            movía el total y se leía como una inconsistencia (defecto real, 12ª revisión). */}
+        <span className="text-xs text-[var(--text-secondary)]">Llevas hoy · libre</span>
         {/* Sin font-family display (Fredoka): esa fuente no tiene el glifo del colón (₡,
             U+20A1) y lo renderiza roto como "Ø" — bug real confirmado contra FilaGasto,
             que sí muestra el símbolo bien porque hereda la fuente de cuerpo (Nunito).
@@ -201,7 +204,7 @@ export function FilaGasto({
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate text-[15px] font-semibold text-[var(--text-primary)]">{categoria}</p>
-          <p className="text-xs text-[var(--text-tertiary)]">
+          <p className="truncate text-xs text-[var(--text-tertiary)]">
             {hora}
             {tipo && <> · {tipo === 'fijo' ? 'Fijo' : 'Libre'}</>}
             {montoOriginal && <> · {montoOriginal}</>}

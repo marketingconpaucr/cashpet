@@ -7,33 +7,31 @@ Copy (si vende): N-A
 Fidelidad (si hubo referencia): N-A
 Veredicto: NO LISTA
 Top defectos:
-1. [Hoja "Anotar gasto" — selector de categoría, page.tsx línea 61 `setCategoria(null)`] cero valor por defecto: cada vez que se abre el formulario hay que volver a tocar una categoría desde cero, aunque sea la MISMA de la mitad de los gastos del día (esta pantalla es el ritual diario, se usa 3-5 veces/día) — heurística 7, señalado en la 10ª ronda y otra vez sin tocar → preseleccionar (sin bloquear el cambio con un toque) la categoría del último gasto anotado.
-2. [Fila de gasto en "Hoy", components/app/ui.tsx líneas 184-199] toda la fila es tappable para editar (`onEditar`) pero no lo comunica: solo el ícono de basura a la derecha sugiere interacción, nada indica que tocar el nombre/monto abre edición — un usuario nuevo no descubre que puede corregir un dígito sin borrar y recrear → agregar un signo visual sutil (chevron-right 14px o ícono de lápiz) al final de la fila, junto al monto.
-3. [Input "Monto (₡)", page.tsx línea 283-292] no formatea separador de miles mientras se escribe (se ve "20000" en texto plano) aunque el resto de la pantalla —barra, filas, límite— sí agrupa con `Intl.NumberFormat` ("₡20 000") → inconsistencia de formato entre el único campo editable y todo lo demás (heurística 4) → aplicar el mismo formateo en `onChange` para mostrar el monto ya agrupado mientras se escribe.
-4. [Grilla de categorías por defecto, inicio-2-formulario.png / page.tsx línea 296] la primera decisión que ve el usuario son 5 chips (4 frecuentes + "Otra"), en el borde superior del gate de carga cognitiva (≤4-5) — issue heredado de rondas previas, de bajo valor y nunca priorizado → si se quiere margen real, sacar "Otra" de la grilla a un enlace de texto aparte y dejar 4 chips netos.
-5. [Toast "Gasto eliminado", page.tsx líneas 212-234] el `role="status" aria-live="polite"` ya está bien puesto (fix verificado de esta ronda), pero la ventana de deshacer de 4s no tiene ninguna señal visual de cuenta regresiva — un usuario distraído pierde el "Deshacer" sin darse cuenta de cuánto tiempo le quedaba → agregar una barra de progreso angosta debajo del texto que se vacíe en los 4s.
+1. [Formulario "Anotar gasto" — parseo de monto, page.tsx línea 118-119 `monto.replace(/[^\d]/g,'')` + `parseInt`] corrupción silenciosa de dinero real con montos decimales: "12.50" se limpia a "1250" (se interpreta como separador de miles, no como centavos) — correcto para colones sin decimales, pero la MISMA función ahora también procesa la moneda secundaria (USD, línea 128-145), la moneda en la que el usuario real SÍ escribe centavos ("$12.50", "$49.99"). No hay mensaje de error: el monto guardado queda ~100x inflado sin ninguna señal. El campo "Tipo de cambio" si maneja decimales bien (línea 131, `parseFloat` con `.`/`,`) — la asimetría confirma que es un descuido, no una decisión. Fix: separar la parte entera antes de limpiar (`monto.split(/[.,]/)[0].replace(/[^\d]/g,'')`) o redondear con `Math.round(parseFloat(...))`, y agregar un caso de prueba con "12.50".
+2. [Card "Llevas hoy", pantalla Inicio, screenshot principal] el dato héroe ahora excluye los gastos "Fijo" (modelo de 2 presupuestos) sin ninguna explicación en esta pantalla: "Despensa/Comida · 08:15 · Fijo · ₡3 500" está en la lista pero no movió el total de arriba, y nada en la card ("Llevas hoy ₡10 200 de ₡25 000") aclara que es solo la bolsa libre. Un usuario cualquiera nota la discrepancia sin buscarla (suma a ojo 3500+6000+4200=13700 ≠ 10200). Fix: subtítulo de una línea bajo "Llevas hoy" (ej. "de tus gastos libres, sin lo fijo del mes") o ícono (i) con tooltip.
+3. [FilaGasto, components/app/ui.tsx línea 204-208] la segunda línea de cada fila ahora puede concatenar hasta 3 piezas ("10:56 · Libre · $50") sin `truncate` ni protección de overflow — a diferencia del nombre de categoría (línea 203), que sí lo tiene. No capturado en ningún screenshot con `montoOriginal` presente; con una categoría larga ("Tarjeta de Crédito") + monto original de varios dígitos el layout no está verificado. Fix: aplicar `truncate` a esa línea también y generar una captura de prueba con ambos casos combinados.
+4. [Selector de moneda secundaria + campo "Tipo de cambio", page.tsx líneas 339-378] todo este bloque —el más nuevo de la pantalla— nunca se vio renderizado: ninguno de los 7 screenshots lo tiene activo. El código luce razonable (orden lógico: moneda → monto → tipo de cambio → categoría, dentro del `max-h-[85dvh]` del sheet), pero el craft visual (espaciado entre el toggle segmentado y el input de monto, si el sheet sigue cabiendo sin scroll extra en 375px) queda sin verificar. Fix: capturar `inicio-2b-moneda-secundaria.png` con `monedaSecundaria` activada antes de dar el feature por cerrado.
+5. [Toggle de moneda, page.tsx línea 353] cada botón muestra símbolo + código ISO ("₡ CRC" / "$ USD") — el único lugar de la app que combina ambos; el resto del sistema (montos, placeholders) usa solo el símbolo vía `simboloMoneda()`. Inconsistencia de vocabulario visual menor (heurística 4), no confunde pero no se gana su lugar. Fix: dejar solo el símbolo, o cambiar el código ISO por el nombre coloquial ("Colones"/"Dólares").
 
-## Nota sobre el patrón de 11 rondas (pedido explícito del solicitante)
-El bug de esta ronda (parseo de montos con separador de miles, corrupción silenciosa de dinero real)
-está CORREGIDO y VERIFICADO contra el código: `monto.replace(/[^\d]/g, '')` + `parseInt(..., 10)` cubre
-tanto "25.000" como "25,000" sin ambigüedad, consistente con que todas las monedas de la app usan
-`maximumFractionDigits: 0`. Es, sin duda, el hallazgo más grave de las 11 pasadas y su corrección es
-sólida — no hay reincidencia visible en el código ni en los 7 screenshots de flujo revisados. El
-`aria-live` del toast y los `min-h-11` de los 3 enlaces (líneas 328 y 349) también están confirmados
-en el código, no solo prometidos.
-Dicho esto, el gate de USABILIDAD (≥36/40) sigue sin cruzarse, y no por falta de pulido general —el
-craft lleva 3 rondas ≥16/20 y esta pantalla es visualmente sólida— sino porque quedan al menos DOS
-defectos reales con impacto de producto, no cosméticos: (1) la ausencia de un valor por defecto de
-categoría penaliza directamente el LOOP DIARIO que esta pantalla existe para servir (se paga varias
-veces al día, no una vez); (2) la fila de gasto editable sin ningún signo visual es un problema de
-descubribilidad genuino, no un capricho de revisor — un usuario que nunca lee changelogs no tiene
-forma de saber que puede corregir un error de dígito sin borrar y recrear. Los defectos #3, #4 y #5
-sí son de menor valor y con retornos decrecientes: son pulido fino (formato en vivo del input,
-5 vs. 4 chips, barra de progreso del undo) que un ojo entrenado nota pero que no cambia el
-comportamiento de un usuario real de forma medible.
-Recomendación honesta: NO corresponde aceptar el estado actual como "listo" todavía — quedan #1 y #2
-como accionables con valor real y esfuerzo bajo (ambos son cambios de una función/un ícono, no
-rediseños). Pero SÍ corresponde reconocer que la pantalla ya no tiene bugs de integridad de datos ni
-huecos de accesibilidad duros: de aquí en adelante el trabajo que falta es específico y acotado
-(2 fixes reales, no una nueva ronda de exploración), y una 12ª pasada que resuelva #1 y #2 tiene
-trayectoria realista de cruzar el gate de usabilidad sin tocar más nada del craft.
+## Nota sobre el patrón de 12 rondas (pedido explícito del solicitante)
+Los dos defectos de la 11ª pasada —falta de categoría por defecto (H7) y fila editable sin señal
+visual (H4/H6)— están CORREGIDOS y VERIFICADOS contra el código de esta ronda: `abrirFormulario()`
+preselecciona `datos.gastosHoy[0]?.categoria` (línea 71-77) y `FilaGasto` renderiza el ícono de lápiz
+junto al monto (ui.tsx línea 213). Ninguno de los dos reaparece en las 7 capturas. Ese trabajo quedó
+bien cerrado y no hace falta repetirlo.
+El craft se mantiene establo en 16/20 (4ª ronda seguida ≥16) — las dos features nuevas no degradaron
+la jerarquía, identidad ni movimiento visibles en el screenshot principal.
+Pero el gate de USABILIDAD (≥36/40) sigue sin cruzarse, y esta vez el motivo NO es deuda acumulada de
+rondas anteriores: es la introducción de DOS features reales (modelo de 2 presupuestos + moneda
+secundaria) que trajeron un bug de integridad de datos nuevo (#1, el más grave detectado en las 12
+rondas — peor que el de separador de miles de la 10ª, porque ese SÍ tenía cobertura para el caso real
+de uso; este corrompe justo el caso de uso central de la moneda secundaria: dólares con centavos) y un
+hueco de comprensión nuevo (#2, el modelo de 2 presupuestos necesita una migaja de contexto que hoy no
+existe en esta pantalla). Ambos son accionables en una función/una línea de JSX, no un rediseño — no
+corresponde aceptar el estado actual: la app no debe guardar montos en dólares 100 veces más grandes
+de lo real sin avisar. #3, #4 y #5 son de menor severidad (riesgo de layout no verificado y una
+inconsistencia de etiqueta) y no bloquean por sí solos, pero conviene resolverlos en la misma pasada
+ya que tocan el mismo bloque de código.
+Recomendación: una 13ª ronda que corrija #1 (parseo) y agregue el subtítulo de #2 tiene trayectoria
+realista de cruzar el gate de usabilidad — son los dos únicos defectos con impacto de producto real
+de esta pasada; el resto es pulido de bajo riesgo.

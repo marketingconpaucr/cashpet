@@ -58,6 +58,25 @@ export function simboloMoneda(moneda: string): string {
   }
 }
 
+// Nombre coloquial de la moneda (ej. "Colones") para el selector de moneda secundaria —
+// el resto de la app nunca muestra el código ISO crudo ("CRC"), esto no debía ser la
+// excepción (defecto real, 12ª revisión).
+const NOMBRE_MONEDA: Record<string, string> = {
+  MXN: 'Pesos',
+  COP: 'Pesos',
+  ARS: 'Pesos',
+  CLP: 'Pesos',
+  PEN: 'Soles',
+  CRC: 'Colones',
+  GTQ: 'Quetzales',
+  DOP: 'Pesos',
+  USD: 'Dólares',
+};
+
+export function nombreMoneda(moneda: string): string {
+  return NOMBRE_MONEDA[moneda] ?? moneda;
+}
+
 // Categorías reales de la app (ESTADO.md → Decisiones de producto, extraídas del Excel
 // personal del usuario) — reemplazan las categorías de "gasto hormiga" del onboarding,
 // que eran solo para el diagnóstico inicial.
@@ -140,11 +159,25 @@ export interface DatosApp {
   gastosHoy: Gasto[];
 }
 
-// Etiqueta compacta del monto original para el historial (ej. "$50,00") — null si el
+// Etiqueta compacta del monto original para el historial (ej. "$12.50") — null si el
 // gasto se anotó directo en la moneda principal (el caso normal, sin nada que aclarar).
+// A diferencia de formatoMoneda (siempre redondea a unidades enteras, convención del
+// resto de la app), acá SÍ se conservan los centavos si el usuario los escribió — es
+// trazabilidad de lo que anotó, no el monto ya convertido (defecto real, 12ª revisión:
+// "$12.50" se mostraba redondeado a "$13", perdiendo precisión sin necesidad).
 export function etiquetaMontoOriginal(g: Gasto): string | null {
   if (!g.monedaOriginal || g.montoOriginal == null) return null;
-  return formatoMoneda(g.montoOriginal, g.monedaOriginal);
+  const locale = LOCALE_POR_MONEDA[g.monedaOriginal] ?? 'es';
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: g.monedaOriginal,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(g.montoOriginal);
+  } catch {
+    return `${g.monedaOriginal} ${g.montoOriginal}`;
+  }
 }
 
 // Suma solo los gastos de un tipo (fijo o libre) — usado para separar el dato héroe de
