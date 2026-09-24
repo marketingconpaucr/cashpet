@@ -58,8 +58,8 @@ export default function EntrarPage() {
         className="pointer-events-none fixed inset-0"
         style={{
           background:
-            'radial-gradient(600px 360px at 15% 0%, color-mix(in oklab, var(--accent) 14%, transparent) 0%, transparent 60%), ' +
-            'radial-gradient(520px 420px at 100% 100%, color-mix(in oklab, var(--accent-2) 12%, transparent) 0%, transparent 55%)',
+            'radial-gradient(600px 360px at 15% 0%, color-mix(in oklab, var(--accent) 8%, transparent) 0%, transparent 60%), ' +
+            'radial-gradient(520px 420px at 100% 100%, color-mix(in oklab, var(--accent-2) 7%, transparent) 0%, transparent 55%)',
         }}
       />
       <div className="relative flex min-h-dvh flex-1 flex-col">

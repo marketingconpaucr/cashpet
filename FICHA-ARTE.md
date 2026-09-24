@@ -1,5 +1,41 @@
 # FICHA DE DIRECCIÓN DE ARTE — CashPet
 
+## Rediseño de superficies: blanco sobrio (2026-09-24 — reabierto a pedido EXPLÍCITO del usuario, no es "cosa juzgada" roto)
+- El usuario pidió, ya con la Sesión 5 (app interna) en curso: "quiero que la aplicación tenga un
+  estilo más elegante, con fondo blanco" — para TODA la app (no solo la pantalla en construcción).
+  Eligió que yo propusiera el estilo (sin referencia visual propia). Primera propuesta (fondo
+  #FAF9F6, superficie hundida #F1EEE8, texto más neutro): el usuario pidió un 2º ajuste — "más
+  blanco aún, más elegante y sobrio... es quitar el color beige". Aprobado en su forma final tras
+  ver capturas de landing, Inicio, onboarding y paywall.
+- Qué cambió (en `components/landing/tokens.css`, archivo único importado en toda la app —
+  cambia de una vez en landing/onboarding/paywall/entrar/app interna):
+  - `--bg`: de #FDF1E7 (durazno cálido) → **#FFFFFF** (blanco puro, a pedido explícito — la regla
+    general del SO de "nunca #FFF puro" se levanta aquí porque el usuario lo pidió con todas las
+    letras; `--surface` queda también en #FFFFFF a propósito: la separación entre fondo y cards
+    ahora la dan el Hairline con borde degradado y las sombras, no un salto de color)
+  - `--surface-2` (hundido): de #F7F1E9 → **#F2F1EF** (gris neutro, sin tinte café/beige)
+  - `--text-primary`: de #3A2A1E (café oscuro) → **#211E1C** (casi negro, neutro)
+  - `--text-secondary`/`--text-tertiary`: de #7A6A5C (gris-café/beige) → **#6F6B67** (gris neutro)
+  - Los mesh de profundidad radiales (`radial-gradient` del acento en los fondos de onboarding,
+    paywall, entrar y el layout de la app interna) se atenuaron ~35-40% (ej. 10%/8% → 6%/5% en
+    onboarding/paywall; 14%/12% → 8%/7% en entrar; 8%/6% → 5%/4% en la app interna): el mismo
+    porcentaje de tinte violeta se veía más presente contra blanco puro que contra el durazno
+    original, y competía con la lectura "sobria" que pidió el usuario — se mantiene el mesh (la
+    profundidad de fondo sigue siendo obligatoria, 32-DEL-MVP-AL-PRODUCTO) pero mucho más discreto.
+  - Verificado con cálculo de contraste real (no estimado): texto primario/secundario sobre el
+    nuevo `--bg` blanco, y texto claro del CTA sobre `--accent` (#7154E5) — todos ≥4.5:1 (AA), el
+    CTA mejoró de ~4.61:1 a ~5.11:1 al ser el fondo ahora blanco puro en vez de durazno.
+- Qué NO cambió: el acento violeta (#7154E5), Gastón (color, diseño, las 5 emociones), tipografía
+  (Fredoka/Nunito), radios (20-24px), ni la personalidad (sarcástica/altanera/juguetona) — el
+  usuario fue explícito: "podemos mantener el violeta, es quitar el color beige".
+- Aplicado globalmente de una sola vez (token único) — no requirió tocar cada pantalla por
+  separado, salvo el ajuste de opacidad de los 4 mesh radiales (onboarding/paywall/entrar/app
+  interna, cada uno hardcodeado en su propio archivo en vez de vivir en el token). Verificado
+  visualmente (capturas a 375px) en landing, Inicio, onboarding, paywall y entrar — no se relanzó
+  el revisor-visual pantalla por pantalla para este cambio (es un ajuste de paleta de superficies
+  ya verificado con matemática de contraste + aprobación directa del usuario con capturas reales,
+  no un cambio estructural o de contenido que necesite el gate doble de nuevo).
+
 ## Cambio de mascota (2026-09-17 — reabierto a pedido EXPLÍCITO del usuario, no es "cosa juzgada" roto)
 - La mascota deja de ser un blob-osito sin nombre y pasa a ser **Gastón, el Gato**: un gato
   rechoncho violeta. El sarcasmo es su idioma — reacciona a los gastos con humor altanero — pero
@@ -76,7 +112,7 @@
 - Estas 5 caras son variaciones del MISMO personaje (mismas orejas/mofletes/bigotes/cola) — cambian ojos, boca y cejas, nunca el diseño base
 
 ## Brand kit final (valores para globals.css/@theme)
-- Fondo: #FDF1E7 · Superficie: #FFFFFF · Hundido: #F7F1E9 · Texto 1º/2º: #3A2A1E / #7A6A5C
+- Fondo: #FFFFFF (rediseño blanco sobrio, 2026-09-24 — ver sección al inicio del archivo) · Superficie: #FFFFFF · Hundido: #F2F1EF · Texto 1º/2º: #211E1C / #6F6B67
 - Acento: #7C5CFC (SOLO en: CTA principal, tabbar activa, insights, chips; también el pelaje de Gastón)
 - Semánticos: éxito #7C5CFC (reutiliza el acento — app sin conexión bancaria, sin rojo de alarma a propósito) · error #E0574C · aviso #F5A623
 - Display: Fredoka (pesos 500/600/700) · Body: Nunito (pesos 400/600/700/800) · Escala: display 42px / title 25px / body 14.5px / label 11.5px

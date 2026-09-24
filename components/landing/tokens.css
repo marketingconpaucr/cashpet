@@ -17,15 +17,20 @@
    ============================================================================ */
 
 :root {
-  /* ── SUPERFICIES (FICHA-ARTE.md — CashPet) ── */
-  --bg: #fdf1e7;
+  /* ── SUPERFICIES (FICHA-ARTE.md — CashPet, rediseño "elegante, fondo blanco"
+     pedido por el usuario 2026-09-24 — v2: blanco puro y sobrio, sin ningún resto de
+     beige, a pedido explícito del usuario tras ver la 1ª propuesta ("más blanco aún,
+     más elegante y sobrio... es quitar el color beige"). --bg y --surface quedan
+     iguales a propósito — la separación entre fondo y cards la dan el Hairline
+     (borde degradado) y las sombras, no un salto de color. ── */
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface-2: #f7f1e9;
+  --surface-2: #f2f1ef;
 
-  /* ── TEXTO (FICHA-ARTE.md — texto secundario ajustado a #7A6A5C para pasar AA 4.5:1 sobre --bg) ── */
-  --text-primary: #3a2a1e;
-  --text-secondary: #7a6a5c;
-  --text-tertiary: #7a6a5c;
+  /* ── TEXTO (neutro, sin el tinte café del durazno original — sigue pasando AA 4.5:1) ── */
+  --text-primary: #211e1c;
+  --text-secondary: #6f6b67;
+  --text-tertiary: #6f6b67;
 
   /* ── MARCA (violeta de FICHA-ARTE.md #7c5cfc, oscurecido ~9% para pasar AA 4.5:1
      con el texto crema del CTA — --bg mide más claro que blanco puro, así que el
