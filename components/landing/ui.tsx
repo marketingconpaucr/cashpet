@@ -64,9 +64,13 @@ export function Hairline({
       className={`rounded-[var(--radius-card)] ${className}`}
       style={{
         border: `${emphasis ? 2 : 1}px solid transparent`,
+        // El degradado NUNCA llega a transparent puro: en cards grandes (ej. BarraPresupuestoDia)
+        // "transparent 60%" apagaba el borde antes de cerrar el rectángulo, y se leía como un
+        // borde roto/abierto, no como un detalle sutil (defecto real reportado por el usuario
+        // 2026-09-24 con una captura). El punto final ahora es un acento tenue, no cero.
         background:
           `linear-gradient(var(--${surface}), var(--${surface})) padding-box, ` +
-          `linear-gradient(135deg, color-mix(in oklab, var(--accent) ${emphasis ? 55 : 40}%, transparent), transparent 60%) border-box`,
+          `linear-gradient(135deg, color-mix(in oklab, var(--accent) ${emphasis ? 55 : 40}%, transparent), color-mix(in oklab, var(--accent) 14%, transparent)) border-box`,
       }}
     >
       {children}
