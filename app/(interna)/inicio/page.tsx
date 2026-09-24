@@ -15,6 +15,7 @@ import {
   CATEGORIAS,
   calcularEmocion,
   cargarDatosApp,
+  etiquetaMontoOriginal,
   formatoMoneda,
   guardarDatosApp,
   iconoCategoria,
@@ -46,8 +47,12 @@ export default function InicioPage() {
   const [busquedaCategoria, setBusquedaCategoria] = useState('');
   const [categoriaPersonalizada, setCategoriaPersonalizada] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [campoError, setCampoError] = useState<'monto' | 'categoria' | null>(null);
+  const [campoError, setCampoError] = useState<'monto' | 'categoria' | 'tipoCambio' | null>(null);
   const [eliminado, setEliminado] = useState<Gasto | null>(null);
+  // Moneda secundaria (2026-09-24): si está activada en Perfil, el usuario puede anotar
+  // un gasto en esa moneda y convertirlo a mano con el tipo de cambio del día.
+  const [monedaGasto, setMonedaGasto] = useState<'principal' | 'secundaria'>('principal');
+  const [tipoCambio, setTipoCambio] = useState('');
 
   useEffect(() => {
     setDatos(cargarDatosApp());
@@ -71,13 +76,23 @@ export default function InicioPage() {
     setMostrarTodas(esConocida && !CATEGORIAS_FRECUENTES.some((c) => c.label === ultima));
     setCategoriaPersonalizada(ultima !== null && !esConocida);
     setBusquedaCategoria('');
+    setMonedaGasto('principal');
+    setTipoCambio(datos.ultimoTipoCambio ? String(datos.ultimoTipoCambio) : '');
     setAgregando(true);
   };
 
   const editarGasto = (g: Gasto) => {
     const esConocida = CATEGORIAS.some((c) => c.label === g.categoria);
     setEditandoId(g.id);
-    setMonto(String(g.monto));
+    if (g.monedaOriginal && g.montoOriginal != null) {
+      setMonto(String(g.montoOriginal));
+      setMonedaGasto('secundaria');
+      setTipoCambio(g.tipoCambio ? String(g.tipoCambio) : '');
+    } else {
+      setMonto(String(g.monto));
+      setMonedaGasto('principal');
+      setTipoCambio(datos.ultimoTipoCambio ? String(datos.ultimoTipoCambio) : '');
+    }
     setCategoria(g.categoria);
     setMostrarTodas(esConocida && !CATEGORIAS_FRECUENTES.some((c) => c.label === g.categoria));
     setCategoriaPersonalizada(!esConocida);
@@ -108,18 +123,48 @@ export default function InicioPage() {
       setTimeout(() => { setError(null); setCampoError(null); }, 2000);
       return;
     }
+    // El tipo de cambio sí puede tener decimales (ej. 530,50) — a diferencia del monto,
+    // que nunca lleva centavos en esta app.
+    const usaSecundaria = monedaGasto === 'secundaria' && Boolean(datos.monedaSecundaria);
+    let tasa = 0;
+    if (usaSecundaria) {
+      tasa = parseFloat(tipoCambio.replace(',', '.').replace(/[^\d.]/g, ''));
+      if (!Number.isFinite(tasa) || tasa <= 0) {
+        setError('Escribe el tipo de cambio de hoy');
+        setCampoError('tipoCambio');
+        setTimeout(() => { setError(null); setCampoError(null); }, 2000);
+        return;
+      }
+    }
     if (!categoria) {
       setError('Elige una categoría');
       setCampoError('categoria');
       setTimeout(() => { setError(null); setCampoError(null); }, 2000);
       return;
     }
+    const montoConvertido = usaSecundaria ? Math.round(valor * tasa) : valor;
+    const camposMoneda = usaSecundaria
+      ? { montoOriginal: valor, monedaOriginal: datos.monedaSecundaria, tipoCambio: tasa }
+      : { montoOriginal: undefined, monedaOriginal: undefined, tipoCambio: undefined };
     const actualizado: DatosApp = editandoId
-      ? { ...datos, gastosHoy: datos.gastosHoy.map((g) => (g.id === editandoId ? { ...g, monto: valor, categoria } : g)) }
+      ? {
+          ...datos,
+          ...(usaSecundaria ? { ultimoTipoCambio: tasa } : {}),
+          gastosHoy: datos.gastosHoy.map((g) =>
+            g.id === editandoId ? { ...g, monto: montoConvertido, categoria, ...camposMoneda } : g
+          ),
+        }
       : {
           ...datos,
+          ...(usaSecundaria ? { ultimoTipoCambio: tasa } : {}),
           gastosHoy: [
-            { id: crypto.randomUUID(), monto: valor, categoria, hora: new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }) },
+            {
+              id: crypto.randomUUID(),
+              monto: montoConvertido,
+              categoria,
+              hora: new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }),
+              ...camposMoneda,
+            },
             ...datos.gastosHoy,
           ],
         };
@@ -212,6 +257,7 @@ export default function InicioPage() {
                     monto={formatoMoneda(g.monto, datos.moneda)}
                     hora={g.hora}
                     tipo={tipoPresupuesto(g.categoria)}
+                    montoOriginal={etiquetaMontoOriginal(g)}
                     onEditar={() => editarGasto(g)}
                     onEliminar={() => eliminarGasto(g.id)}
                   />
@@ -290,16 +336,47 @@ export default function InicioPage() {
               onSubmit={(e) => { e.preventDefault(); anotarGasto(); }}
               className="flex flex-col gap-3 p-4"
             >
+              {datos.monedaSecundaria && (() => {
+                const monedaSec = datos.monedaSecundaria;
+                return (
+                  <div className="flex gap-2 rounded-[var(--radius-button)] bg-[var(--surface-2)] p-1">
+                    {(['principal', 'secundaria'] as const).map((opcion) => (
+                      <button
+                        key={opcion}
+                        type="button"
+                        onClick={() => setMonedaGasto(opcion)}
+                        aria-pressed={monedaGasto === opcion}
+                        className={`h-9 flex-1 rounded-[var(--radius-button)] text-sm font-semibold [touch-action:manipulation] ${
+                          monedaGasto === opcion ? 'bg-[var(--surface)] text-[var(--accent)] shadow-[var(--shadow-1)]' : 'text-[var(--text-tertiary)]'
+                        }`}
+                      >
+                        {opcion === 'principal' ? simboloMoneda(datos.moneda) : simboloMoneda(monedaSec)} {opcion === 'principal' ? datos.moneda : monedaSec}
+                      </button>
+                    ))}
+                  </div>
+                );
+              })()}
               <input
                     type="text"
                     inputMode="numeric"
                     autoFocus
                     value={monto}
                     onChange={(e) => { setMonto(e.target.value); if (error) { setError(null); setCampoError(null); } }}
-                    placeholder={`Monto (${simboloMoneda(datos.moneda)})`}
+                    placeholder={`Monto (${monedaGasto === 'secundaria' && datos.monedaSecundaria ? simboloMoneda(datos.monedaSecundaria) : simboloMoneda(datos.moneda)})`}
                     aria-invalid={campoError === 'monto'}
                     className={`h-14 w-full rounded-[var(--radius-button)] border bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:border-[var(--accent)] focus:bg-[var(--surface)] ${campoError === 'monto' ? 'border-[var(--error)]' : 'border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)]'}`}
                   />
+                  {monedaGasto === 'secundaria' && datos.monedaSecundaria && (
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={tipoCambio}
+                      onChange={(e) => { setTipoCambio(e.target.value); if (error) { setError(null); setCampoError(null); } }}
+                      placeholder={`Tipo de cambio (${simboloMoneda(datos.moneda)} por ${simboloMoneda(datos.monedaSecundaria)}1)`}
+                      aria-invalid={campoError === 'tipoCambio'}
+                      className={`h-12 w-full rounded-[var(--radius-button)] border bg-[var(--surface-2)] px-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)] focus:bg-[var(--surface)] ${campoError === 'tipoCambio' ? 'border-[var(--error)]' : 'border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)]'}`}
+                    />
+                  )}
                   {!categoriaPersonalizada ? (
                     <>
                       {mostrarTodas && (

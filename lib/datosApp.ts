@@ -32,6 +32,7 @@ const LOCALE_POR_MONEDA: Record<string, string> = {
   CRC: 'es-CR',
   GTQ: 'es-GT',
   DOP: 'es-DO',
+  USD: 'en-US',
 };
 
 export function formatoMoneda(v: number, moneda: string): string {
@@ -107,18 +108,43 @@ export function tipoPresupuesto(categoria: string): TipoPresupuesto {
 
 export interface Gasto {
   id: string;
+  /** Siempre en la moneda PRINCIPAL — todo el cálculo de presupuestos usa este valor,
+   * ya convertido si el gasto se anotó en la moneda secundaria (ver abajo). */
   monto: number;
   categoria: string;
   hora: string;
+  /** Moneda secundaria (2026-09-24, a pedido del usuario: ingresos/pagos mezclados en 2
+   * monedas, ej. dólares y colones en Costa Rica). Si el gasto se anotó en la moneda
+   * secundaria, se guarda el monto/moneda originales + el tipo de cambio usado ese día
+   * (manual, no automático: "el tipo de cambio es muy variable" según cada banco/día) —
+   * así el historial conserva trazabilidad sin perder precisión en los presupuestos, que
+   * siguen siendo de una sola moneda. */
+  montoOriginal?: number;
+  monedaOriginal?: string;
+  tipoCambio?: number;
 }
 
 export interface DatosApp {
   moneda: string;
+  /** Ej. 'USD' — si está definida, el usuario puede anotar gastos en esta moneda además
+   * de la principal (activado desde Perfil). undefined = solo una moneda, comportamiento
+   * de antes. */
+  monedaSecundaria?: string;
+  /** Precarga el campo de tipo de cambio la próxima vez que se anota en la moneda
+   * secundaria — conveniencia, no una tasa fija: el usuario la puede corregir siempre. */
+  ultimoTipoCambio?: number;
   presupuestoMensual: number;
   presupuestoLibreDiario: number;
   racha: number;
   nivelMascota: number;
   gastosHoy: Gasto[];
+}
+
+// Etiqueta compacta del monto original para el historial (ej. "$50,00") — null si el
+// gasto se anotó directo en la moneda principal (el caso normal, sin nada que aclarar).
+export function etiquetaMontoOriginal(g: Gasto): string | null {
+  if (!g.monedaOriginal || g.montoOriginal == null) return null;
+  return formatoMoneda(g.montoOriginal, g.monedaOriginal);
 }
 
 // Suma solo los gastos de un tipo (fijo o libre) — usado para separar el dato héroe de

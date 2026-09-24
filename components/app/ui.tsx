@@ -159,6 +159,7 @@ export function FilaGasto({
   monto,
   hora,
   tipo,
+  montoOriginal,
   indice = 0,
   onEditar,
   onEliminar,
@@ -170,6 +171,9 @@ export function FilaGasto({
   /** Fijo (mes) vs libre (día) — explica por qué algunos gastos no mueven el dato héroe
    * de Inicio, que es solo sobre la bolsa libre (ver "Dos presupuestos" en lib/datosApp.ts). */
   tipo?: 'fijo' | 'libre';
+  /** Si el gasto se anotó en la moneda secundaria, el monto original (ej. "$50,00") —
+   * trazabilidad de la conversión manual (ver lib/datosApp.ts → etiquetaMontoOriginal). */
+  montoOriginal?: string | null;
   indice?: number;
   /** Tocar la fila reabre el formulario prellenado — corrige un error de dígito sin
    * borrar y re-crear desde cero (defecto real de la 2ª revisión). */
@@ -200,6 +204,7 @@ export function FilaGasto({
           <p className="text-xs text-[var(--text-tertiary)]">
             {hora}
             {tipo && <> · {tipo === 'fijo' ? 'Fijo' : 'Libre'}</>}
+            {montoOriginal && <> · {montoOriginal}</>}
           </p>
         </div>
         <span className="shrink-0 text-[15px] font-bold tabular-nums text-[var(--text-primary)]">{monto}</span>
