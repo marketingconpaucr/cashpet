@@ -31,21 +31,26 @@ interface PaisMoneda {
    * pierde el símbolo real y agrupa mal los miles de 4 cifras (bug verificado en Node/ICU
    * — 'es-CR' da "₡5 000", 'es' a secas da "5000 CRC"). Un locale por país lo evita. */
   locale: string;
-  rango: [number, number, number, number]; // min, max, default, step
+  /** Presupuesto LIBRE (impulso, día a día): min, max, default, step. */
+  rango: [number, number, number, number];
+  /** Presupuesto MENSUAL (fijo: renta, recibos, súper): min, max, default, step. Rango
+   * ~15-20x el libre diario — estimación LATAM razonable, no validada con datos de
+   * mercado propios (misma naturaleza de estimación que el rango libre de arriba). */
+  rangoMensual: [number, number, number, number];
 }
 
 const PAISES: PaisMoneda[] = [
-  { nombre: 'México', moneda: 'MXN', locale: 'es-MX', rango: [100, 2000, 500, 10] },
-  { nombre: 'Colombia', moneda: 'COP', locale: 'es-CO', rango: [20000, 400000, 100000, 5000] },
-  { nombre: 'Argentina', moneda: 'ARS', locale: 'es-AR', rango: [2000, 40000, 10000, 500] },
-  { nombre: 'Chile', moneda: 'CLP', locale: 'es-CL', rango: [5000, 100000, 25000, 1000] },
-  { nombre: 'Perú', moneda: 'PEN', locale: 'es-PE', rango: [20, 400, 100, 5] },
-  { nombre: 'Costa Rica', moneda: 'CRC', locale: 'es-CR', rango: [5000, 100000, 25000, 1000] },
-  { nombre: 'Ecuador', moneda: 'USD', locale: 'es-EC', rango: [5, 100, 25, 1] },
-  { nombre: 'Guatemala', moneda: 'GTQ', locale: 'es-GT', rango: [50, 1000, 250, 10] },
-  { nombre: 'República Dominicana', moneda: 'DOP', locale: 'es-DO', rango: [500, 10000, 2500, 100] },
+  { nombre: 'México', moneda: 'MXN', locale: 'es-MX', rango: [100, 2000, 500, 10], rangoMensual: [3000, 30000, 12000, 500] },
+  { nombre: 'Colombia', moneda: 'COP', locale: 'es-CO', rango: [20000, 400000, 100000, 5000], rangoMensual: [500000, 6000000, 2000000, 50000] },
+  { nombre: 'Argentina', moneda: 'ARS', locale: 'es-AR', rango: [2000, 40000, 10000, 500], rangoMensual: [200000, 4000000, 900000, 10000] },
+  { nombre: 'Chile', moneda: 'CLP', locale: 'es-CL', rango: [5000, 100000, 25000, 1000], rangoMensual: [400000, 3000000, 900000, 10000] },
+  { nombre: 'Perú', moneda: 'PEN', locale: 'es-PE', rango: [20, 400, 100, 5], rangoMensual: [800, 6000, 2500, 50] },
+  { nombre: 'Costa Rica', moneda: 'CRC', locale: 'es-CR', rango: [5000, 100000, 25000, 1000], rangoMensual: [300000, 2000000, 700000, 10000] },
+  { nombre: 'Ecuador', moneda: 'USD', locale: 'es-EC', rango: [5, 100, 25, 1], rangoMensual: [300, 2000, 800, 25] },
+  { nombre: 'Guatemala', moneda: 'GTQ', locale: 'es-GT', rango: [50, 1000, 250, 10], rangoMensual: [2000, 15000, 6000, 100] },
+  { nombre: 'República Dominicana', moneda: 'DOP', locale: 'es-DO', rango: [500, 10000, 2500, 100], rangoMensual: [15000, 120000, 45000, 1000] },
 ];
-const PAIS_OTRO: PaisMoneda = { nombre: 'Otro país', moneda: 'USD', locale: 'es', rango: [5, 100, 25, 1] };
+const PAIS_OTRO: PaisMoneda = { nombre: 'Otro país', moneda: 'USD', locale: 'es', rango: [5, 100, 25, 1], rangoMensual: [300, 2000, 800, 25] };
 
 const OPCIONES_DOLOR = [
   'En la quincena/fin de mes',
@@ -79,7 +84,8 @@ const PASOS = [
   'reconocimiento1',
   'categorias',
   'momento',
-  'presupuesto',
+  'presupuestoMensual',
+  'presupuestoLibre',
   'activacion',
   'reconocimientoFinal',
   'loading',
@@ -88,14 +94,15 @@ type Paso = (typeof PASOS)[number];
 
 const PROGRESO: Record<Paso, number> = {
   bienvenida: 0,
-  pais: 12,
-  dolor: 26,
-  reconocimiento1: 26,
-  categorias: 42,
-  momento: 58,
-  presupuesto: 74,
-  activacion: 88,
-  reconocimientoFinal: 88,
+  pais: 11,
+  dolor: 22,
+  reconocimiento1: 22,
+  categorias: 36,
+  momento: 50,
+  presupuestoMensual: 64,
+  presupuestoLibre: 78,
+  activacion: 90,
+  reconocimientoFinal: 90,
   loading: 100,
 };
 
@@ -120,11 +127,18 @@ function simboloMoneda(moneda: string, locale: string): string {
   }
 }
 
-function feedbackPresupuesto(v: number, min: number, max: number): string {
+function feedbackPresupuestoLibre(v: number, min: number, max: number): string {
   const rel = (v - min) / (max - min);
   if (rel < 0.35) return 'Un límite ajustado — Gastón te va a mantener a raya';
   if (rel < 0.7) return 'Un límite realista para empezar';
   return 'Un límite generoso — igual te avisamos si te pasas';
+}
+
+function feedbackPresupuestoMensual(v: number, min: number, max: number): string {
+  const rel = (v - min) / (max - min);
+  if (rel < 0.35) return 'Un presupuesto fijo ajustado';
+  if (rel < 0.7) return 'Un presupuesto fijo realista';
+  return 'Un presupuesto fijo amplio';
 }
 
 export default function OnboardingPage() {
@@ -150,9 +164,13 @@ export default function OnboardingPage() {
   const [momento, setMomento] = useState<string | null>(null);
 
   const monedaActual = pais ?? PAIS_OTRO;
-  const [presupuesto, setPresupuesto] = useState(monedaActual.rango[2]);
+  // Dos presupuestos, no uno: LIBRE (impulso, día a día) + MENSUAL (fijo: renta, recibos,
+  // súper) — ver "Dos presupuestos" en lib/datosApp.ts.
+  const [presupuestoLibre, setPresupuestoLibre] = useState(monedaActual.rango[2]);
+  const [presupuestoMensual, setPresupuestoMensual] = useState(monedaActual.rangoMensual[2]);
   useEffect(() => {
-    setPresupuesto(monedaActual.rango[2]);
+    setPresupuestoLibre(monedaActual.rango[2]);
+    setPresupuestoMensual(monedaActual.rangoMensual[2]);
     // Solo al fijar el país por primera vez — no queremos resetear si el usuario ya ajustó el slider.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monedaActual.moneda]);
@@ -169,7 +187,7 @@ export default function OnboardingPage() {
 
   const avanzar = () => setIndice((i) => Math.min(i + 1, PASOS.length - 1));
   const atras = () => {
-    // Si el usuario ya vio la reacción de Gastón y retrocede (ej. a "presupuesto" para
+    // Si el usuario ya vio la reacción de Gastón y retrocede (ej. a "presupuestoLibre" para
     // ajustar su límite), la reacción vieja no debe seguir esperando al reingresar —
     // sin este reset, avanzar de nuevo salta directo al resultado con datos obsoletos.
     if (paso === 'activacion') {
@@ -220,7 +238,7 @@ export default function OnboardingPage() {
       setTimeout(() => setErrorGasto(null), 2000);
       return;
     }
-    const proporcion = monto / presupuesto;
+    const proporcion = monto / presupuestoLibre;
     let emocion: EmocionMascota;
     if (proporcion <= 0.5) emocion = 'celebrando';
     else if (proporcion <= 1) emocion = 'feliz';
@@ -242,7 +260,8 @@ export default function OnboardingPage() {
           dolor,
           categorias: categorias.concat(otraCategoria ? [otraCategoria] : []),
           momento,
-          presupuestoDiario: presupuesto,
+          presupuestoLibreDiario: presupuestoLibre,
+          presupuestoMensual,
           gastoPrueba: { monto: parseFloat(gastoMonto) || 0, categoria: gastoCategoria },
         })
       );
@@ -288,8 +307,8 @@ export default function OnboardingPage() {
               Hola, soy <Accent>Gastón</Accent>
             </h1>
             <p className="mt-3 max-w-[34ch] text-[15px] leading-relaxed text-[var(--text-secondary)]">
-              Contesta unas preguntas rápidas y te muestro cómo te voy a frenar antes de la próxima compra
-              que ibas a lamentar.
+              Contesta unas preguntas rápidas y te muestro cómo te voy a decir si vas bien o te estás
+              pasando, apenas anotes un gasto.
             </p>
             <div className="mt-8 w-full pb-[max(16px,env(safe-area-inset-bottom))]">
               <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); avanzar(); }}>
@@ -380,8 +399,8 @@ export default function OnboardingPage() {
             tituloMarked={<>No es falta de <Accent>voluntad</Accent></>}
             cuerpo={
               dolor === 'Ni idea — y eso es lo que quiero descubrir'
-                ? 'Si ni siquiera sabes cuándo se te va, el problema no es tu disciplina: es que nadie te avisa EN EL MOMENTO. Por eso existe el Freno de 5 Segundos.'
-                : 'Que sepas exactamente cuándo se te escapa el dinero ya te pone adelante de la mayoría. El problema nunca fue no saber ahorrar — fue que nadie te avisaba a tiempo. Para eso está el Freno de 5 Segundos.'
+                ? 'Si ni siquiera sabes cuándo se te va, el problema no es tu disciplina: es que nadie te avisa EN EL MOMENTO. Por eso existe El Chequeo de Gastón.'
+                : 'Que sepas exactamente cuándo se te escapa el dinero ya te pone adelante de la mayoría. El problema nunca fue no saber ahorrar — fue que nadie te avisaba a tiempo. Para eso está El Chequeo de Gastón.'
             }
             onContinuar={avanzar}
           />
@@ -455,17 +474,33 @@ export default function OnboardingPage() {
           </PantallaPregunta>
         )}
 
-        {paso === 'presupuesto' && (
+        {paso === 'presupuestoMensual' && (
           <SliderCompromiso
-            tituloMarked={<>¿Cuánto quieres gastar como <Accent>máximo</Accent> al día?</>}
-            valor={presupuesto}
+            tituloMarked={<>¿Cuánto gastas al mes en lo <Accent>fijo</Accent> — renta, recibos, súper?</>}
+            valor={presupuestoMensual}
+            min={monedaActual.rangoMensual[0]}
+            max={monedaActual.rangoMensual[1]}
+            step={monedaActual.rangoMensual[3]}
+            formatear={(v) => formatoMoneda(v, monedaActual.moneda, monedaActual.locale)}
+            onCambiar={setPresupuestoMensual}
+            onFijar={avanzar}
+            feedback={feedbackPresupuestoMensual(presupuestoMensual, monedaActual.rangoMensual[0], monedaActual.rangoMensual[1])}
+            unidad="al mes"
+            ariaLabel="Presupuesto fijo mensual"
+          />
+        )}
+
+        {paso === 'presupuestoLibre' && (
+          <SliderCompromiso
+            tituloMarked={<>¿Cuánto quieres tener <Accent>libre</Accent> al día para gastos del día a día?</>}
+            valor={presupuestoLibre}
             min={monedaActual.rango[0]}
             max={monedaActual.rango[1]}
             step={monedaActual.rango[3]}
             formatear={(v) => formatoMoneda(v, monedaActual.moneda, monedaActual.locale)}
-            onCambiar={setPresupuesto}
+            onCambiar={setPresupuestoLibre}
             onFijar={avanzar}
-            feedback={feedbackPresupuesto(presupuesto, monedaActual.rango[0], monedaActual.rango[1])}
+            feedback={feedbackPresupuestoLibre(presupuestoLibre, monedaActual.rango[0], monedaActual.rango[1])}
           />
         )}
 
@@ -541,7 +576,7 @@ export default function OnboardingPage() {
           <PantallaReconocimiento
             emocion="celebrando"
             tituloMarked={<>Ya diste el <Accent>primer paso</Accent></>}
-            cuerpo="Pocos definen su límite Y anotan un gasto antes de tener la app instalada. Tu Freno de 5 Segundos va a usar exactamente esa disciplina que ya mostraste."
+            cuerpo="Pocos definen su límite Y anotan un gasto antes de tener la app instalada. El Chequeo de Gastón va a usar exactamente esa disciplina que ya mostraste."
             dato={
               <BarraMiniVisual
                 etiqueta="Categorías de riesgo identificadas"
@@ -556,9 +591,10 @@ export default function OnboardingPage() {
 
         {paso === 'loading' && (
           <PantallaLoading
-            titulo={<>Armando tu <Accent>Freno de 5 Segundos</Accent>…</>}
+            titulo={<>Armando tu <Accent>Chequeo de Gastón</Accent>…</>}
             lineas={[
-              `Ajustando tu límite diario: ${formatoMoneda(presupuesto, monedaActual.moneda, monedaActual.locale)}`,
+              `Tu presupuesto fijo: ${formatoMoneda(presupuestoMensual, monedaActual.moneda, monedaActual.locale)} al mes`,
+              `Tu presupuesto libre: ${formatoMoneda(presupuestoLibre, monedaActual.moneda, monedaActual.locale)} al día`,
               'Configurando tus categorías de riesgo',
               `Tu momento de riesgo: ${momento}`,
             ]}

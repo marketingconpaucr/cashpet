@@ -80,6 +80,31 @@ export function iconoCategoria(categoria: string): LucideIcon {
   return CATEGORIAS.find((c) => c.label === categoria)?.icon ?? ShoppingCart;
 }
 
+// Dos presupuestos, no uno (decisión de producto 2026-09-24, a pedido del usuario): lo
+// FIJO (planeado, recurrente — renta, recibos, súper) sale del presupuesto MENSUAL; lo
+// LIBRE (impulso — café, antojos, salidas) sale de una bolsa aparte que se administra
+// DÍA a día para que no se acabe antes de fin de mes. Cada categoría se clasifica sola
+// — el usuario no elige "fijo o libre" cada vez que anota un gasto.
+export type TipoPresupuesto = 'fijo' | 'libre';
+
+const CATEGORIAS_FIJAS = new Set([
+  'Renta/Vivienda',
+  'Servicios',
+  'Despensa/Comida',
+  'Suscripciones',
+  'Tarjeta de Crédito',
+  'Salud',
+  'Mascotas',
+  'Ahorros',
+]);
+
+// Categorías fuera de esa lista (Transporte, Hobbies/Ocio, Compras, Regalos, Familia, y
+// cualquier categoría personalizada que el usuario escriba con "Otra") son LIBRE por
+// defecto — el gasto de impulso variable, no lo planeado del mes.
+export function tipoPresupuesto(categoria: string): TipoPresupuesto {
+  return CATEGORIAS_FIJAS.has(categoria) ? 'fijo' : 'libre';
+}
+
 export interface Gasto {
   id: string;
   monto: number;
@@ -89,10 +114,17 @@ export interface Gasto {
 
 export interface DatosApp {
   moneda: string;
-  presupuestoDiario: number;
+  presupuestoMensual: number;
+  presupuestoLibreDiario: number;
   racha: number;
   nivelMascota: number;
   gastosHoy: Gasto[];
+}
+
+// Suma solo los gastos de un tipo (fijo o libre) — usado para separar el dato héroe de
+// Inicio (libre de hoy) del resumen de Progreso (fijo del mes).
+export function sumaPorTipo(gastos: Gasto[], tipo: TipoPresupuesto): number {
+  return gastos.filter((g) => tipoPresupuesto(g.categoria) === tipo).reduce((acc, g) => acc + g.monto, 0);
 }
 
 const CLAVE = 'cashpet_app';
@@ -110,11 +142,12 @@ function sembrarDatos(): DatosApp {
       const d = JSON.parse(onboarding);
       return {
         moneda: d.moneda ?? 'USD',
-        presupuestoDiario: d.presupuestoDiario ?? 25,
+        presupuestoMensual: d.presupuestoMensual ?? 500,
+        presupuestoLibreDiario: d.presupuestoLibreDiario ?? 25,
         racha: 1,
         nivelMascota: 1,
         gastosHoy: d.gastoPrueba?.monto
-          ? [{ id: 'inicial', monto: d.gastoPrueba.monto, categoria: d.gastoPrueba.categoria ?? 'Despensa/Comida', hora: horaActual() }]
+          ? [{ id: 'inicial', monto: d.gastoPrueba.monto, categoria: d.gastoPrueba.categoria ?? 'Hobbies/Ocio', hora: horaActual() }]
           : [],
       };
     }
@@ -123,10 +156,14 @@ function sembrarDatos(): DatosApp {
   }
   return {
     moneda: 'CRC',
-    presupuestoDiario: 25000,
+    presupuestoMensual: 500000,
+    presupuestoLibreDiario: 25000,
     racha: 1,
     nivelMascota: 1,
-    gastosHoy: [{ id: 'demo', monto: 8000, categoria: 'Despensa/Comida', hora: horaActual() }],
+    gastosHoy: [
+      { id: 'demo1', monto: 8000, categoria: 'Despensa/Comida', hora: horaActual() },
+      { id: 'demo2', monto: 3500, categoria: 'Hobbies/Ocio', hora: horaActual() },
+    ],
   };
 }
 
@@ -151,9 +188,10 @@ export function guardarDatosApp(datos: DatosApp): void {
 }
 
 // Misma lógica de umbrales del onboarding (ESTADO.md → Decisiones técnicas), ahora contra
-// el gasto ACUMULADO del día en vez de un solo gasto de prueba.
-export function calcularEmocion(gastadoHoy: number, presupuestoDiario: number): EmocionMascota {
-  const proporcion = presupuestoDiario > 0 ? gastadoHoy / presupuestoDiario : 0;
+// el gasto LIBRE acumulado del día (no el fijo del mes: el ritual diario de Inicio es
+// sobre la bolsa de impulso, ver "Dos presupuestos" arriba) en vez de un solo gasto de prueba.
+export function calcularEmocion(gastado: number, presupuesto: number): EmocionMascota {
+  const proporcion = presupuesto > 0 ? gastado / presupuesto : 0;
   if (proporcion <= 0.5) return 'celebrando';
   if (proporcion <= 1) return 'feliz';
   if (proporcion <= 1.5) return 'desconfiada';

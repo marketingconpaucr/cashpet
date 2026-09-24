@@ -7,9 +7,9 @@ import { useEffect, useState } from 'react';
 import { Flame, Star } from 'lucide-react';
 import { Hairline } from '@/components/landing/ui';
 import { BottomNav } from '@/components/app/ui';
-import { cargarDatosApp, formatoMoneda, iconoCategoria, type DatosApp } from '@/lib/datosApp';
+import { cargarDatosApp, formatoMoneda, iconoCategoria, sumaPorTipo, type DatosApp } from '@/lib/datosApp';
 
-const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoDiario: 25000, racha: 1, nivelMascota: 1, gastosHoy: [] };
+const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastosHoy: [] };
 
 export default function ProgresoPage() {
   const [datos, setDatos] = useState<DatosApp>(DATOS_INICIALES);
@@ -25,6 +25,14 @@ export default function ProgresoPage() {
     return acc;
   }, {});
   const totalHoy = datos.gastosHoy.reduce((acc, g) => acc + g.monto, 0);
+
+  // Lo fijo (renta, recibos, súper) se resume acá — no en Inicio, que es sobre el ritual
+  // diario de la bolsa libre (ver "Dos presupuestos" en lib/datosApp.ts).
+  const gastoFijoMes = sumaPorTipo(datos.gastosHoy, 'fijo');
+  const pctFijo = datos.presupuestoMensual > 0 ? Math.min(100, Math.round((gastoFijoMes / datos.presupuestoMensual) * 100)) : 0;
+  const pasadoFijo = gastoFijoMes > datos.presupuestoMensual;
+  const restanteFijo = Math.max(0, datos.presupuestoMensual - gastoFijoMes);
+  const ahorrado = porCategoria['Ahorros'] ?? 0;
 
   return (
     <>
@@ -49,6 +57,29 @@ export default function ProgresoPage() {
             </div>
           </Hairline>
         </div>
+
+        <Hairline surface="surface" className="mt-3 shadow-[var(--shadow-1)]">
+          <div className="p-4">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs text-[var(--text-secondary)]">Presupuesto fijo del mes</span>
+              <span className="text-xs font-semibold text-[var(--text-tertiary)]">
+                {formatoMoneda(gastoFijoMes, datos.moneda)} de {formatoMoneda(datos.presupuestoMensual, datos.moneda)}
+              </span>
+            </div>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]">
+              <div
+                className={`h-full rounded-full ${pasadoFijo ? 'bg-[var(--error)]' : 'bg-[var(--accent)]'}`}
+                style={{ width: `${pctFijo}%` }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-[var(--text-secondary)]">
+              {pasadoFijo ? 'Ya te pasaste de lo fijo este mes.' : `Te quedan ${formatoMoneda(restanteFijo, datos.moneda)} de lo fijo.`}
+            </p>
+            {ahorrado > 0 && (
+              <p className="mt-1 text-xs font-semibold text-[var(--accent)]">Llevas {formatoMoneda(ahorrado, datos.moneda)} ahorrados este mes.</p>
+            )}
+          </div>
+        </Hairline>
 
         <h2 className="mt-6 text-sm font-semibold text-[var(--text-secondary)]">En qué se te fue hoy</h2>
         {Object.keys(porCategoria).length === 0 ? (

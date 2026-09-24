@@ -5,12 +5,12 @@
 // (Supabase Auth real) — mock honesto, no procesan nada de verdad todavía.
 
 import { useEffect, useState } from 'react';
-import { LogOut, Wallet } from 'lucide-react';
+import { Coins, LogOut, Wallet } from 'lucide-react';
 import { Hairline } from '@/components/landing/ui';
 import { BottomNav } from '@/components/app/ui';
 import { cargarDatosApp, formatoMoneda, type DatosApp } from '@/lib/datosApp';
 
-const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoDiario: 25000, racha: 1, nivelMascota: 1, gastosHoy: [] };
+const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastosHoy: [] };
 
 export default function PerfilPage() {
   const [datos, setDatos] = useState<DatosApp>(DATOS_INICIALES);
@@ -34,8 +34,20 @@ export default function PerfilPage() {
               <Wallet size={20} color="var(--accent)" aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-[var(--text-tertiary)]">Tu límite diario</p>
-              <p className="text-[15px] font-semibold text-[var(--text-primary)]">{formatoMoneda(datos.presupuestoDiario, datos.moneda)}</p>
+              <p className="text-xs text-[var(--text-tertiary)]">Tu presupuesto fijo del mes</p>
+              <p className="text-[15px] font-semibold text-[var(--text-primary)]">{formatoMoneda(datos.presupuestoMensual, datos.moneda)}</p>
+            </div>
+          </div>
+        </Hairline>
+
+        <Hairline surface="surface" className="mt-3 shadow-[var(--shadow-1)]">
+          <div className="flex items-center gap-3 p-4">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]">
+              <Coins size={20} color="var(--accent)" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs text-[var(--text-tertiary)]">Tu presupuesto libre por día</p>
+              <p className="text-[15px] font-semibold text-[var(--text-primary)]">{formatoMoneda(datos.presupuestoLibreDiario, datos.moneda)}</p>
             </div>
           </div>
         </Hairline>

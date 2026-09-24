@@ -253,6 +253,8 @@ export function SliderCompromiso({
   onCambiar,
   onFijar,
   feedback,
+  unidad = 'al día',
+  ariaLabel = 'Presupuesto máximo por día',
 }: {
   tituloMarked: ReactNode;
   valor: number;
@@ -263,6 +265,9 @@ export function SliderCompromiso({
   onCambiar: (v: number) => void;
   onFijar: () => void;
   feedback: string;
+  /** "al día" (default) o "al mes" — dos presupuestos distintos comparten este componente. */
+  unidad?: string;
+  ariaLabel?: string;
 }) {
   return (
     <div className="flex flex-1 flex-col justify-center px-4 pb-16">
@@ -274,7 +279,7 @@ export function SliderCompromiso({
         <p className="text-[44px] font-bold leading-none tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">
           {formatear(valor)}
         </p>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">al día</p>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">{unidad}</p>
       </div>
       <input
         type="range"
@@ -284,7 +289,7 @@ export function SliderCompromiso({
         value={valor}
         onChange={(e) => onCambiar(Number(e.target.value))}
         className="mt-8 h-2 w-full appearance-none rounded-full bg-[color-mix(in_oklab,var(--accent)_18%,transparent)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_15%,transparent)] accent-[var(--accent)]"
-        aria-label="Presupuesto máximo por día"
+        aria-label={ariaLabel}
       />
       <div className="mt-2 flex justify-between text-xs text-[var(--text-tertiary)]">
         <span>{formatear(min)}</span>

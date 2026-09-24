@@ -19,12 +19,14 @@ import {
   guardarDatosApp,
   iconoCategoria,
   simboloMoneda,
+  sumaPorTipo,
   textoReaccion,
+  tipoPresupuesto,
   type DatosApp,
   type Gasto,
 } from '@/lib/datosApp';
 
-const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoDiario: 25000, racha: 1, nivelMascota: 1, gastosHoy: [] };
+const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastosHoy: [] };
 
 // Las 4 categorías de gasto hormiga diario van primero (gate de carga cognitiva: ≤4-5
 // antes de agrupar) — las 6 menos frecuentes (pagos mensuales, etc.) quedan detrás de
@@ -52,8 +54,10 @@ export default function InicioPage() {
     setCargado(true);
   }, []);
 
-  const gastadoHoy = datos.gastosHoy.reduce((acc, g) => acc + g.monto, 0);
-  const emocion = calcularEmocion(gastadoHoy, datos.presupuestoDiario);
+  // El ritual diario es sobre la bolsa LIBRE (impulso), no sobre lo fijo del mes — lo fijo
+  // (renta, recibos, súper) se resume en Progreso, no compite por el dato héroe de Inicio.
+  const gastadoLibreHoy = sumaPorTipo(datos.gastosHoy, 'libre');
+  const emocion = calcularEmocion(gastadoLibreHoy, datos.presupuestoLibreDiario);
 
   // Preseleccionar la categoría del último gasto (no el monto: cada gasto es nuevo, pero
   // la categoría se repite 3-5 veces al día en el ritual — obligar a re-elegirla siempre
@@ -176,7 +180,7 @@ export default function InicioPage() {
         </motion.div>
 
         <div className="mt-5">
-          <BarraPresupuestoDia gastado={gastadoHoy} limite={datos.presupuestoDiario} formatear={(v) => formatoMoneda(v, datos.moneda)} />
+          <BarraPresupuestoDia gastado={gastadoLibreHoy} limite={datos.presupuestoLibreDiario} formatear={(v) => formatoMoneda(v, datos.moneda)} />
         </div>
 
         <div className="mt-5">
@@ -207,6 +211,7 @@ export default function InicioPage() {
                     categoria={g.categoria}
                     monto={formatoMoneda(g.monto, datos.moneda)}
                     hora={g.hora}
+                    tipo={tipoPresupuesto(g.categoria)}
                     onEditar={() => editarGasto(g)}
                     onEliminar={() => eliminarGasto(g.id)}
                   />

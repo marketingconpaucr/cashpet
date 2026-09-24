@@ -158,6 +158,7 @@ export function FilaGasto({
   categoria,
   monto,
   hora,
+  tipo,
   indice = 0,
   onEditar,
   onEliminar,
@@ -166,6 +167,9 @@ export function FilaGasto({
   categoria: string;
   monto: string;
   hora: string;
+  /** Fijo (mes) vs libre (día) — explica por qué algunos gastos no mueven el dato héroe
+   * de Inicio, que es solo sobre la bolsa libre (ver "Dos presupuestos" en lib/datosApp.ts). */
+  tipo?: 'fijo' | 'libre';
   indice?: number;
   /** Tocar la fila reabre el formulario prellenado — corrige un error de dígito sin
    * borrar y re-crear desde cero (defecto real de la 2ª revisión). */
@@ -193,7 +197,10 @@ export function FilaGasto({
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate text-[15px] font-semibold text-[var(--text-primary)]">{categoria}</p>
-          <p className="text-xs text-[var(--text-tertiary)]">{hora}</p>
+          <p className="text-xs text-[var(--text-tertiary)]">
+            {hora}
+            {tipo && <> · {tipo === 'fijo' ? 'Fijo' : 'Libre'}</>}
+          </p>
         </div>
         <span className="shrink-0 text-[15px] font-bold tabular-nums text-[var(--text-primary)]">{monto}</span>
         {/* Señal visual de que la fila se puede editar (no solo el ícono de basura,
