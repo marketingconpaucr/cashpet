@@ -15,7 +15,7 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "CashPet — la mascota que frena tus gastos hormiga",
+  title: "CashPet — la mascota que te dice si vas bien con tu dinero",
   description:
     "Anota un gasto en 5 segundos y tu mascota reacciona al instante. Menos culpa, más control — sin conectar tu banco.",
 };

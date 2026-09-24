@@ -121,7 +121,7 @@ export default function PaywallPage() {
             <div className="flex flex-1 flex-col justify-center px-4 pb-16">
               <Mascota size={96} emocion="celebrando" />
               <h1 className="mt-4 text-balance text-[30px] font-bold leading-[1.15] [font-family:var(--font-display)]">
-                Tu <Accent>Freno de 5 Segundos</Accent> está listo
+                Tu <Accent>Chequeo de Gastón</Accent> está listo
               </h1>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">Hecho con tus 6 respuestas.</p>
 
@@ -212,7 +212,7 @@ export default function PaywallPage() {
               </p>
 
               <ul className="mt-4 flex flex-col gap-2">
-                <CheckItem indice={0}>El Freno de 5 Segundos activo en cada gasto</CheckItem>
+                <CheckItem indice={0}>El Chequeo de Gastón activo en cada gasto</CheckItem>
                 <CheckItem indice={1}>Rachas y niveles de Gastón</CheckItem>
               </ul>
 

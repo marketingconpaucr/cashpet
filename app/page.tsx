@@ -43,8 +43,8 @@ export default function LandingCashPet() {
       <Hero
         appName="CashPet"
         loginHref="/entrar"
-        h1Marked="La mascota que te [acento]quita la tarjeta[/acento] de las manos"
-        subtitleMarked="El Freno de 5 Segundos actúa [b]antes de la compra que vas a lamentar.[/b]"
+        h1Marked="La mascota que te dice si vas [acento]bien con tu dinero[/acento]"
+        subtitleMarked="El Chequeo de Gastón: [b]anota cada gasto y en segundos sabes si sigues bien o te estás pasando.[/b]"
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         socialProof={
@@ -128,7 +128,7 @@ export default function LandingCashPet() {
               className="rounded-[var(--radius-card)] px-4 py-2 text-sm font-semibold"
               style={{ background: 'var(--surface)', color: 'var(--accent)' }}
             >
-              &ldquo;Yo aviso antes. Tú decides ignorarme.&rdquo;
+              &ldquo;Anótalo y te digo si vas bien. Lo demás es cosa tuya.&rdquo;
             </p>
           </motion.div>
         </motion.div>
@@ -136,19 +136,19 @@ export default function LandingCashPet() {
 
       {/* 4. SOLUCIÓN */}
       <Solucion
-        tituloMarked="Alguien te detiene [acento]antes del error[/acento], no después"
-        mecanismo="el Freno de 5 Segundos"
-        bigIdeaMarked="No te falta fuerza de voluntad: te falta [b]alguien que te detenga a tiempo[/b]."
+        tituloMarked="Sabes [acento]al instante[/acento] si vas bien, no a fin de mes"
+        mecanismo="El Chequeo de Gastón"
+        bigIdeaMarked="No te falta fuerza de voluntad: te falta [b]saber al momento si te estás pasando[/b]."
         pasos={[
           { titulo: 'Anota el gasto', detalle: 'Escribe o dicta lo que gastaste, en 5 segundos.' },
-          { titulo: 'Tu mascota te frena', detalle: 'Te dice la verdad con humor, antes de que sigas gastando.' },
+          { titulo: 'Gastón te hace el chequeo', detalle: 'Te dice la verdad con humor: vas bien o te estás pasando.' },
           { titulo: 'Sube tu racha', detalle: 'Cada día sin pasarte del límite, tu mascota crece.' },
         ]}
         antesDespues={{
           labelAntes: 'Antes',
           antes: 'Descubres el daño a fin de mes, cuando ya no hay nada que hacer.',
           labelDespues: 'Después',
-          despues: 'Tu mascota te frena en el momento — antes de que la tarjeta salga de tu cartera.',
+          despues: 'Gastón te lo dice apenas lo anotas — a tiempo para frenar el resto del día o del mes.',
         }}
       />
 
@@ -243,7 +243,7 @@ export default function LandingCashPet() {
       {/* 7. GARANTÍA */}
       <Garantia
         nombre="la Garantía de la Primera Racha"
-        condicionMarked="Si en tus primeros 15 días de pago el Freno de 5 Segundos no te ayuda a [b]sentir más control sobre tu dinero[/b], te devolvemos todo. Sin preguntas."
+        condicionMarked="Si en tus primeros 15 días de pago El Chequeo de Gastón no te ayuda a [b]sentir más control sobre tu dinero[/b], te devolvemos todo. Sin preguntas."
         pisoLegal="Respaldada por la garantía de reembolso de Hotmart: 15 días desde tu primer cobro, después de tus 7 días de prueba gratis"
       />
 
@@ -260,7 +260,7 @@ export default function LandingCashPet() {
           },
           {
             pregunta: '¿Por qué pagar si quiero ahorrar?',
-            respuestaMarked: 'Cuesta menos de $0.20 USD al día y [b]frena los gastos hormiga que hoy no ves[/b] — se paga solo.',
+            respuestaMarked: 'Cuesta menos de $0.20 USD al día y [b]te avisa de los gastos hormiga que hoy no ves[/b] — se paga solo.',
           },
           {
             pregunta: '¿Me va a hacer sentir peor si gasto de más?',
@@ -276,11 +276,11 @@ export default function LandingCashPet() {
       {/* 9. CTA FINAL */}
       <CtaFinal
         h2Marked="Deja de gastar en [acento]piloto automático[/acento]"
-        futurePacingMarked="Anotas el gasto, tu mascota te frena, y por primera vez tienes el control — no tus impulsos."
+        futurePacingMarked="Anotas el gasto, Gastón te dice la verdad, y por primera vez tienes el control — no tus impulsos."
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         recap="Sin conectar tu banco · Cancela cuando quieras"
-        psMarked="PS: El Freno de 5 Segundos se interpone entre tú y la compra que ibas a lamentar. Sin conectar tu banco, sin letra chica."
+        psMarked="PS: El Chequeo de Gastón te avisa apenas gastas, no a fin de mes. Sin conectar tu banco, sin letra chica."
       />
 
       {/* 10. FOOTER LEGAL — enlaces con stub real (contenido completo: Sesión 6/47) */}
