@@ -1,9 +1,9 @@
 # VEREDICTO revisor-visual — entrar (login)
-Fecha: 2026-09-17 00:00
+Fecha: 2026-09-18 00:00
 Screenshot: docs/revisiones/entrar-1-inicial.png (+ entrar-2-error.png, entrar-4-enviado.png)
 Usabilidad: 36/40
 Craft: 14/20
 Copy (si vende): N-A
 Fidelidad (si hubo referencia): N-A
 Veredicto: NO LISTA
-Top defectos: 1. [Pantalla "Revisa tu correo", entrar-4-enviado.png] Al pasar al estado de éxito desaparece toda la superficie elevada/hairline que sí tiene el formulario: queda texto plano centrado sobre el fondo, sin card ni borde degradé, rompiendo la consistencia de profundidad lograda en el paso anterior del mismo flujo → envolver el email + acciones de reenvío en el mismo `<Hairline surface="surface">` usado en el formulario, o al menos aplicar el mismo tratamiento de superficie. 2. [Botón "Enviarme mi enlace de acceso", texto 17px en CtaButton] Sigue habiendo 4 tamaños de texto reales en la pantalla (28 headline / 17 botón / 14 body-caption / 12 label) cuando la regla del sistema es máximo 3 → bajar el texto del botón a 16px o alinear el body a 16px para reusar un tamaño existente. 3. [Estado "enviado", bloque central] El contenido sigue ocupando menos de la mitad del alto de viewport sin ningún detalle de marca adicional (sin hairline, sin chip, sin textura) — se ve incompleto pese al buen centrado simétrico → sumar un elemento visual (chip del ícono de "revisar spam", o extender el tratamiento de card del punto 1). 4. [Header, botón "volver"] El círculo de "volver" queda solo en la parte superior sin ningún otro elemento que dé peso — contribuye al vacío total junto con los puntos 1 y 3, especialmente notorio en el estado "enviado". 5. [Hairline del formulario, entrar-1/entrar-2] El borde degradé del Hairline es apenas perceptible en el screenshot (acento al 40% sobre fondo crema de bajo contraste) — en condiciones reales de pantalla podría no notarse como "detalle firma" → subir la opacidad del degradé a 50-55% para que sea visible sin acercar el ojo.
+Top defectos: 1) CtaButton en 16px aquí vs 17px nativo en paywall/onboarding (rompe consistencia entre pantallas) 2) círculo "volver" sigue aislado sin peso visual 3) vacío muerto bajo el estado "enviado" 4) h1 en 28px no coincide con ninguno de los 2 tamaños de la escala de FICHA-ARTE (42/25) 5) "Reenviar" y "Cambiarlo" sin jerarquía visual entre sí

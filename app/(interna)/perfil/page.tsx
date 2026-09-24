@@ -1,0 +1,63 @@
+'use client';
+
+// Perfil — tu plan, tu límite diario y cerrar sesión. Pantalla secundaria (checklist,
+// sin revisor-visual). Cerrar sesión / cambiar límite quedan mockeados hasta Sesión 6
+// (Supabase Auth real) — mock honesto, no procesan nada de verdad todavía.
+
+import { useEffect, useState } from 'react';
+import { LogOut, Wallet } from 'lucide-react';
+import { Hairline } from '@/components/landing/ui';
+import { BottomNav } from '@/components/app/ui';
+import { cargarDatosApp, formatoMoneda, type DatosApp } from '@/lib/datosApp';
+
+const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoDiario: 25000, racha: 1, nivelMascota: 1, gastosHoy: [] };
+
+export default function PerfilPage() {
+  const [datos, setDatos] = useState<DatosApp>(DATOS_INICIALES);
+  const [cargado, setCargado] = useState(false);
+
+  useEffect(() => {
+    setDatos(cargarDatosApp());
+    setCargado(true);
+  }, []);
+
+  return (
+    <>
+      <div className="flex flex-1 flex-col px-4 pt-4 pb-6" style={{ opacity: cargado ? 1 : 0 }}>
+        <h1 className="text-balance text-[25px] font-bold leading-[1.15] [font-family:var(--font-display)]">
+          Tu cuenta
+        </h1>
+
+        <Hairline surface="surface" className="mt-4 shadow-[var(--shadow-1)]">
+          <div className="flex items-center gap-3 p-4">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]">
+              <Wallet size={20} color="var(--accent)" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs text-[var(--text-tertiary)]">Tu límite diario</p>
+              <p className="text-[15px] font-semibold text-[var(--text-primary)]">{formatoMoneda(datos.presupuestoDiario, datos.moneda)}</p>
+            </div>
+          </div>
+        </Hairline>
+
+        <Hairline surface="surface" className="mt-3 shadow-[var(--shadow-1)]">
+          <div className="p-4">
+            <p className="text-xs text-[var(--text-tertiary)]">Tu plan</p>
+            <p className="text-[15px] font-semibold text-[var(--text-primary)]">Prueba gratis — 7 días</p>
+            <p className="mt-1 text-xs text-[var(--text-secondary)]">Se activa por completo cuando conectes tu pago (próximamente).</p>
+          </div>
+        </Hairline>
+
+        <button
+          type="button"
+          onClick={() => (window.location.href = '/')}
+          className="mt-6 flex h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] text-sm font-medium text-[var(--text-secondary)] [touch-action:manipulation]"
+        >
+          <LogOut size={16} aria-hidden="true" />
+          Cerrar sesión
+        </button>
+      </div>
+      <BottomNav activo="perfil" />
+    </>
+  );
+}
