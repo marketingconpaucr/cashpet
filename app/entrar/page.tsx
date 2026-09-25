@@ -62,7 +62,9 @@ export default function EntrarPage() {
             'radial-gradient(520px 420px at 100% 100%, color-mix(in oklab, var(--accent-2) 7%, transparent) 0%, transparent 55%)',
         }}
       />
-      <div className="relative flex min-h-dvh flex-1 flex-col">
+      {/* Sin min-h-dvh acá: el div de afuera ya lo garantiza (ver app/(interna)/layout.tsx
+          para el detalle del defecto real que corrigió este mismo patrón redundante). */}
+      <div className="relative flex flex-1 flex-col">
         <header className="flex items-center px-2 pt-3">
           <a
             href="/"

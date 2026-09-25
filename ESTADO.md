@@ -1,6 +1,25 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-25 | Sesión actual: 6
 
+⏸️ CHECKPOINT 2026-09-25 (4) — **[BUG REAL — CORREGIDO]** El usuario reportó, en su celular
+real: la pantalla de Inicio "quedó mal el tamaño, y no hay como pasar de ahí, se perdió el
+menú" (el botón "Anotar gasto" se veía cortado y el menú de abajo Inicio/Progreso/Perfil
+no aparecía). Causa: TODAS las pantallas de la app (Inicio/Progreso/Perfil vía
+`app/(interna)/layout.tsx` + `template.tsx`, y onboarding/paywall/entrar) tenían `min-h-dvh`
+puesto DOS VECES anidado (a veces tres: layout exterior + template + el contenedor de la
+página) — el de afuera ya garantiza la altura mínima; el de adentro, anidado en un hijo
+`flex-1`, es una redundancia real que en navegadores móviles (la barra de direcciones que
+aparece/desaparece recalcula `dvh` de forma inconsistente entre navegadores) puede sumar
+altura de más y empujar el contenido de abajo (como el menú) fuera del alcance. Se quitó el
+`min-h-dvh` redundante de los contenedores internos en los 5 archivos (dejando solo `flex-1`,
+que ya reparte el espacio correctamente); el contenedor MÁS EXTERNO de cada pantalla conserva
+su `min-h-dvh` — es el único que debe tenerlo. Verificado sin regresión: todas las pantallas
+(con contenido corto o largo) siguen llenando exactamente la altura de la ventana, sin hueco
+ni recorte.
+
+Pendiente: el usuario todavía no confirmó si esto resolvió lo que veía en su celular — pedirle
+que lo pruebe de nuevo.
+
 ⏸️ CHECKPOINT 2026-09-25 (3) — **[BUG REAL — CORREGIDO, 2º intento]** Con la categoría ya
 arreglada, el usuario seguía sin ver el botón de confirmar en "Anotar gasto" en su celular
 real. El primer intento de arreglo (checkpoint anterior) separaba el sheet en dos zonas

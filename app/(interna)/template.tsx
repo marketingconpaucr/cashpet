@@ -15,7 +15,11 @@ export default function InternaTemplate({ children }: { children: React.ReactNod
       initial={reduce ? false : { opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-      className="flex min-h-dvh flex-1 flex-col"
+      // Sin min-h-dvh (ver nota en layout.tsx): ya lo garantiza el layout de afuera —
+      // un tercer piso de altura mínima anidado (body → layout → este template) es
+      // justo el tipo de redundancia que causaba la pantalla creciendo de más en
+      // navegadores móviles reales.
+      className="flex flex-1 flex-col"
     >
       {children}
     </motion.div>

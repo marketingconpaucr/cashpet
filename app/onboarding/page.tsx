@@ -347,7 +347,11 @@ export default function OnboardingPage() {
             'radial-gradient(520px 420px at 100% 100%, color-mix(in oklab, var(--accent-2) 5%, transparent) 0%, transparent 55%)',
         }}
       />
-      <div className="relative flex min-h-dvh flex-1 flex-col">
+      {/* Sin min-h-dvh acá: el div de afuera ya lo garantiza — un segundo piso de altura
+          mínima anidado en un hijo flex-1 puede sumar altura de más en navegadores
+          móviles reales (defecto real encontrado y corregido en la app interna, mismo
+          patrón, ver app/(interna)/layout.tsx). */}
+      <div className="relative flex flex-1 flex-col">
       {paso !== 'bienvenida' && paso !== 'loading' && (
         <EncabezadoOnboarding porcentaje={PROGRESO[paso]} onAtras={atras} mostrarAtras={mostrarAtras} />
       )}

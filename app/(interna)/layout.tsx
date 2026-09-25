@@ -14,7 +14,13 @@ export default function InternaLayout({ children }: { children: React.ReactNode 
             'radial-gradient(520px 420px at 100% 100%, color-mix(in oklab, var(--accent-2) 4%, transparent) 0%, transparent 55%)',
         }}
       />
-      <div className="relative flex min-h-dvh flex-1 flex-col">{children}</div>
+      {/* Sin min-h-dvh acá: el div de afuera ya lo garantiza — un segundo min-h-dvh
+          anidado en un hijo flex-1 puede sumar altura de más en navegadores móviles
+          reales (la barra de direcciones que aparece/desaparece recalcula dvh de forma
+          inconsistente) — defecto real reportado por el usuario: la pantalla crecía más
+          de la cuenta y el menú de abajo quedaba fuera de alcance. flex-1 solo (sin su
+          propio piso de altura) ya reparte el espacio disponible correctamente. */}
+      <div className="relative flex flex-1 flex-col">{children}</div>
     </div>
   );
 }
