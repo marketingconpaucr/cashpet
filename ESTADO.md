@@ -1,6 +1,42 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-25 | Sesión actual: 6
 
+⏸️ CHECKPOINT 2026-09-25 (6) — A pedido del usuario: el paso "¿Cuánto ganas al mes?" del
+onboarding ya no obliga a quedarse dentro del rango del slider (₡600.000-₡4.000.000 en Costa
+Rica, etc.) — "hay personas que ganan menos de 600 mil colones". Se agregó una opción "Escribir
+el monto exacto" (tocando el número grande también entra en modo edición) en `SliderCompromiso`
+(`components/onboarding/ui.tsx`, nuevo prop `permitirEscribir`, activado SOLO en el paso
+"ingreso" — el paso "presupuestoLibre" NO lo tiene a propósito, su tope es un cálculo real que
+no debe poder inflarse a mano). El slider sigue ahí para el caso común; el valor escrito puede
+caer fuera de sus extremos visuales sin problema. Verificado de punta a punta: escribí ₡450.000
+(bajo el mínimo regional) y el paso siguiente (presupuesto libre) calculó bien el tope real
+usando ese valor, no el mínimo del slider.
+
+⏸️ CHECKPOINT 2026-09-25 (5) — **[BUG REAL — CAUSA RAÍZ ENCONTRADA, 3er intento]** El usuario
+reportó otra vez el botón "Continuar" perdido en categorías, después de que los dos intentos
+anteriores (mt-auto→sticky, luego sticky+min-h-dvh arreglado) no lo resolvieran en su celular
+real. Causa raíz real: **Safari/WebKit tiene bugs de vieja data con `position: sticky` dentro
+de contenedores `flex`**, y además el `motion.div` que anima la entrada de cada paso
+(`TransicionPaso`) deja un `transform` aplicado incluso en reposo — eso convierte a CUALQUIER
+ancestro en el "contenedor" de un `position: fixed` hijo en vez del viewport real. Ninguno de
+los dos arreglos anteriores tocaba esto.
+
+**Fix definitivo:** los 3 botones "fijos" del onboarding/Inicio (`PantallaPregunta.ctaFijo` en
+`components/onboarding/ui.tsx`, el pie de "gastos fijos" y el pie de "Anotar gasto" de Inicio)
+ahora se renderizan con `createPortal(..., document.body)` — un portal de React que saca el
+botón COMPLETAMENTE de la cadena de ancestros animados/flex, montándolo directo como hijo de
+`<body>` con `position: fixed` relativo al viewport real, sin ambigüedad posible. El botón de
+Inicio ya no depende de `<button type="submit">` (quedaría fuera del `<form>` al portarse) —
+ahora llama a `anotarGasto()` directo en su `onClick`. Verificado de punta a punta con
+Playwright: los 3 botones quedan visibles y funcionan (categorías → avanza, gastos fijos →
+avanza, Inicio → guarda el gasto en localStorage correctamente).
+
+De paso, otro bug real encontrado por el usuario en el mismo mensaje: el paso "Anota tu primer
+gasto" (activación) solo mostraba 4 de las 6 categorías posibles (`.slice(0, 4)` sin ninguna
+forma de ver las otras 2) — corregido para mostrar las 6.
+
+Pendiente: confirmar con el usuario que esta vez sí quedó resuelto en su celular real.
+
 ⏸️ CHECKPOINT 2026-09-25 (4) — **[BUG REAL — CORREGIDO]** El usuario reportó, en su celular
 real: la pantalla de Inicio "quedó mal el tamaño, y no hay como pasar de ahí, se perdió el
 menú" (el botón "Anotar gasto" se veía cortado y el menú de abajo Inicio/Progreso/Perfil

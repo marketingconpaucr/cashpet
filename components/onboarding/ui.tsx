@@ -6,6 +6,7 @@
 // app/globals.css) — misma identidad, un solo componente de mascota.
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Check, ChevronLeft } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -140,8 +141,10 @@ export function PantallaPregunta({
   // Sin CTA fijo (selección única, auto-avanza) el bloque se centra verticalmente: con solo
   // 4-5 chips cortos, anclarlo arriba dejaba ~1/3 de la pantalla vacío (vacío muerto, 32).
   // Gastón chico arriba del título llena ese aire con identidad, no con relleno vacío.
+  const [montado, setMontado] = useState(false);
+  useEffect(() => setMontado(true), []);
   return (
-    <div className={`flex flex-1 flex-col px-4 ${ctaFijo ? 'pt-6' : 'justify-center pb-16'}`}>
+    <div className={`flex flex-1 flex-col px-4 ${ctaFijo ? 'pt-6 pb-[104px]' : 'justify-center pb-16'}`}>
       <div>
         {!ctaFijo && <Mascota size={56} emocion="neutral" />}
         <h1 className={`text-balance text-[28px] font-bold leading-[1.15] text-[var(--text-primary)] [font-family:var(--font-display)] ${!ctaFijo ? 'mt-4' : ''}`}>
@@ -150,16 +153,26 @@ export function PantallaPregunta({
         {subcopy && <p className="mt-2 text-sm text-[var(--text-secondary)]">{subcopy}</p>}
         <div className="mt-8 flex flex-col gap-3">{children}</div>
       </div>
-      {/* sticky + bottom-0 (no solo mt-auto): con 7 opciones + "Otra cosa" el bloque de
-          chips supera el viewport y el botón quedaba fuera de vista sin scroll, sin
-          ninguna pista de que había que bajar más — defecto real reportado por el usuario
-          ("acá no deja continuar"). Pinned al fondo de la pantalla mientras el contenido
-          de arriba scrollea, como el resto de los CTA fijos de la app (BottomNav). */}
-      {ctaFijo && (
-        <div className="sticky bottom-0 z-10 mt-auto -mx-4 border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] bg-[var(--bg)] px-4 pt-8 pb-[max(16px,env(safe-area-inset-bottom))]">
-          {ctaFijo}
-        </div>
-      )}
+      {/* `position: fixed` vía portal a `document.body` (no `sticky`/`mt-auto` dentro del
+          flujo normal): con 7 opciones + "Otra cosa" el bloque de chips supera el viewport
+          y el botón quedaba fuera de vista — dos intentos previos con `sticky` (uno con
+          `mt-auto`, otro ya corregido junto con el `min-h-dvh` duplicado de la página)
+          seguían fallando en un celular real, reportado tres veces por el usuario. Un
+          portal a `document.body` saca el botón por completo de la cadena de ancestros
+          animados (el `motion.div` de TransicionPaso deja un `transform` aplicado incluso
+          en reposo, que convierte a CUALQUIER ancestro en el "contenedor" de un `fixed`
+          hijo en vez del viewport real — y `sticky` dentro de un padre `flex` tiene bugs
+          de vieja data en Safari/WebKit) — `fixed` sobre el body siempre es relativo al
+          viewport de verdad, sin ambigüedad. `pb-[104px]` arriba compensa la altura del
+          botón para que el último chip no quede tapado detrás. */}
+      {ctaFijo && montado
+        ? createPortal(
+            <div className="fixed inset-x-0 bottom-0 z-30 border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] bg-[var(--bg)] px-4 pt-4 pb-[max(16px,env(safe-area-inset-bottom))]">
+              {ctaFijo}
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   );
 }
@@ -264,6 +277,7 @@ export function SliderCompromiso({
   feedback,
   unidad = 'al día',
   ariaLabel = 'Presupuesto máximo por día',
+  permitirEscribir = false,
 }: {
   tituloMarked: ReactNode;
   valor: number;
@@ -277,7 +291,28 @@ export function SliderCompromiso({
   /** "al día" (default) o "al mes" — dos presupuestos distintos comparten este componente. */
   unidad?: string;
   ariaLabel?: string;
+  /** El slider por sí solo no deja bajar del mínimo del país ni subir del máximo — bien
+   * para el presupuesto LIBRE (su tope es un cálculo real, no debe poder inflarse a mano),
+   * mal para el INGRESO (un hecho de la vida del usuario, que puede caer fuera del rango
+   * típico regional — defecto real reportado por el usuario: "hay personas que ganan menos
+   * de 600 mil colones"). Cuando es `true`, tocar el número grande lo vuelve un campo de
+   * texto libre; el slider sigue ahí para el caso común, pero deja de ser el único camino. */
+  permitirEscribir?: boolean;
 }) {
+  const [editando, setEditando] = useState(false);
+  const [texto, setTexto] = useState('');
+
+  const empezarEdicion = () => {
+    setTexto(String(valor));
+    setEditando(true);
+  };
+  const confirmarEdicion = () => {
+    const limpio = texto.replace(/[^\d]/g, '');
+    const n = limpio ? parseInt(limpio, 10) : NaN;
+    if (Number.isFinite(n) && n > 0) onCambiar(n);
+    setEditando(false);
+  };
+
   return (
     <div className="flex flex-1 flex-col justify-center px-4 pb-16">
       <Mascota size={56} emocion="neutral" />
@@ -285,17 +320,44 @@ export function SliderCompromiso({
         {tituloMarked}
       </h1>
       <div className="mt-10 flex flex-col items-center">
-        <p className="text-[44px] font-bold leading-none tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">
-          {formatear(valor)}
-        </p>
+        {editando ? (
+          <input
+            type="text"
+            inputMode="numeric"
+            autoFocus
+            value={texto}
+            onChange={(e) => setTexto(e.target.value)}
+            onBlur={confirmarEdicion}
+            onKeyDown={(e) => { if (e.key === 'Enter') confirmarEdicion(); }}
+            aria-label={`${ariaLabel} — escribir el monto exacto`}
+            className="w-full max-w-[240px] rounded-[var(--radius-button)] border border-[var(--accent)] bg-[var(--surface-2)] px-4 py-2 text-center text-[32px] font-bold tabular-nums text-[var(--text-primary)] outline-none [font-family:var(--font-display)]"
+          />
+        ) : permitirEscribir ? (
+          <button
+            type="button"
+            onClick={empezarEdicion}
+            className="text-[44px] font-bold leading-none tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)] [touch-action:manipulation]"
+          >
+            {formatear(valor)}
+          </button>
+        ) : (
+          <p className="text-[44px] font-bold leading-none tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">
+            {formatear(valor)}
+          </p>
+        )}
         <p className="mt-1 text-sm text-[var(--text-secondary)]">{unidad}</p>
+        {permitirEscribir && !editando && (
+          <button type="button" onClick={empezarEdicion} className="mt-1 text-xs font-medium text-[var(--accent)] underline-offset-2 hover:underline [touch-action:manipulation]">
+            Escribir el monto exacto
+          </button>
+        )}
       </div>
       <input
         type="range"
         min={min}
         max={max}
         step={step}
-        value={valor}
+        value={Math.min(Math.max(valor, min), max)}
         onChange={(e) => onCambiar(Number(e.target.value))}
         className="mt-8 h-2 w-full appearance-none rounded-full bg-[color-mix(in_oklab,var(--accent)_18%,transparent)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_15%,transparent)] accent-[var(--accent)]"
         aria-label={ariaLabel}

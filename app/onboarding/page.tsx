@@ -7,6 +7,7 @@
 // Blueprint visual: docs/sistema/50-DISENO-ONBOARDING-PAYWALL.md §A/§B.
 
 import { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Moon, Plus, ShoppingBag, Sparkles, Sunrise, Sun, Sunset, Trash2 } from 'lucide-react';
@@ -155,6 +156,11 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [indice, setIndice] = useState(0);
   const paso = PASOS[indice];
+  // Portal a document.body para el CTA fijo de "gastos fijos" (mismo motivo que en
+  // components/onboarding/ui.tsx → PantallaPregunta: `fixed` dentro del árbol de
+  // TransicionPaso queda relativo al motion.div animado, no al viewport real).
+  const [montado, setMontado] = useState(false);
+  useEffect(() => setMontado(true), []);
 
   const [pais, setPais] = useState<PaisMoneda | null>(null);
   const [otroPaisTexto, setOtroPaisTexto] = useState('');
@@ -552,11 +558,12 @@ export default function OnboardingPage() {
             feedback={feedbackIngreso()}
             unidad="al mes"
             ariaLabel="Ingreso mensual"
+            permitirEscribir
           />
         )}
 
         {paso === 'gastosFijos' && (
-          <div className="flex flex-1 flex-col px-4 pb-16">
+          <div className="flex flex-1 flex-col px-4 pb-[120px]">
             <h1 className="mt-6 text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]">
               ¿Cuáles son tus <Accent>gastos fijos</Accent> cada mes?
             </h1>
@@ -614,15 +621,19 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            <div className="mt-6 flex-1" />
-            {/* sticky (no un div de flujo normal): con varios gastos fijos agregados el
-                botón quedaba fuera de la pantalla sin scroll — mismo defecto real que
-                "categorías" y "anotar gasto" (ver ESTADO.md 2026-09-25). */}
-            <div className="sticky bottom-0 z-10 -mx-4 border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] bg-[var(--bg)] px-4 pt-4 pb-[max(16px,env(safe-area-inset-bottom))]">
-              <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); avanzar(); }}>
-                {gastosFijosItems.length > 0 ? 'Continuar' : 'No tengo gastos fijos'}
-              </CtaButton>
-            </div>
+            {/* Portal a document.body (no sticky): mismo motivo que PantallaPregunta en
+                components/onboarding/ui.tsx — `fixed`/`sticky` dentro del árbol animado
+                de TransicionPaso no es confiable en Safari/WebKit real. `pb-[120px]` en el
+                contenedor de arriba compensa la altura de este botón. */}
+            {montado &&
+              createPortal(
+                <div className="fixed inset-x-0 bottom-0 z-30 border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] bg-[var(--bg)] px-4 pt-4 pb-[max(16px,env(safe-area-inset-bottom))]">
+                  <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); avanzar(); }}>
+                    {gastosFijosItems.length > 0 ? 'Continuar' : 'No tengo gastos fijos'}
+                  </CtaButton>
+                </div>,
+                document.body
+              )}
           </div>
         )}
 
@@ -670,8 +681,12 @@ export default function OnboardingPage() {
                     placeholder={`Monto (${simboloMoneda(monedaActual.moneda, monedaActual.locale)})`}
                     className="h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:border-[var(--accent)] focus:bg-[var(--surface)]"
                   />
+                  {/* Antes mostraba solo las primeras 4 de las 6 categorías (`.slice(0, 4)`),
+                      sin ninguna forma de ver o elegir las otras 2 — defecto real reportado
+                      por el usuario ("acá no deja agregar otras categorías"). Ahora muestra
+                      las 6 completas. */}
                   <div className="flex flex-col gap-3">
-                    {OPCIONES_CATEGORIA.slice(0, 4).map((op, i) => (
+                    {OPCIONES_CATEGORIA.map((op, i) => (
                       <ChipOpcion key={op} indice={i} label={op} icon={ShoppingBag} seleccionado={gastoCategoria === op} onClick={() => setGastoCategoria(op)} />
                     ))}
                   </div>

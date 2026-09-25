@@ -6,6 +6,7 @@
 // Datos en localStorage (lib/datosApp.ts) — Supabase se conecta en Sesión 6.
 
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ChevronDown, Flame, PiggyBank, Plus } from 'lucide-react';
 import { CtaButton, Hairline } from '@/components/landing/ui';
@@ -43,6 +44,11 @@ export default function InicioPage() {
   const [datos, setDatos] = useState<DatosApp>(DATOS_INICIALES);
   const [cargado, setCargado] = useState(false);
   const [agregando, setAgregando] = useState(false);
+  // Portal a document.body para el pie de "Anotar gasto" (mismo motivo que en el
+  // onboarding: fixed/sticky dentro del motion.div animado del sheet no es confiable en
+  // Safari/WebKit real — ver components/onboarding/ui.tsx → PantallaPregunta).
+  const [montado, setMontado] = useState(false);
+  useEffect(() => setMontado(true), []);
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [monto, setMonto] = useState('');
   const [categoria, setCategoria] = useState<string | null>(null);
@@ -504,22 +510,33 @@ export default function InicioPage() {
                     </p>
                   )}
               </div>
-              <div className="sticky bottom-0 z-10 flex gap-2 border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] bg-[var(--surface)] p-4 pb-[max(12px,env(safe-area-inset-bottom))]">
-                    <motion.button
-                      type="button"
-                      whileTap={{ scale: 0.96 }}
-                      onClick={cerrarFormulario}
-                      className="h-12 flex-1 rounded-[var(--radius-button)] text-[15px] font-medium text-[var(--text-tertiary)] [touch-action:manipulation]"
-                    >
-                      Cancelar
-                    </motion.button>
-                    <div className="flex-[2]">
-                      <CtaButton href="#" alto={52} submit>
-                        <span className="text-[15px]">{editandoId ? 'Guardar' : 'Anotar'}</span>
-                      </CtaButton>
-                    </div>
-                  </div>
             </form>
+            {/* Portal a document.body (no sticky): el sheet mismo (`motion.div` de abajo)
+                queda con un `transform` aplicado por Motion incluso en reposo, y `sticky`
+                dentro de un padre `flex` tiene bugs reales en Safari/WebKit — mismo
+                defecto reportado 3 veces por el usuario, mismo fix que en el onboarding
+                (ver components/onboarding/ui.tsx → PantallaPregunta). El botón "Anotar" ya
+                no vive dentro del <form>, así que llama a anotarGasto() directo en vez de
+                depender del submit nativo. */}
+            {montado &&
+              createPortal(
+                <div className="fixed inset-x-0 bottom-0 z-[31] flex gap-2 border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] bg-[var(--surface)] p-4 pb-[max(12px,env(safe-area-inset-bottom))]">
+                  <motion.button
+                    type="button"
+                    whileTap={{ scale: 0.96 }}
+                    onClick={cerrarFormulario}
+                    className="h-12 flex-1 rounded-[var(--radius-button)] text-[15px] font-medium text-[var(--text-tertiary)] [touch-action:manipulation]"
+                  >
+                    Cancelar
+                  </motion.button>
+                  <div className="flex-[2]">
+                    <CtaButton href="#" alto={52} onClick={(e) => { e.preventDefault(); anotarGasto(); }}>
+                      <span className="text-[15px]">{editandoId ? 'Guardar' : 'Anotar'}</span>
+                    </CtaButton>
+                  </div>
+                </div>,
+                document.body
+              )}
           </motion.div>
         )}
       </AnimatePresence>
