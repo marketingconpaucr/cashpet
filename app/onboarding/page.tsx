@@ -554,7 +554,7 @@ export default function OnboardingPage() {
         {paso === 'gastosFijos' && (
           <div className="flex flex-1 flex-col px-4 pb-16">
             <h1 className="mt-6 text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]">
-              ¿En qué se te va lo <Accent>fijo</Accent> cada mes?
+              ¿Cuáles son tus <Accent>gastos fijos</Accent> cada mes?
             </h1>
             <p className="mt-2 text-sm text-[var(--text-secondary)]">Renta, recibos, súper — agrégalos uno por uno.</p>
 
@@ -611,7 +611,10 @@ export default function OnboardingPage() {
             )}
 
             <div className="mt-6 flex-1" />
-            <div className="pb-[max(16px,env(safe-area-inset-bottom))]">
+            {/* sticky (no un div de flujo normal): con varios gastos fijos agregados el
+                botón quedaba fuera de la pantalla sin scroll — mismo defecto real que
+                "categorías" y "anotar gasto" (ver ESTADO.md 2026-09-25). */}
+            <div className="sticky bottom-0 z-10 -mx-4 border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] bg-[var(--bg)] px-4 pt-4 pb-[max(16px,env(safe-area-inset-bottom))]">
               <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); avanzar(); }}>
                 {gastosFijosItems.length > 0 ? 'Continuar' : 'No tengo gastos fijos'}
               </CtaButton>
