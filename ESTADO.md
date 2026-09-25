@@ -1,30 +1,19 @@
 # ESTADO — CashPet
-Última actualización: 2026-09-25 | Sesión actual: 5
+Última actualización: 2026-09-25 | Sesión actual: 6
 
-⏸️ CHECKPOINT 2026-09-25 — 3 arreglos más pedidos por el usuario tras probar la app en su
-celular real, TERMINADOS y verificados (tsc+build+navegador, incluyendo el envío real del
-formulario). No commiteados aún:
-- **Número de la tarjeta de presupuesto (Inicio)**: mostraba lo GASTADO como número héroe;
-  con límite $20 y gasto $30 se leía "te excediste por $30" cuando el exceso real es $10.
-  Ahora el número héroe es el REMANENTE (si vas bien) o el EXCESO (si te pasaste), y una
-  línea nueva "Gastaste $X de $Y" conserva el total gastado visible. `BarraPresupuestoDia`
-  en `components/app/ui.tsx`.
-- **[BUG REAL — CTA no fijo] Categorías del onboarding**: con 7 opciones, el botón
-  "Continuar" quedaba fuera de la pantalla sin scroll y sin ninguna pista de que había que
-  bajar — el usuario reportó "acá no deja continuar". `ctaFijo` en `PantallaPregunta`
-  (`components/onboarding/ui.tsx`) usaba `mt-auto` (solo empuja dentro del flex) en vez de
-  `sticky bottom-0` (pegado al viewport mientras el contenido de arriba scrollea). Corregido.
-- **[BUG REAL — CTA no fijo] Anotar gasto en Inicio**: mismo patrón exacto en el bottom-sheet
-  — con varias categorías visibles o el teclado abierto, los botones "Cancelar"/"Anotar"
-  quedaban fuera de vista. El usuario reportó "acá no deja agregar el gasto" — bug real de
-  dinero (bloqueaba registrar gastos). Restructurado en `app/(interna)/inicio/page.tsx`: el
-  formulario ahora tiene una zona de contenido que scrollea (`overflow-y-auto flex-1`) y un
-  pie de botones SIEMPRE visible fuera de esa zona, separado por una línea sutil.
-- Los 3 mockups que muestran esta tarjeta (`hoy.png`, `mecanismo.png`, `mecanismo-impulso.png`)
-  se regeneraron para reflejar el número héroe nuevo.
-- ⚠️ Patrón a vigilar: puede haber OTROS lugares con el mismo anti-patrón (CTA al final de
-  contenido largo sin `sticky`/`fixed` real) — revisar si el usuario reporta algo similar en
-  paywall/login/Progreso/Perfil.
+⏸️ CHECKPOINT 2026-09-25 — Arranca Sesión 6 (servicios externos). Todo el pulido post-Sesión-5
+(bugs de CTA no fijo, número real de la tarjeta de presupuesto, mockups en dólares) quedó
+CERRADO y commiteado en `ebfd4b9`, `d74cc4e` y `c478daf` — ver "Sesiones completadas" para el
+resumen. El usuario confirmó el nombre definitivo: **CashPet** (no Fintchi) — ya no es una
+decisión pendiente.
+
+Siguiente paso: averiguar qué cuentas externas ya tiene el usuario (GitHub/Supabase/Vercel)
+antes de guiarlo paso a paso — no asumir que faltan todas ni que faltan ninguna.
+
+⚠️ Patrón a vigilar (heredado de la sesión anterior): puede haber otros lugares con el mismo
+anti-patrón de CTA al final de contenido largo sin `sticky`/`fixed` real — revisar si el
+usuario reporta algo similar en paywall/login/Progreso/Perfil. Probado y sin problemas en la
+ronda de pruebas de la Sesión 5, pero no está descartado al 100%.
 
 ⏸️ CHECKPOINT 2026-09-24 (post-cierre de Sesión 5) — TODO el pulido pedido tras probar la app está TERMINADO y verificado (tsc+build+navegador). No commiteado aún.
 - **Onboarding** (`app/onboarding/page.tsx`): los 3 cambios pedidos, hechos: (1) categoría "Suscripciones que ya ni uso"→"Suscripciones"; (2) presupuesto MENSUAL fijo: de slider único a "ingreso mensual" + gastos fijos itemizados (nombre+monto, lista+suma); (3) presupuesto LIBRE diario con tope REALISTA = (ingreso-gastos fijos)/30. Bug real encontrado y corregido: el slider caía al mínimo del país por un render intermedio donde `libreDiarioMax` mezclaba el ingreso VIEJO con el país NUEVO antes de que el reset de moneda terminara — `Math.min` dejaba el valor pegado abajo para siempre. Fix: helper `elegirPais()` que setea país+presupuestoLibre+ingresoMensual+gastosFijos en el MISMO batch de React. Verificado con el valor normal y con el caso límite `huboAjusteRealista`.
@@ -125,10 +114,10 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - Sesión 5 — App interna completa: Inicio (`/inicio`, ritual diario), Progreso (`/progreso`) y Perfil (`/perfil`) construidos sobre `lib/datosApp.ts` (mock en localStorage). Durante la sesión, 3 pedidos grandes del usuario tras ver la app construida: (1) rediseño de superficies a blanco sobrio en toda la app; (2) modelo de 2 presupuestos (mensual fijo + libre diario) reemplazando el presupuesto único original, con el mecanismo de venta renombrado de "el Freno de 5 Segundos" a "El Chequeo de Gastón" para reflejar que la mascota reacciona DESPUÉS del gasto, no antes; (3) moneda secundaria con conversión manual (caso de uso real: ingresos en USD, gastos en USD y CRC). Inicio pasó por 14 rondas de revisor-visual (récord del proyecto) — craft cruzó el gate y se sostuvo 6 rondas, usabilidad se estabilizó en 30/40; aprobado por revisión directa del usuario siguiendo la recomendación explícita del propio revisor automático — cerrada 2026-09-24
 
 ## Sesión en progreso 🔧
-- Sesión 5 — CERRADA: app interna completa y aprobada. Arranca Sesión 6 (servicios externos)
+- Sesión 6 — servicios externos, recién arrancada: GitHub/Supabase/IA real/Vercel/Resend/dominio/Hotmart. Nombre de la app confirmado por el usuario 2026-09-25: **CashPet**. Nota: el esquema de BD ya anticipa `moneda_secundaria`/`ultimo_tipo_cambio` en `profiles` y `monto_original`/`moneda_original`/`tipo_cambio` en `gastos` (ver Decisiones técnicas). Próximo paso: preguntarle al usuario qué cuentas externas ya tiene creadas antes de guiarlo.
 
 ## Próximas sesiones 📋
-- Sesión 6: servicios externos — GitHub/Supabase/IA real/Vercel/Resend/dominio/Hotmart. Nota: el esquema de BD ya anticipa `moneda_secundaria`/`ultimo_tipo_cambio` en `profiles` y `monto_original`/`moneda_original`/`tipo_cambio` en `gastos` (ver Decisiones técnicas)
+- (ninguna después de la 6 — el resto del roadmap depende de cómo avance servicios externos)
 
 ## Decisiones de producto (fuera de la secuencia técnica)
 - Mascota: se queda en SVG vectorial (gratis, liviano) para el MVP. El usuario preguntó por mascotas 3D renderizadas tipo "Fluffy"/"Uni" (imágenes fijas por estado, no vectorial) — se explicó el costo (ilustrador o generación con IA, gasto real) y quedó como mejora FUTURA, no ahora. No re-litigar esto salvo que el usuario lo pida.
@@ -164,8 +153,8 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 - [EN CURSO] Veredicto de landing CADUCADO otra vez: al crear `app/onboarding/page.tsx` y el stub `app/paywall/page.tsx` (archivos nuevos, no tocan `app/page.tsx` ni sus componentes), el gate de frescura los detecta como ".tsx más nuevo que el veredicto" aunque no afectan la landing. Se re-lanza el revisor-visual de landing solo si el usuario pide re-confirmarla; si no, queda documentado que el contenido de la landing no cambió desde su 10ª pasada (LISTA, 36/40 · 18/20 · 20/20).
 
 ## Pendientes del usuario (acciones que el usuario debe hacer)
-- [ ] Confirmar el nombre definitivo de la app: CashPet (nombre de carpeta/archivo del usuario) vs Fintchi (nombre tentativo de su propia investigación) vs RegañadorFinanciero
-- [ ] Más adelante: crear cuentas de Hotmart, Supabase, Vercel, Resend y comprar el dominio (se le avisará con guía paso a paso cuando llegue el momento). El footer de la landing usa `soporte@cashpet.app` como email de ejemplo — se actualiza al dominio real cuando se compre
+- [x] Confirmar el nombre definitivo de la app — RESUELTO 2026-09-25: **CashPet**
+- [ ] Crear cuentas de GitHub, Supabase, Vercel, Resend y Hotmart, y comprar el dominio — EN CURSO, Sesión 6. El footer de la landing usa `soporte@cashpet.app` como email de ejemplo — se actualiza al dominio real cuando se compre
 
 ## Notas para la próxima sesión
 - El usuario pegó el RESUMEN FINAL — IDEA VALIDADA completo (CashPet.pdf): no se debe re-validar la idea ni proponer alternativas de nicho. Sí falta verificación propia de revenue de competidores (Cleo/Duolingo) para completar FICHA-MODELO con fuentes públicas.
