@@ -132,6 +132,11 @@ export interface Gasto {
   monto: number;
   categoria: string;
   hora: string;
+  /** ISO 'YYYY-MM-DD', siempre en hora LOCAL del usuario (2026-09-25, a pedido del
+   * usuario: recordar el historial de días pasados y sacar estadísticas por período).
+   * String zero-padded a propósito: compara cronológicamente con `<`/`>=` de texto
+   * plano, sin parsear Date en cada filtro. */
+  fecha: string;
   /** Moneda secundaria (2026-09-24, a pedido del usuario: ingresos/pagos mezclados en 2
    * monedas, ej. dólares y colones en Costa Rica). Si el gasto se anotó en la moneda
    * secundaria, se guarda el monto/moneda originales + el tipo de cambio usado ese día
@@ -156,7 +161,10 @@ export interface DatosApp {
   presupuestoLibreDiario: number;
   racha: number;
   nivelMascota: number;
-  gastosHoy: Gasto[];
+  /** TODO el historial, no solo hoy (2026-09-25) — Inicio filtra con `gastosDeHoy()`,
+   * Progreso filtra por período con `filtrarPorRango()`. El nombre cambió de
+   * `gastosHoy` a `gastos` porque ya no es solo el día de hoy. */
+  gastos: Gasto[];
 }
 
 // Etiqueta compacta del monto original para el historial (ej. "$12.50") — null si el
@@ -192,6 +200,104 @@ function horaActual(): string {
   return new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
 }
 
+function pad2(n: number): string {
+  return String(n).padStart(2, '0');
+}
+
+// 'YYYY-MM-DD' en hora LOCAL — nunca toISOString() (ese va en UTC y puede mostrar el
+// día de ayer/mañana según la zona horaria del usuario, bug real conocido de esa API).
+export function fechaHoy(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+}
+
+function fechaDesdeHoy(diasAtras: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() - diasAtras);
+  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+}
+
+// El ritual diario de Inicio sigue siendo solo sobre HOY — el historial completo vive
+// en `datos.gastos`, esto filtra el subconjunto de siempre (2026-09-25).
+export function gastosDeHoy(gastos: Gasto[]): Gasto[] {
+  const hoy = fechaHoy();
+  return gastos.filter((g) => g.fecha === hoy);
+}
+
+// Estadísticas por período (2026-09-25, a pedido del usuario: "estadísticas mensuales,
+// trimestrales o anuales, con la opción de aplicar filtros"). `offset` navega entre
+// períodos: 0 = el actual, -1 = el anterior, +1 = el siguiente (nunca más allá de hoy
+// en la práctica — Progreso desactiva la flecha "siguiente" en offset 0).
+export type Periodo = 'mes' | 'trimestre' | 'año';
+
+const NOMBRES_MES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+function ultimoDiaDelMes(anio: number, mesIdx0: number): number {
+  return new Date(anio, mesIdx0 + 1, 0).getDate();
+}
+
+function capitalizar(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+export interface RangoPeriodo {
+  desde: string;
+  hasta: string;
+  etiqueta: string;
+}
+
+// Aritmética con enteros (meses/trimestres totales desde el año 0) en vez de sumar/restar
+// directo sobre el mes de un Date — evita el desborde de "mes 13" o "mes -1" que Date
+// normaliza de formas no siempre obvias, y deja el offset negativo simple con `((n % m) + m) % m`.
+export function rangoPeriodo(periodo: Periodo, offset: number, ref: Date = new Date()): RangoPeriodo {
+  const anioRef = ref.getFullYear();
+  const mesRef = ref.getMonth();
+
+  if (periodo === 'mes') {
+    const total = anioRef * 12 + mesRef + offset;
+    const anio = Math.floor(total / 12);
+    const mes = ((total % 12) + 12) % 12;
+    return {
+      desde: `${anio}-${pad2(mes + 1)}-01`,
+      hasta: `${anio}-${pad2(mes + 1)}-${pad2(ultimoDiaDelMes(anio, mes))}`,
+      etiqueta: `${capitalizar(NOMBRES_MES[mes])} ${anio}`,
+    };
+  }
+
+  if (periodo === 'trimestre') {
+    const trimestreRef = Math.floor(mesRef / 3);
+    const total = anioRef * 4 + trimestreRef + offset;
+    const anio = Math.floor(total / 4);
+    const trimestre = ((total % 4) + 4) % 4;
+    const mesInicio = trimestre * 3;
+    const mesFin = mesInicio + 2;
+    return {
+      desde: `${anio}-${pad2(mesInicio + 1)}-01`,
+      hasta: `${anio}-${pad2(mesFin + 1)}-${pad2(ultimoDiaDelMes(anio, mesFin))}`,
+      etiqueta: `T${trimestre + 1} ${anio} (${capitalizar(NOMBRES_MES[mesInicio].slice(0, 3))}-${capitalizar(NOMBRES_MES[mesFin].slice(0, 3))})`,
+    };
+  }
+
+  const anio = anioRef + offset;
+  return { desde: `${anio}-01-01`, hasta: `${anio}-12-31`, etiqueta: `${anio}` };
+}
+
+// Comparación de texto plano (no Date) porque 'YYYY-MM-DD' zero-padded ya ordena
+// cronológicamente — más simple y sin riesgo de desfase de zona horaria.
+export function filtrarPorRango(gastos: Gasto[], desde: string, hasta: string): Gasto[] {
+  return gastos.filter((g) => g.fecha >= desde && g.fecha <= hasta);
+}
+
+export function porCategoria(gastos: Gasto[]): { categoria: string; monto: number }[] {
+  const mapa = gastos.reduce<Record<string, number>>((acc, g) => {
+    acc[g.categoria] = (acc[g.categoria] ?? 0) + g.monto;
+    return acc;
+  }, {});
+  return Object.entries(mapa)
+    .map(([categoria, monto]) => ({ categoria, monto }))
+    .sort((a, b) => b.monto - a.monto);
+}
+
 // Nunca una app vacía (32): si no hay datos guardados, se siembra desde el onboarding real
 // del usuario (o, si tampoco existe, con un demo realista) — jamás "0 gastos, $0 de límite".
 function sembrarDatos(): DatosApp {
@@ -205,23 +311,39 @@ function sembrarDatos(): DatosApp {
         presupuestoLibreDiario: d.presupuestoLibreDiario ?? 25,
         racha: 1,
         nivelMascota: 1,
-        gastosHoy: d.gastoPrueba?.monto
-          ? [{ id: 'inicial', monto: d.gastoPrueba.monto, categoria: d.gastoPrueba.categoria ?? 'Hobbies/Ocio', hora: horaActual() }]
+        // Un usuario real recién llegado solo tiene SU gasto de prueba de hoy — nunca se
+        // le fabrica historial falso de días que no vivió (32: "nunca vacía" es sobre no
+        // esconder datos reales, no sobre inventar transacciones que no pasaron).
+        gastos: d.gastoPrueba?.monto
+          ? [{ id: 'inicial', monto: d.gastoPrueba.monto, categoria: d.gastoPrueba.categoria ?? 'Hobbies/Ocio', hora: horaActual(), fecha: fechaHoy() }]
           : [],
       };
     }
   } catch {
     // localStorage puede fallar (modo privado) — se sigue con el demo de abajo.
   }
+  // Este demo (sin onboarding real detrás) SÍ es un ejemplo genérico de por sí — se le
+  // agrega algo de historial de meses previos para que Progreso no se vea vacío en este
+  // caso límite (localStorage bloqueado / primera visita directa a /inicio sin pasar por
+  // el onboarding).
   return {
     moneda: 'CRC',
     presupuestoMensual: 500000,
     presupuestoLibreDiario: 25000,
     racha: 1,
     nivelMascota: 1,
-    gastosHoy: [
-      { id: 'demo1', monto: 8000, categoria: 'Despensa/Comida', hora: horaActual() },
-      { id: 'demo2', monto: 3500, categoria: 'Hobbies/Ocio', hora: horaActual() },
+    gastos: [
+      { id: 'demo1', monto: 8000, categoria: 'Despensa/Comida', hora: horaActual(), fecha: fechaHoy() },
+      { id: 'demo2', monto: 3500, categoria: 'Hobbies/Ocio', hora: horaActual(), fecha: fechaHoy() },
+      { id: 'demo3', monto: 450000, categoria: 'Renta/Vivienda', hora: '08:00', fecha: fechaDesdeHoy(20) },
+      { id: 'demo4', monto: 60000, categoria: 'Servicios', hora: '09:30', fecha: fechaDesdeHoy(18) },
+      { id: 'demo5', monto: 12000, categoria: 'Transporte', hora: '07:45', fecha: fechaDesdeHoy(15) },
+      { id: 'demo6', monto: 9500, categoria: 'Hobbies/Ocio', hora: '19:20', fecha: fechaDesdeHoy(12) },
+      { id: 'demo7', monto: 450000, categoria: 'Renta/Vivienda', hora: '08:00', fecha: fechaDesdeHoy(50) },
+      { id: 'demo8', monto: 22000, categoria: 'Despensa/Comida', hora: '17:10', fecha: fechaDesdeHoy(45) },
+      { id: 'demo9', monto: 15000, categoria: 'Compras', hora: '16:00', fecha: fechaDesdeHoy(40) },
+      { id: 'demo10', monto: 450000, categoria: 'Renta/Vivienda', hora: '08:00', fecha: fechaDesdeHoy(80) },
+      { id: 'demo11', monto: 18000, categoria: 'Transporte', hora: '07:45', fecha: fechaDesdeHoy(75) },
     ],
   };
 }
@@ -229,7 +351,13 @@ function sembrarDatos(): DatosApp {
 export function cargarDatosApp(): DatosApp {
   try {
     const guardado = window.localStorage.getItem(CLAVE);
-    if (guardado) return JSON.parse(guardado);
+    if (guardado) {
+      const parseado = JSON.parse(guardado);
+      // Guarda de forma (2026-09-25): un `cashpet_app` guardado con la forma vieja
+      // (`gastosHoy` en vez de `gastos`, de antes de este cambio) no debe tumbar toda
+      // la pantalla — mejor tratarlo como si no hubiera nada guardado y volver a sembrar.
+      if (Array.isArray(parseado?.gastos)) return parseado;
+    }
   } catch {
     // sigue al seed
   }

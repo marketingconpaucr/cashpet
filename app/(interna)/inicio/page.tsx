@@ -16,7 +16,9 @@ import {
   calcularEmocion,
   cargarDatosApp,
   etiquetaMontoOriginal,
+  fechaHoy,
   formatoMoneda,
+  gastosDeHoy,
   guardarDatosApp,
   iconoCategoria,
   nombreMoneda,
@@ -28,7 +30,7 @@ import {
   type Gasto,
 } from '@/lib/datosApp';
 
-const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastosHoy: [] };
+const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastos: [] };
 
 // Las 4 categorías de gasto hormiga diario van primero (gate de carga cognitiva: ≤4-5
 // antes de agrupar) — las 6 menos frecuentes (pagos mensuales, etc.) quedan detrás de
@@ -60,16 +62,21 @@ export default function InicioPage() {
     setCargado(true);
   }, []);
 
+  // El historial completo vive en datos.gastos — el ritual diario (esta pantalla) sigue
+  // siendo solo sobre HOY (2026-09-25: el historial completo y las estadísticas por
+  // período ahora viven en Progreso, ver lib/datosApp.ts).
+  const gastosHoy = gastosDeHoy(datos.gastos);
+
   // El ritual diario es sobre la bolsa LIBRE (impulso), no sobre lo fijo del mes — lo fijo
   // (renta, recibos, súper) se resume en Progreso, no compite por el dato héroe de Inicio.
-  const gastadoLibreHoy = sumaPorTipo(datos.gastosHoy, 'libre');
+  const gastadoLibreHoy = sumaPorTipo(gastosHoy, 'libre');
   const emocion = calcularEmocion(gastadoLibreHoy, datos.presupuestoLibreDiario);
 
   // Preseleccionar la categoría del último gasto (no el monto: cada gasto es nuevo, pero
   // la categoría se repite 3-5 veces al día en el ritual — obligar a re-elegirla siempre
   // penaliza justo el loop diario que es la razón de ser de esta pantalla, 11ª revisión).
   const abrirFormulario = () => {
-    const ultima = datos.gastosHoy[0]?.categoria ?? null;
+    const ultima = gastosHoy[0]?.categoria ?? null;
     const esConocida = ultima ? CATEGORIAS.some((c) => c.label === ultima) : false;
     setEditandoId(null);
     setMonto('');
@@ -157,22 +164,23 @@ export default function InicioPage() {
       ? {
           ...datos,
           ...(usaSecundaria ? { ultimoTipoCambio: tasa } : {}),
-          gastosHoy: datos.gastosHoy.map((g) =>
+          gastos: datos.gastos.map((g) =>
             g.id === editandoId ? { ...g, monto: montoConvertido, categoria, ...camposMoneda } : g
           ),
         }
       : {
           ...datos,
           ...(usaSecundaria ? { ultimoTipoCambio: tasa } : {}),
-          gastosHoy: [
+          gastos: [
             {
               id: crypto.randomUUID(),
               monto: montoConvertido,
               categoria,
               hora: new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }),
+              fecha: fechaHoy(),
               ...camposMoneda,
             },
-            ...datos.gastosHoy,
+            ...datos.gastos,
           ],
         };
     setDatos(actualizado);
@@ -183,8 +191,8 @@ export default function InicioPage() {
   // Undo (regla 8 de UX): borrar es reversible, no pide confirmación con un modal —
   // avisa y deja 4s para deshacer (defecto real: antes un gasto mal anotado no se podía corregir).
   const eliminarGasto = (id: string) => {
-    const gasto = datos.gastosHoy.find((g) => g.id === id) ?? null;
-    const actualizado: DatosApp = { ...datos, gastosHoy: datos.gastosHoy.filter((g) => g.id !== id) };
+    const gasto = datos.gastos.find((g) => g.id === id) ?? null;
+    const actualizado: DatosApp = { ...datos, gastos: datos.gastos.filter((g) => g.id !== id) };
     setDatos(actualizado);
     guardarDatosApp(actualizado);
     setEliminado(gasto);
@@ -193,7 +201,7 @@ export default function InicioPage() {
 
   const deshacerEliminar = () => {
     if (!eliminado) return;
-    const actualizado: DatosApp = { ...datos, gastosHoy: [eliminado, ...datos.gastosHoy] };
+    const actualizado: DatosApp = { ...datos, gastos: [eliminado, ...datos.gastos] };
     setDatos(actualizado);
     guardarDatosApp(actualizado);
     setEliminado(null);
@@ -258,7 +266,7 @@ export default function InicioPage() {
 
         <div className="mt-6 flex-1">
           <h2 className="text-xs font-semibold text-[var(--text-secondary)]">Hoy</h2>
-          {datos.gastosHoy.length === 0 ? (
+          {gastosHoy.length === 0 ? (
             <SeccionVacia
               icon={PiggyBank}
               titulo="Todavía nada hoy"
@@ -267,7 +275,7 @@ export default function InicioPage() {
           ) : (
             <div className="mt-2 flex flex-col gap-2">
               <AnimatePresence initial={false}>
-                {datos.gastosHoy.map((g, i) => (
+                {gastosHoy.map((g, i) => (
                   <FilaGasto
                     key={g.id}
                     indice={i}

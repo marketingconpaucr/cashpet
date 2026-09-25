@@ -10,7 +10,7 @@ import { Hairline } from '@/components/landing/ui';
 import { BottomNav } from '@/components/app/ui';
 import { cargarDatosApp, formatoMoneda, guardarDatosApp, type DatosApp } from '@/lib/datosApp';
 
-const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastosHoy: [] };
+const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastos: [] };
 
 export default function PerfilPage() {
   const [datos, setDatos] = useState<DatosApp>(DATOS_INICIALES);

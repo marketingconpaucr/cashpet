@@ -4,35 +4,66 @@
 // Pantalla secundaria (no es una de las 4 del dinero): checklist + medición, sin revisor-visual.
 
 import { useEffect, useState } from 'react';
-import { Flame, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Flame, Star } from 'lucide-react';
 import { Hairline } from '@/components/landing/ui';
 import { BottomNav } from '@/components/app/ui';
-import { cargarDatosApp, formatoMoneda, iconoCategoria, sumaPorTipo, type DatosApp } from '@/lib/datosApp';
+import {
+  cargarDatosApp,
+  filtrarPorRango,
+  formatoMoneda,
+  iconoCategoria,
+  porCategoria,
+  rangoPeriodo,
+  sumaPorTipo,
+  type DatosApp,
+  type Periodo,
+} from '@/lib/datosApp';
 
-const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastosHoy: [] };
+const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastos: [] };
+
+const PERIODOS: { valor: Periodo; label: string }[] = [
+  { valor: 'mes', label: 'Mes' },
+  { valor: 'trimestre', label: 'Trimestre' },
+  { valor: 'año', label: 'Año' },
+];
 
 export default function ProgresoPage() {
   const [datos, setDatos] = useState<DatosApp>(DATOS_INICIALES);
   const [cargado, setCargado] = useState(false);
+  // Historial y estadísticas por período (2026-09-25, a pedido del usuario). `offset`
+  // navega entre períodos del mismo tipo: 0 = el actual, negativo = hacia atrás — se
+  // reinicia a 0 cada vez que el usuario cambia de Mes/Trimestre/Año (regla 13 de UX:
+  // toda vista temporal necesita fechas reales + navegación entre períodos).
+  const [periodo, setPeriodo] = useState<Periodo>('mes');
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     setDatos(cargarDatosApp());
     setCargado(true);
   }, []);
 
-  const porCategoria = datos.gastosHoy.reduce<Record<string, number>>((acc, g) => {
-    acc[g.categoria] = (acc[g.categoria] ?? 0) + g.monto;
-    return acc;
-  }, {});
-  const totalHoy = datos.gastosHoy.reduce((acc, g) => acc + g.monto, 0);
+  const cambiarPeriodo = (p: Periodo) => {
+    setPeriodo(p);
+    setOffset(0);
+  };
 
-  // Lo fijo (renta, recibos, súper) se resume acá — no en Inicio, que es sobre el ritual
-  // diario de la bolsa libre (ver "Dos presupuestos" en lib/datosApp.ts).
-  const gastoFijoMes = sumaPorTipo(datos.gastosHoy, 'fijo');
+  // "Presupuesto fijo del mes" es siempre sobre el MES CALENDARIO ACTUAL (no sobre el
+  // filtro de historial de abajo, que el usuario puede mover a otros meses/trimestres/
+  // años) — son dos preguntas distintas: "¿cómo voy este mes?" vs. "¿cómo me fue en tal
+  // período pasado?".
+  const rangoMesActual = rangoPeriodo('mes', 0);
+  const gastosMesActual = filtrarPorRango(datos.gastos, rangoMesActual.desde, rangoMesActual.hasta);
+  const gastoFijoMes = sumaPorTipo(gastosMesActual, 'fijo');
   const pctFijo = datos.presupuestoMensual > 0 ? Math.min(100, Math.round((gastoFijoMes / datos.presupuestoMensual) * 100)) : 0;
   const pasadoFijo = gastoFijoMes > datos.presupuestoMensual;
   const restanteFijo = Math.max(0, datos.presupuestoMensual - gastoFijoMes);
-  const ahorrado = porCategoria['Ahorros'] ?? 0;
+  const ahorradoMes = porCategoria(gastosMesActual).find((c) => c.categoria === 'Ahorros')?.monto ?? 0;
+
+  // El historial filtrable: el período que el usuario eligió arriba.
+  const rango = rangoPeriodo(periodo, offset);
+  const gastosPeriodo = filtrarPorRango(datos.gastos, rango.desde, rango.hasta);
+  const totalPeriodo = gastosPeriodo.reduce((acc, g) => acc + g.monto, 0);
+  const categoriasPeriodo = porCategoria(gastosPeriodo);
 
   return (
     <>
@@ -75,22 +106,73 @@ export default function ProgresoPage() {
             <p className="mt-2 text-xs text-[var(--text-secondary)]">
               {pasadoFijo ? 'Ya te pasaste de lo fijo este mes.' : `Te quedan ${formatoMoneda(restanteFijo, datos.moneda)} de lo fijo.`}
             </p>
-            {ahorrado > 0 && (
-              <p className="mt-1 text-xs font-semibold text-[var(--accent)]">Llevas {formatoMoneda(ahorrado, datos.moneda)} ahorrados este mes.</p>
+            {ahorradoMes > 0 && (
+              <p className="mt-1 text-xs font-semibold text-[var(--accent)]">Llevas {formatoMoneda(ahorradoMes, datos.moneda)} ahorrados este mes.</p>
             )}
           </div>
         </Hairline>
 
-        <h2 className="mt-6 text-sm font-semibold text-[var(--text-secondary)]">En qué se te fue hoy</h2>
-        {Object.keys(porCategoria).length === 0 ? (
-          <p className="mt-2 text-sm text-[var(--text-tertiary)]">Todavía no anotaste ningún gasto hoy.</p>
-        ) : (
-          <div className="mt-2 flex flex-col gap-2">
-            {Object.entries(porCategoria)
-              .sort(([, a], [, b]) => b - a)
-              .map(([cat, monto]) => {
+        {/* Historial por período (2026-09-25, a pedido del usuario: "estadísticas
+            mensuales, trimestrales o anuales, con la opción de aplicar filtros"). Regla
+            13 de UX: fechas reales + navegación entre períodos, nunca solo "el actual". */}
+        <h2 className="mt-6 text-sm font-semibold text-[var(--text-secondary)]">Tu historial</h2>
+        <div className="mt-2 flex gap-2 rounded-[var(--radius-button)] bg-[var(--surface-2)] p-1">
+          {PERIODOS.map((p) => (
+            <button
+              key={p.valor}
+              type="button"
+              onClick={() => cambiarPeriodo(p.valor)}
+              aria-pressed={periodo === p.valor}
+              className={`h-9 flex-1 rounded-[var(--radius-button)] text-sm font-semibold [touch-action:manipulation] ${
+                periodo === p.valor ? 'bg-[var(--surface)] text-[var(--accent)] shadow-[var(--shadow-1)]' : 'text-[var(--text-secondary)]'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-3 flex items-center justify-between gap-2">
+          <button
+            type="button"
+            onClick={() => setOffset((o) => o - 1)}
+            aria-label="Período anterior"
+            className="flex size-9 items-center justify-center rounded-full text-[var(--text-secondary)] [touch-action:manipulation]"
+          >
+            <ChevronLeft size={20} aria-hidden="true" />
+          </button>
+          <span className="text-sm font-semibold text-[var(--text-primary)]">{rango.etiqueta}</span>
+          <button
+            type="button"
+            onClick={() => setOffset((o) => Math.min(0, o + 1))}
+            disabled={offset >= 0}
+            aria-label="Período siguiente"
+            className="flex size-9 items-center justify-center rounded-full text-[var(--text-secondary)] [touch-action:manipulation] disabled:opacity-30"
+          >
+            <ChevronRight size={20} aria-hidden="true" />
+          </button>
+        </div>
+
+        <Hairline surface="surface" className="mt-3 shadow-[var(--shadow-1)]">
+          <div className="flex items-center justify-between p-4">
+            <span className="text-xs text-[var(--text-secondary)]">Gastado en {rango.etiqueta}</span>
+            {/* Sin font-family display (Fredoka): esa fuente no tiene el glifo del colón
+                (₡, U+20A1) y lo renderiza roto como "Ø" — mismo bug real ya documentado
+                y evitado en BarraPresupuestoDia (components/app/ui.tsx). */}
+            <span className="text-lg font-bold tabular-nums text-[var(--text-primary)]">
+              {formatoMoneda(totalPeriodo, datos.moneda)}
+            </span>
+          </div>
+        </Hairline>
+
+        <div className="mt-3">
+          {categoriasPeriodo.length === 0 ? (
+            <p className="mt-2 text-sm text-[var(--text-tertiary)]">Todavía no anotaste ningún gasto en este período.</p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {categoriasPeriodo.map(({ categoria: cat, monto }) => {
                 const Icono = iconoCategoria(cat);
-                const pct = totalHoy > 0 ? Math.round((monto / totalHoy) * 100) : 0;
+                const pct = totalPeriodo > 0 ? Math.round((monto / totalPeriodo) * 100) : 0;
                 return (
                   <div key={cat} className="flex items-center gap-3 rounded-[var(--radius-button)] bg-[var(--surface-2)] px-3 py-2.5">
                     <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]">
@@ -108,8 +190,9 @@ export default function ProgresoPage() {
                   </div>
                 );
               })}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
       <BottomNav activo="progreso" />
     </>

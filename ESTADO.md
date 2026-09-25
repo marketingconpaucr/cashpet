@@ -1,14 +1,39 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-25 | Sesión actual: 6
 
-⏸️ CHECKPOINT 2026-09-25 — Arranca Sesión 6 (servicios externos). Todo el pulido post-Sesión-5
-(bugs de CTA no fijo, número real de la tarjeta de presupuesto, mockups en dólares) quedó
-CERRADO y commiteado en `ebfd4b9`, `d74cc4e` y `c478daf` — ver "Sesiones completadas" para el
-resumen. El usuario confirmó el nombre definitivo: **CashPet** (no Fintchi) — ya no es una
-decisión pendiente.
+⏸️ CHECKPOINT 2026-09-25 — Sesión 6 arrancó, pero antes de tocar servicios externos el usuario
+pidió una función grande: **historial de días pasados + estadísticas por período**. TERMINADA
+y verificada (tsc+build+navegador, con Playwright para cross-check de un bug de animación).
+No commiteada aún.
 
-Siguiente paso: averiguar qué cuentas externas ya tiene el usuario (GitHub/Supabase/Vercel)
-antes de guiarlo paso a paso — no asumir que faltan todas ni que faltan ninguna.
+- **Historial real, no solo "hoy"**: cada `Gasto` ahora guarda su `fecha` (antes solo existía
+  "hoy", sin fecha). `DatosApp.gastosHoy` se renombró a `gastos` (TODO el historial); Inicio
+  sigue mostrando solo el día de hoy con el nuevo helper `gastosDeHoy()`.
+- **Progreso — nueva sección "Tu historial"**: filtros Mes/Trimestre/Año + flechas para navegar
+  a períodos anteriores (regla 13 de UX: toda vista temporal necesita fechas reales + navegación),
+  con el total gastado y el desglose por categoría de ese período. La tarjeta "Presupuesto fijo
+  del mes" de arriba ahora es sobre el MES CALENDARIO REAL (antes sumaba mal "todo lo guardado"
+  como si fuera "el mes").
+- Demo sembrado con ~3 meses de historial de ejemplo (`lib/datosApp.ts` → `sembrarDatos()`, solo
+  en el caso límite sin onboarding real detrás — un usuario real nuevo NUNCA recibe historial
+  inventado, solo su gasto de activación de hoy).
+- **[BUG REAL] Símbolo ₡ roto como "Ø"** en el nuevo total del período — mismo bug de la fuente
+  Fredoka (sin glifo de colón) ya documentado y evitado en otro lado del código; se me pasó en el
+  componente nuevo. Corregido.
+- **[BUG REAL — defensivo] `cargarDatosApp()` no validaba la forma de los datos guardados**: un
+  `cashpet_app` con la forma VIEJA (`gastosHoy` en vez de `gastos`, de antes de este cambio)
+  tumbaba toda la pantalla con una excepción sin capturar. Encontrado probando con Playwright
+  (localStorage con datos de pruebas anteriores a hoy). Ahora valida `Array.isArray(...gastos)`
+  antes de confiar en lo guardado; si no coincide, resiembra en vez de romperse — protege contra
+  cualquier futuro cambio de forma, no solo este.
+- Nota de entorno (no es un bug de código, no se tocó nada): en el panel de navegador de Claude
+  el número animado de Inicio se quedó pegado en $0 pese a que el dato interno llegaba correcto
+  (confirmado inspeccionando React) — es un problema del `IntersectionObserver` de ESE panel en
+  particular; con Playwright (motor de navegador real) el mismo código animó y mostró el número
+  correcto sin tocar nada. Si el usuario ve algo similar en un dispositivo real, sí investigar.
+
+Siguiente paso: el usuario todavía no respondió qué cuentas externas ya tiene (GitHub/Supabase/
+Vercel) — retomar esa pregunta antes de guiarlo paso a paso.
 
 ⚠️ Patrón a vigilar (heredado de la sesión anterior): puede haber otros lugares con el mismo
 anti-patrón de CTA al final de contenido largo sin `sticky`/`fixed` real — revisar si el
