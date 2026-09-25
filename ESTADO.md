@@ -1,6 +1,20 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-25 | Sesión actual: 6
 
+⏸️ CHECKPOINT 2026-09-25 (2) — **[BUG REAL — CORREGIDO]** El usuario reportó quedarse
+atascado al abrir "Anotar gasto" justo después de terminar el onboarding: en vez de la
+grilla normal de categorías, veía un campo de texto con "Café y antojos" ya escrito, sin
+salida clara. Causa raíz: el gasto de activación del onboarding usa SU PROPIA lista de
+categorías de diagnóstico (`OPCIONES_CATEGORIA` en `app/onboarding/page.tsx`, ej. "Café y
+antojos"), distinta de las categorías reales de la app (`CATEGORIAS` en `lib/datosApp.ts`,
+ej. "Despensa/Comida"). `abrirFormulario()` en Inicio confiaba en la última categoría usada
+SIN verificar que perteneciera a la lista real — como nunca coincide para el primer gasto
+de un usuario nuevo, el formulario se abría siempre en modo "categoría personalizada" para
+TODO usuario nuevo, justo en su primera interacción real con la app. Corregido: solo se
+precarga la categoría anterior si es una de las reales; si no, arranca en blanco con la
+grilla normal. Verificado reproduciendo el caso exacto (onboarding con "Café y antojos" →
+abrir Inicio → Anotar gasto) en el navegador — ahora muestra la grilla, no el campo de texto.
+
 ⏸️ CHECKPOINT 2026-09-25 — Sesión 6 arrancó, pero antes de tocar servicios externos el usuario
 pidió una función grande: **historial de días pasados + estadísticas por período**. TERMINADA
 y verificada (tsc+build+navegador, con Playwright para cross-check de un bug de animación).

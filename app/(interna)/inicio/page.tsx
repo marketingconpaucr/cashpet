@@ -80,9 +80,16 @@ export default function InicioPage() {
     const esConocida = ultima ? CATEGORIAS.some((c) => c.label === ultima) : false;
     setEditandoId(null);
     setMonto('');
-    setCategoria(ultima);
+    // Solo precargar la última categoría si es una de las categorías REALES de la app
+    // (lib/datosApp.ts → CATEGORIAS). El gasto de activación del onboarding usa su propia
+    // lista de categorías de diagnóstico (ej. "Café y antojos"), distinta de esta — si se
+    // confiaba en ella a ciegas, el formulario se abría en modo "categoría personalizada"
+    // con un campo de texto en vez de la grilla normal, sin ninguna salida clara (bug real
+    // reportado por el usuario: "no hay como pasar de ahí", justo en el primer gasto tras
+    // terminar el onboarding). Si no es una categoría conocida, se arranca en blanco.
+    setCategoria(esConocida ? ultima : null);
     setMostrarTodas(esConocida && !CATEGORIAS_FRECUENTES.some((c) => c.label === ultima));
-    setCategoriaPersonalizada(ultima !== null && !esConocida);
+    setCategoriaPersonalizada(false);
     setBusquedaCategoria('');
     setMonedaGasto('principal');
     setTipoCambio(datos.ultimoTipoCambio ? String(datos.ultimoTipoCambio) : '');
