@@ -79,6 +79,11 @@ export function BarraPresupuestoDia({ gastado, limite, formatear }: { gastado: n
   const colorTexto = pasado ? 'text-[var(--error)]' : 'text-[var(--success)]';
   const colorBarra = pasado ? 'bg-[var(--error)]' : 'bg-[var(--success)]';
   const colorPista = pasado ? 'bg-[color-mix(in_oklab,var(--error)_12%,transparent)]' : 'bg-[color-mix(in_oklab,var(--success)_12%,transparent)]';
+  // El número héroe es el REMANENTE o el EXCESO, no lo gastado (2026-09-25, defecto real
+  // que reportó el usuario: con límite $20 y gasto $30, el número mostraba "$30" en rojo,
+  // que se lee como "te pasaste por $30" cuando en realidad el exceso real es $10). Lo
+  // gastado y el límite quedan igual de visibles en la línea de abajo, solo explícitos.
+  const diferencia = Math.abs(limite - gastado);
   return (
     <Hairline surface="surface" className="shadow-[var(--shadow-1)]">
       <div className="p-4">
@@ -91,9 +96,9 @@ export function BarraPresupuestoDia({ gastado, limite, formatear }: { gastado: n
             Tamaño 42px: el tier "display" exacto de FICHA-ARTE.md (display 42px / title
             25px) para el número que más importa de la pantalla principal. */}
         <div className={`text-[42px] font-bold leading-tight tabular-nums ${colorTexto}`}>
-          <MontoAnimado valor={gastado} formatear={formatear} />
+          <MontoAnimado valor={diferencia} formatear={formatear} />
         </div>
-        <div className="text-xs font-medium text-[var(--text-tertiary)]">de {formatear(limite)}</div>
+        <div className="text-xs font-medium text-[var(--text-tertiary)]">Gastaste {formatear(gastado)} de {formatear(limite)}</div>
         <div
           role="progressbar"
           aria-label="Gastado hoy respecto al límite diario"

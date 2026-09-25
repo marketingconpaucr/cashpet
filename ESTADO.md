@@ -1,5 +1,30 @@
 # ESTADO — CashPet
-Última actualización: 2026-09-24 | Sesión actual: 5
+Última actualización: 2026-09-25 | Sesión actual: 5
+
+⏸️ CHECKPOINT 2026-09-25 — 3 arreglos más pedidos por el usuario tras probar la app en su
+celular real, TERMINADOS y verificados (tsc+build+navegador, incluyendo el envío real del
+formulario). No commiteados aún:
+- **Número de la tarjeta de presupuesto (Inicio)**: mostraba lo GASTADO como número héroe;
+  con límite $20 y gasto $30 se leía "te excediste por $30" cuando el exceso real es $10.
+  Ahora el número héroe es el REMANENTE (si vas bien) o el EXCESO (si te pasaste), y una
+  línea nueva "Gastaste $X de $Y" conserva el total gastado visible. `BarraPresupuestoDia`
+  en `components/app/ui.tsx`.
+- **[BUG REAL — CTA no fijo] Categorías del onboarding**: con 7 opciones, el botón
+  "Continuar" quedaba fuera de la pantalla sin scroll y sin ninguna pista de que había que
+  bajar — el usuario reportó "acá no deja continuar". `ctaFijo` en `PantallaPregunta`
+  (`components/onboarding/ui.tsx`) usaba `mt-auto` (solo empuja dentro del flex) en vez de
+  `sticky bottom-0` (pegado al viewport mientras el contenido de arriba scrollea). Corregido.
+- **[BUG REAL — CTA no fijo] Anotar gasto en Inicio**: mismo patrón exacto en el bottom-sheet
+  — con varias categorías visibles o el teclado abierto, los botones "Cancelar"/"Anotar"
+  quedaban fuera de vista. El usuario reportó "acá no deja agregar el gasto" — bug real de
+  dinero (bloqueaba registrar gastos). Restructurado en `app/(interna)/inicio/page.tsx`: el
+  formulario ahora tiene una zona de contenido que scrollea (`overflow-y-auto flex-1`) y un
+  pie de botones SIEMPRE visible fuera de esa zona, separado por una línea sutil.
+- Los 3 mockups que muestran esta tarjeta (`hoy.png`, `mecanismo.png`, `mecanismo-impulso.png`)
+  se regeneraron para reflejar el número héroe nuevo.
+- ⚠️ Patrón a vigilar: puede haber OTROS lugares con el mismo anti-patrón (CTA al final de
+  contenido largo sin `sticky`/`fixed` real) — revisar si el usuario reporta algo similar en
+  paywall/login/Progreso/Perfil.
 
 ⏸️ CHECKPOINT 2026-09-24 (post-cierre de Sesión 5) — TODO el pulido pedido tras probar la app está TERMINADO y verificado (tsc+build+navegador). No commiteado aún.
 - **Onboarding** (`app/onboarding/page.tsx`): los 3 cambios pedidos, hechos: (1) categoría "Suscripciones que ya ni uso"→"Suscripciones"; (2) presupuesto MENSUAL fijo: de slider único a "ingreso mensual" + gastos fijos itemizados (nombre+monto, lista+suma); (3) presupuesto LIBRE diario con tope REALISTA = (ingreso-gastos fijos)/30. Bug real encontrado y corregido: el slider caía al mínimo del país por un render intermedio donde `libreDiarioMax` mezclaba el ingreso VIEJO con el país NUEVO antes de que el reset de moneda terminara — `Math.min` dejaba el valor pegado abajo para siempre. Fix: helper `elegirPais()` que setea país+presupuestoLibre+ingresoMensual+gastosFijos en el MISMO batch de React. Verificado con el valor normal y con el caso límite `huboAjusteRealista`.

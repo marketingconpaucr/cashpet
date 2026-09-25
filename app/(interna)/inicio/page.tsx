@@ -341,7 +341,7 @@ export default function InicioPage() {
             animate={reduce ? { opacity: 1 } : { y: 0 }}
             exit={reduce ? { opacity: 0 } : { y: '100%' }}
             transition={{ duration: reduce ? 0.2 : 0.32, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-x-0 bottom-0 z-30 max-h-[85dvh] overflow-y-auto rounded-t-[var(--radius-card)] bg-[var(--surface)] pb-[max(12px,env(safe-area-inset-bottom))] shadow-[var(--shadow-2)]"
+            className="fixed inset-x-0 bottom-0 z-30 flex max-h-[85dvh] flex-col rounded-t-[var(--radius-card)] bg-[var(--surface)] shadow-[var(--shadow-2)]"
           >
             {/* Manija con función real (arrastrar hacia abajo cierra), no solo decorativa
                 (regla 11: todo elemento con apariencia interactiva hace algo). */}
@@ -350,11 +350,19 @@ export default function InicioPage() {
               className="mx-auto mt-2.5 h-1 w-9 shrink-0 touch-none rounded-full bg-[color-mix(in_oklab,var(--text-tertiary)_25%,transparent)]"
               aria-hidden="true"
             />
+            {/* El botón de guardar vivía al final del flujo normal del formulario: con
+                suficientes categorías visibles (o el teclado abierto achicando la altura
+                real en un celular), quedaba fuera de vista sin ninguna pista de que había
+                que hacer scroll — defecto real reportado por el usuario ("acá no deja
+                agregar el gasto"). Ahora el formulario es dos zonas: el contenido scrollea
+                (flex-1 min-h-0 overflow-y-auto) y los botones quedan en un pie SIEMPRE
+                visible, fuera del área que se desplaza. */}
             <form
               noValidate
               onSubmit={(e) => { e.preventDefault(); anotarGasto(); }}
-              className="flex flex-col gap-3 p-4"
+              className="flex min-h-0 flex-1 flex-col"
             >
+              <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">
               {datos.monedaSecundaria && (() => {
                 const monedaSec = datos.monedaSecundaria;
                 return (
@@ -475,7 +483,8 @@ export default function InicioPage() {
                       {error}
                     </p>
                   )}
-                  <div className="flex gap-2">
+              </div>
+              <div className="flex shrink-0 gap-2 border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] p-4 pb-[max(12px,env(safe-area-inset-bottom))]">
                     <motion.button
                       type="button"
                       whileTap={{ scale: 0.96 }}

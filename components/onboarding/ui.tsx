@@ -150,7 +150,16 @@ export function PantallaPregunta({
         {subcopy && <p className="mt-2 text-sm text-[var(--text-secondary)]">{subcopy}</p>}
         <div className="mt-8 flex flex-col gap-3">{children}</div>
       </div>
-      {ctaFijo && <div className="mt-auto pt-8 pb-[max(16px,env(safe-area-inset-bottom))]">{ctaFijo}</div>}
+      {/* sticky + bottom-0 (no solo mt-auto): con 7 opciones + "Otra cosa" el bloque de
+          chips supera el viewport y el botón quedaba fuera de vista sin scroll, sin
+          ninguna pista de que había que bajar más — defecto real reportado por el usuario
+          ("acá no deja continuar"). Pinned al fondo de la pantalla mientras el contenido
+          de arriba scrollea, como el resto de los CTA fijos de la app (BottomNav). */}
+      {ctaFijo && (
+        <div className="sticky bottom-0 z-10 mt-auto -mx-4 border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] bg-[var(--bg)] px-4 pt-8 pb-[max(16px,env(safe-area-inset-bottom))]">
+          {ctaFijo}
+        </div>
+      )}
     </div>
   );
 }
