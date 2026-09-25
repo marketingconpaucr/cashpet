@@ -203,6 +203,18 @@ export default function InicioPage() {
     ? CATEGORIAS.filter((c) => c.label.toLowerCase().includes(busquedaCategoria.trim().toLowerCase()))
     : CATEGORIAS_FRECUENTES;
 
+  // Vista previa en vivo de la conversión (13ª revisión): sin esto, un dígito mal tecleado
+  // en el monto o el tipo de cambio pasaba silencioso hasta después de guardar — el mismo
+  // tipo de bug real que se corrigió la ronda anterior, pero detectable a simple vista acá.
+  const previaConvertido =
+    monedaGasto === 'secundaria' && datos.monedaSecundaria
+      ? (() => {
+          const m = parseFloat(monto.replace(',', '.').replace(/[^\d.]/g, ''));
+          const t = parseFloat(tipoCambio.replace(',', '.').replace(/[^\d.]/g, ''));
+          return Number.isFinite(m) && Number.isFinite(t) && m > 0 && t > 0 ? Math.round(m * t) : null;
+        })()
+      : null;
+
   const reduce = useReducedMotion();
 
   return (
@@ -354,7 +366,7 @@ export default function InicioPage() {
                         onClick={() => setMonedaGasto(opcion)}
                         aria-pressed={monedaGasto === opcion}
                         className={`h-9 flex-1 rounded-[var(--radius-button)] text-sm font-semibold [touch-action:manipulation] ${
-                          monedaGasto === opcion ? 'bg-[var(--surface)] text-[var(--accent)] shadow-[var(--shadow-1)]' : 'text-[var(--text-tertiary)]'
+                          monedaGasto === opcion ? 'bg-[var(--surface)] text-[var(--accent)] shadow-[var(--shadow-1)]' : 'text-[var(--text-secondary)]'
                         }`}
                       >
                         {opcion === 'principal' ? simboloMoneda(datos.moneda) : simboloMoneda(monedaSec)} {opcion === 'principal' ? nombreMoneda(datos.moneda) : nombreMoneda(monedaSec)}
@@ -374,15 +386,27 @@ export default function InicioPage() {
                     className={`h-14 w-full rounded-[var(--radius-button)] border bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:border-[var(--accent)] focus:bg-[var(--surface)] ${campoError === 'monto' ? 'border-[var(--error)]' : 'border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)]'}`}
                   />
                   {monedaGasto === 'secundaria' && datos.monedaSecundaria && (
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      value={tipoCambio}
-                      onChange={(e) => { setTipoCambio(e.target.value); if (error) { setError(null); setCampoError(null); } }}
-                      placeholder={`Tipo de cambio (${simboloMoneda(datos.moneda)} por ${simboloMoneda(datos.monedaSecundaria)}1)`}
-                      aria-invalid={campoError === 'tipoCambio'}
-                      className={`h-12 w-full rounded-[var(--radius-button)] border bg-[var(--surface-2)] px-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)] focus:bg-[var(--surface)] ${campoError === 'tipoCambio' ? 'border-[var(--error)]' : 'border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)]'}`}
-                    />
+                    <div className="flex flex-col gap-1.5">
+                      {/* Label persistente (13ª revisión): el placeholder que explicaba el
+                          campo desaparecía para siempre en cuanto había un valor precargado
+                          (`ultimoTipoCambio`), dejando un número suelto sin contexto visible. */}
+                      <label htmlFor="tipo-cambio" className="text-xs font-medium text-[var(--text-secondary)]">
+                        Tipo de cambio ({simboloMoneda(datos.moneda)} por {simboloMoneda(datos.monedaSecundaria)}1)
+                      </label>
+                      <input
+                        id="tipo-cambio"
+                        type="text"
+                        inputMode="decimal"
+                        value={tipoCambio}
+                        onChange={(e) => { setTipoCambio(e.target.value); if (error) { setError(null); setCampoError(null); } }}
+                        placeholder="Ej. 530"
+                        aria-invalid={campoError === 'tipoCambio'}
+                        className={`h-12 w-full rounded-[var(--radius-button)] border bg-[var(--surface-2)] px-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)] focus:bg-[var(--surface)] ${campoError === 'tipoCambio' ? 'border-[var(--error)]' : 'border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)]'}`}
+                      />
+                      {previaConvertido != null && (
+                        <p className="text-xs text-[var(--text-tertiary)]">≈ {formatoMoneda(previaConvertido, datos.moneda)}</p>
+                      )}
+                    </div>
                   )}
                   {!categoriaPersonalizada ? (
                     <>
