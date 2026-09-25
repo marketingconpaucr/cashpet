@@ -139,7 +139,15 @@ function simboloMoneda(moneda: string, locale: string): string {
 // libreDiarioMax más abajo) — el feedback solo indica dónde cae el usuario DENTRO
 // de ese tope real, y siempre menciona el tope para que quede claro de dónde sale
 // (2026-09-24, a pedido del usuario: "no es realista conforme a mis ingresos").
-function feedbackPresupuestoLibre(v: number, min: number, max: number, maxTexto: string, huboAjuste: boolean): string {
+// `deficitMensualTexto` distingue dos casos que antes compartían el mismo mensaje
+// tranquilizador ("casi igualan"): gastos fijos apenas por encima del ingreso (un
+// mínimo simbólico tiene sentido) vs. gastos fijos que YA SUPERAN el ingreso por una
+// cifra real — defecto real reportado por el usuario (ingreso 100 mil, gastos fijos
+// 200 mil, y la app igual decía "casi igualan" y ofrecía "libre" como si sobrara algo).
+function feedbackPresupuestoLibre(v: number, min: number, max: number, maxTexto: string, huboAjuste: boolean, deficitMensualTexto: string | null): string {
+  if (deficitMensualTexto) {
+    return `Tus gastos fijos ya superan tu ingreso por ${deficitMensualTexto} al mes — no te queda nada libre de verdad. Te dejamos un mínimo (${maxTexto}) solo para que puedas usar la app; lo real es reducir algún gasto fijo.`;
+  }
   if (huboAjuste) {
     return `Tus gastos fijos casi igualan tu ingreso — te dejamos un mínimo (${maxTexto}) para que empieces. Puedes ajustar esto luego.`;
   }
@@ -214,6 +222,11 @@ export default function OnboardingPage() {
   const libreRealistaCalculado = Math.round((ingresoMensual - totalGastosFijos) / 30 / monedaActual.rango[3]) * monedaActual.rango[3];
   const huboAjusteRealista = libreRealistaCalculado < monedaActual.rango[0];
   const libreDiarioMax = Math.max(monedaActual.rango[0], libreRealistaCalculado);
+  // Caso distinto de "casi igualan" (defecto real reportado por el usuario: ingreso 100 mil,
+  // gastos fijos 200 mil — los fijos NO "casi igualan" el ingreso, ya lo superan por el doble,
+  // y el mensaje anterior sonaba igual de tranquilo en ambos casos).
+  const deficitMensual = totalGastosFijos - ingresoMensual;
+  const deficitMensualTexto = deficitMensual > 0 ? formatoMoneda(deficitMensual, monedaActual.moneda, monedaActual.locale) : null;
   useEffect(() => {
     setPresupuestoLibre((v) => Math.min(v, libreDiarioMax));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -652,7 +665,8 @@ export default function OnboardingPage() {
               monedaActual.rango[0],
               libreDiarioMax,
               formatoMoneda(libreDiarioMax, monedaActual.moneda, monedaActual.locale),
-              huboAjusteRealista
+              huboAjusteRealista,
+              deficitMensualTexto
             )}
           />
         )}

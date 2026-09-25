@@ -1,6 +1,19 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-25 | Sesión actual: 6
 
+⏸️ CHECKPOINT 2026-09-25 (7) — **[BUG REAL — CORREGIDO]** El usuario probó el caso extremo
+(ingreso ₡100.000, gastos fijos ₡200.000 — los fijos duplican el ingreso) y el paso de
+presupuesto libre igual ofrecía "₡5.000 libres por día" con el mismo mensaje tranquilizador
+de "tus gastos fijos casi igualan tu ingreso" que se usa para un déficit chico. `lib` no
+distinguía "casi igualan" (ingreso apenas alcanza) de "ya superan por mucho" (déficit real).
+Corregido en `feedbackPresupuestoLibre` (`app/onboarding/page.tsx`): cuando `totalGastosFijos >
+ingresoMensual`, el mensaje ahora dice explícitamente cuánto superan los fijos al ingreso ("ya
+superan tu ingreso por ₡100.000 al mes — no te queda nada libre de verdad... lo real es reducir
+algún gasto fijo") en vez de sonar igual de calmado que el caso chico. El mínimo simbólico
+(₡5.000, piso del país) se sigue dejando para que la app funcione — no hay forma honesta de
+dar un presupuesto libre real cuando no existe. Verificado reproduciendo el caso exacto del
+usuario en el navegador.
+
 ⏸️ CHECKPOINT 2026-09-25 (6) — A pedido del usuario: el paso "¿Cuánto ganas al mes?" del
 onboarding ya no obliga a quedarse dentro del rango del slider (₡600.000-₡4.000.000 en Costa
 Rica, etc.) — "hay personas que ganan menos de 600 mil colones". Se agregó una opción "Escribir
