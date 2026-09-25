@@ -28,7 +28,7 @@ mascota le dice al instante si va bien o se está pasando — antes de que se re
 
 ## 1. HERO (reescrito 2026-09-24 — mecanismo renombrado, ver nota arriba)
 - H1 marcado: `La mascota que te dice si vas [acento]bien con tu dinero[/acento]`
-- Subtítulo marcado: `El Chequeo de Gastón: [b]anota cada gasto y en segundos sabes si sigues bien o te estás pasando.[/b]`
+- Subtítulo marcado: `El Chequeo de Gastón: [b]anota cada gasto y lleva el control de tus finanzas en tiempo real.[/b]` (ajustado 2026-09-24 a pedido del usuario — la versión anterior repetía casi textual el h1)
 - CTA: `Quiero mi mascota financiera` → `/onboarding`
 - Social proof (sin números falsos de CashPet — cero usuarios reales todavía; se cita a Cleo AI CON NOMBRE, dato real y sourceado en FICHA-MODELO.md): `Sin conectar tu banco · 7 días gratis` / `Como el mecanismo detrás de Cleo, con más de 1.1 millones de usuarios pagos`
 - Visual: Gastón, el Gato (componente propio, no placeholder — mascota rediseñada 2026-09-17, ver FICHA-ARTE.md) + burbuja con su reacción sarcástica a un gasto (`"¿Otro café? Qué autocontrol el tuyo"`) + card flotante de racha ("14 días · de racha", con ícono de llama) superpuesta con leve rotación — capa de profundidad pedida por el usuario ("menos plano"), ilustra el mecanismo de racha, no es un dato de uso real
@@ -42,7 +42,7 @@ mascota le dice al instante si va bien o se está pasando — antes de que se re
 ## 3. AGITACIÓN (recortada a 2 frases — el usuario pidió menos texto, más visual)
 - `No es que no sepas ahorrar: es que nadie te avisa hasta que [b]ya gastaste[/b].`
 - `Un café y un domicilio de más por semana se sienten inofensivos — hasta que sumas [acento]el año completo[/acento].` (teaser: el número real se revela en el puente de abajo, no aquí — evita repetir la cifra dos veces)
-- Contraste — Hoy: `Revisas tu cuenta con el corazón en la boca, sintiéndote una irresponsable.` · En 6 meses si nada cambia: `El mismo miedo, mes tras mes — hasta que decidas frenarlo hoy.`
+- Contraste — Hoy: `Revisas tu cuenta con ansiedad, sintiéndote una irresponsable.` (ajustado 2026-09-24 — "el corazón en la boca" sonaba a modismo de otra generación, no al tuteo de una joven profesional de 26 años) · En 6 meses si nada cambia: `El mismo miedo, mes tras mes — hasta que decidas frenarlo hoy.`
 
 ## Puente visual (NO es sección canónica — un respiro entre Agitación y Solución, dato-héroe + mascota)
 - Cifra de FICHA-AVATAR.md ("$1.800-2.400 no ahorrados al año") con conteo animado a "+$1.800" · subtítulo "hasta $2.400 si no los frenas" (antes decía "$500 al año", un cálculo inventado más débil que la evidencia real de la ficha)
@@ -67,17 +67,17 @@ mascota le dice al instante si va bien o se está pasando — antes de que se re
 - CTA mid-page: `Quiero mi mascota financiera` → `/onboarding`
 
 ## 6. OFERTA (precio confirmado por el usuario 2026-09-17: $8.99/mes · $69.99/año)
-- Título marcado: `Por menos de [acento]un café al día[/acento]`
+- Título marcado: `Por menos de [acento]lo que cuesta un café[/acento]` (ajustado 2026-09-24 — "al día" implicaba un hábito diario de comprar café, que no aplica a todo el mundo; la comparación de precio se mantiene, la cadencia diaria no)
 - Trial: 7 días
 - Sin stack de valor (se retiró: el kit Hormozi exige precios reales de bonos existentes, y CashPet no tiene guías/bonos reales todavía — inventarlos falló la revisión de copy, ver ESTADO.md)
-- Anual (badge MÁS POPULAR): $5.83/mes · se cobra $69.99/año · ahorro 35% · `menos de $0.20 al día` · CTA `Empezar mis 7 días gratis` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Niveles y crecimiento de tu mascota · Soporte prioritario por email · Garantía de la Primera Racha: 15 días
-- Mensual: $8.99/mes · CTA `Elegir mensual` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Niveles y crecimiento de tu mascota · Cancela cuando quieras · Garantía de la Primera Racha: 15 días (mismas features que el anual salvo soporte prioritario — la diferencia entre planes es SOLO precio/facturación, nunca funciones, decisión del usuario 2026-09-17)
+- Anual (badge MÁS POPULAR): $5.83/mes · se cobra $69.99/año · ahorro 35% · `menos de $0.20 al día` · CTA `Empezar mis 7 días gratis` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Niveles y crecimiento de tu mascota · Soporte prioritario por email · Garantía de la Primera Racha: 7 días (bajado de 15→7 el 2026-09-24 a pedido del usuario, ver FICHA-MERCADO.md §4)
+- Mensual: $8.99/mes · CTA `Elegir mensual` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Niveles y crecimiento de tu mascota · Cancela cuando quieras (nota: el código actual NO repite la línea de garantía en el plan mensual — discrepancia preexistente con este doc, no introducida en este cambio; se revisa si el usuario lo pide)
 
-## 7. GARANTÍA
+## 7. GARANTÍA (bajada de 15→7 días el 2026-09-24 a pedido EXPLÍCITO del usuario)
 - Nombre: `la Garantía de la Primera Racha`
-- Condición marcada: `Si en tus primeros 15 días El Chequeo de Gastón no te ayuda a [b]sentir más control sobre tu dinero[/b], te devolvemos todo. Sin preguntas.`
-- Piso legal: `Respaldada por la garantía de reembolso de Hotmart de 15 días, además de tus 7 días de prueba gratis`
-- ⚠️ Ver `FICHA-MERCADO.md` §4: la prueba (7 días, sin cobro) y la garantía (15 días, desde el primer cobro) son ventanas SECUENCIALES, no la misma cifra — regla dura de 18-VENTA-HOTMART.md (garantía > prueba)
+- Condición marcada: `Si en tus primeros 7 días de pago El Chequeo de Gastón no te ayuda a [b]sentir más control sobre tu dinero[/b], te devolvemos todo. Sin preguntas.`
+- Piso legal: `Respaldada por la garantía de reembolso de Hotmart: 7 días desde tu primer cobro, después de tus 7 días de prueba gratis — 14 días de tranquilidad en total desde que empiezas`
+- ⚠️ Ver `FICHA-MERCADO.md` §4: la prueba (7 días, sin cobro) y la garantía (7 días, desde el primer cobro) son ventanas SECUENCIALES — el usuario eligió que fueran de igual duración (mensaje simple "14 días en total") a sabiendas de que esto se aparta de la regla de oro de 18-VENTA-HOTMART.md (garantía > prueba), que existe para que la garantía cubra algo que la prueba no cubre ya. Excepción documentada, no un error.
 
 ## 8. FAQ (objeciones de FICHA-AVATAR.md §Objeciones — respuestas recortadas al hueso)
 1. **¿CashPet se conecta a mi cuenta bancaria?** → `No. [b]Nunca pedimos tus credenciales bancarias[/b]: anotas cada gasto tú mismo, en segundos.`

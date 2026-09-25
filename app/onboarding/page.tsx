@@ -9,7 +9,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { Moon, ShoppingBag, Sparkles, Sunrise, Sun, Sunset } from 'lucide-react';
+import { Moon, Plus, ShoppingBag, Sparkles, Sunrise, Sun, Sunset, Trash2 } from 'lucide-react';
 import { Mascota, type EmocionMascota } from '@/components/Mascota';
 import { Accent, CtaButton, Hairline } from '@/components/landing/ui';
 import {
@@ -37,20 +37,25 @@ interface PaisMoneda {
    * ~15-20x el libre diario — estimación LATAM razonable, no validada con datos de
    * mercado propios (misma naturaleza de estimación que el rango libre de arriba). */
   rangoMensual: [number, number, number, number];
+  /** Ingreso mensual: min, max, default, step. Estimación LATAM razonable (misma
+   * naturaleza que los rangos de arriba, no validada con datos de mercado propios) —
+   * se usa solo para calcular un tope realista de presupuesto libre (ingreso - gastos
+   * fijos), 2026-09-24 a pedido del usuario ("no es realista conforme a mis ingresos"). */
+  rangoIngreso: [number, number, number, number];
 }
 
 const PAISES: PaisMoneda[] = [
-  { nombre: 'México', moneda: 'MXN', locale: 'es-MX', rango: [100, 2000, 500, 10], rangoMensual: [3000, 30000, 12000, 500] },
-  { nombre: 'Colombia', moneda: 'COP', locale: 'es-CO', rango: [20000, 400000, 100000, 5000], rangoMensual: [500000, 6000000, 2000000, 50000] },
-  { nombre: 'Argentina', moneda: 'ARS', locale: 'es-AR', rango: [2000, 40000, 10000, 500], rangoMensual: [200000, 4000000, 900000, 10000] },
-  { nombre: 'Chile', moneda: 'CLP', locale: 'es-CL', rango: [5000, 100000, 25000, 1000], rangoMensual: [400000, 3000000, 900000, 10000] },
-  { nombre: 'Perú', moneda: 'PEN', locale: 'es-PE', rango: [20, 400, 100, 5], rangoMensual: [800, 6000, 2500, 50] },
-  { nombre: 'Costa Rica', moneda: 'CRC', locale: 'es-CR', rango: [5000, 100000, 25000, 1000], rangoMensual: [300000, 2000000, 700000, 10000] },
-  { nombre: 'Ecuador', moneda: 'USD', locale: 'es-EC', rango: [5, 100, 25, 1], rangoMensual: [300, 2000, 800, 25] },
-  { nombre: 'Guatemala', moneda: 'GTQ', locale: 'es-GT', rango: [50, 1000, 250, 10], rangoMensual: [2000, 15000, 6000, 100] },
-  { nombre: 'República Dominicana', moneda: 'DOP', locale: 'es-DO', rango: [500, 10000, 2500, 100], rangoMensual: [15000, 120000, 45000, 1000] },
+  { nombre: 'México', moneda: 'MXN', locale: 'es-MX', rango: [100, 2000, 500, 10], rangoMensual: [3000, 30000, 12000, 500], rangoIngreso: [8000, 60000, 18000, 1000] },
+  { nombre: 'Colombia', moneda: 'COP', locale: 'es-CO', rango: [20000, 400000, 100000, 5000], rangoMensual: [500000, 6000000, 2000000, 50000], rangoIngreso: [1500000, 12000000, 3000000, 100000] },
+  { nombre: 'Argentina', moneda: 'ARS', locale: 'es-AR', rango: [2000, 40000, 10000, 500], rangoMensual: [200000, 4000000, 900000, 10000], rangoIngreso: [500000, 8000000, 1500000, 50000] },
+  { nombre: 'Chile', moneda: 'CLP', locale: 'es-CL', rango: [5000, 100000, 25000, 1000], rangoMensual: [400000, 3000000, 900000, 10000], rangoIngreso: [800000, 6000000, 1500000, 50000] },
+  { nombre: 'Perú', moneda: 'PEN', locale: 'es-PE', rango: [20, 400, 100, 5], rangoMensual: [800, 6000, 2500, 50], rangoIngreso: [1500, 12000, 4000, 100] },
+  { nombre: 'Costa Rica', moneda: 'CRC', locale: 'es-CR', rango: [5000, 100000, 25000, 1000], rangoMensual: [300000, 2000000, 700000, 10000], rangoIngreso: [600000, 4000000, 1200000, 50000] },
+  { nombre: 'Ecuador', moneda: 'USD', locale: 'es-EC', rango: [5, 100, 25, 1], rangoMensual: [300, 2000, 800, 25], rangoIngreso: [500, 4000, 1200, 50] },
+  { nombre: 'Guatemala', moneda: 'GTQ', locale: 'es-GT', rango: [50, 1000, 250, 10], rangoMensual: [2000, 15000, 6000, 100], rangoIngreso: [4000, 30000, 9000, 200] },
+  { nombre: 'República Dominicana', moneda: 'DOP', locale: 'es-DO', rango: [500, 10000, 2500, 100], rangoMensual: [15000, 120000, 45000, 1000], rangoIngreso: [30000, 200000, 60000, 2000] },
 ];
-const PAIS_OTRO: PaisMoneda = { nombre: 'Otro país', moneda: 'USD', locale: 'es', rango: [5, 100, 25, 1], rangoMensual: [300, 2000, 800, 25] };
+const PAIS_OTRO: PaisMoneda = { nombre: 'Otro país', moneda: 'USD', locale: 'es', rango: [5, 100, 25, 1], rangoMensual: [300, 2000, 800, 25], rangoIngreso: [500, 4000, 1200, 50] };
 
 const OPCIONES_DOLOR = [
   'En la quincena/fin de mes',
@@ -65,7 +70,7 @@ const OPCIONES_CATEGORIA = [
   'Comida a domicilio',
   'Compras en línea/redes',
   'Salidas y ocio de fin de semana',
-  'Suscripciones que ya ni uso',
+  'Suscripciones',
   'Transporte (Uber/taxi)',
 ];
 
@@ -84,7 +89,8 @@ const PASOS = [
   'reconocimiento1',
   'categorias',
   'momento',
-  'presupuestoMensual',
+  'ingreso',
+  'gastosFijos',
   'presupuestoLibre',
   'activacion',
   'reconocimientoFinal',
@@ -94,12 +100,13 @@ type Paso = (typeof PASOS)[number];
 
 const PROGRESO: Record<Paso, number> = {
   bienvenida: 0,
-  pais: 11,
-  dolor: 22,
-  reconocimiento1: 22,
-  categorias: 36,
-  momento: 50,
-  presupuestoMensual: 64,
+  pais: 9,
+  dolor: 18,
+  reconocimiento1: 18,
+  categorias: 30,
+  momento: 42,
+  ingreso: 54,
+  gastosFijos: 66,
   presupuestoLibre: 78,
   activacion: 90,
   reconocimientoFinal: 90,
@@ -127,18 +134,21 @@ function simboloMoneda(moneda: string, locale: string): string {
   }
 }
 
-function feedbackPresupuestoLibre(v: number, min: number, max: number): string {
-  const rel = (v - min) / (max - min);
-  if (rel < 0.35) return 'Un límite ajustado — Gastón te va a mantener a raya';
-  if (rel < 0.7) return 'Un límite realista para empezar';
-  return 'Un límite generoso — igual te avisamos si te pasas';
+// El máximo del slider YA ES el tope realista (ingreso - gastos fijos, ver
+// libreDiarioMax más abajo) — el feedback solo indica dónde cae el usuario DENTRO
+// de ese tope real, y siempre menciona el tope para que quede claro de dónde sale
+// (2026-09-24, a pedido del usuario: "no es realista conforme a mis ingresos").
+function feedbackPresupuestoLibre(v: number, min: number, max: number, maxTexto: string, huboAjuste: boolean): string {
+  if (huboAjuste) {
+    return `Tus gastos fijos casi igualan tu ingreso — te dejamos un mínimo (${maxTexto}) para que empieces. Puedes ajustar esto luego.`;
+  }
+  const rel = max > min ? (v - min) / (max - min) : 0;
+  const calif = rel < 0.35 ? 'ajustado' : rel < 0.7 ? 'realista' : 'generoso, cerca de tu máximo real';
+  return `Un límite ${calif} · hasta ${maxTexto} es lo que te alcanza según tu ingreso y tus gastos fijos.`;
 }
 
-function feedbackPresupuestoMensual(v: number, min: number, max: number): string {
-  const rel = (v - min) / (max - min);
-  if (rel < 0.35) return 'Un presupuesto fijo ajustado';
-  if (rel < 0.7) return 'Un presupuesto fijo realista';
-  return 'Un presupuesto fijo amplio';
+function feedbackIngreso(): string {
+  return 'Esto queda privado — solo lo usamos para calcular cuánto puedes gastar libre sin ahogarte.';
 }
 
 export default function OnboardingPage() {
@@ -165,15 +175,65 @@ export default function OnboardingPage() {
 
   const monedaActual = pais ?? PAIS_OTRO;
   // Dos presupuestos, no uno: LIBRE (impulso, día a día) + MENSUAL (fijo: renta, recibos,
-  // súper) — ver "Dos presupuestos" en lib/datosApp.ts.
+  // súper) — ver "Dos presupuestos" en lib/datosApp.ts. Lo fijo ya NO es un slider único:
+  // se arma sumando gastos fijos anotados uno por uno (2026-09-24, a pedido del usuario:
+  // "poder escribir cuál recibo y cuánto dinero"), y el tope de lo libre se calcula desde
+  // el ingreso real, no se elige a ciegas ("no es realista conforme a mis ingresos").
   const [presupuestoLibre, setPresupuestoLibre] = useState(monedaActual.rango[2]);
-  const [presupuestoMensual, setPresupuestoMensual] = useState(monedaActual.rangoMensual[2]);
+  const [ingresoMensual, setIngresoMensual] = useState(monedaActual.rangoIngreso[2]);
+  const [gastosFijosItems, setGastosFijosItems] = useState<{ id: string; nombre: string; monto: number }[]>([]);
+  const [nuevoGastoNombre, setNuevoGastoNombre] = useState('');
+  const [nuevoGastoMonto, setNuevoGastoMonto] = useState('');
+  const [errorGastoFijo, setErrorGastoFijo] = useState<string | null>(null);
+
+  // Elegir país resetea TODO lo derivado de la moneda en el MISMO batch de estado (no un
+  // useEffect reactivo aparte) — bug real encontrado en pruebas: con un efecto separado,
+  // el render intermedio calculaba el tope realista mezclando el ingreso VIEJO (de la
+  // moneda anterior) con el país NUEVO, dejaba un tope minúsculo por una fracción de
+  // segundo, y el clamp de abajo lo aplicaba con Math.min — que nunca vuelve a subir aunque
+  // el tope se corrija en el siguiente render. Setear todo junto aquí evita ese render
+  // intermedio inconsistente por completo.
+  const elegirPais = (p: PaisMoneda | null) => {
+    const m = p ?? PAIS_OTRO;
+    setPais(p);
+    setPresupuestoLibre(m.rango[2]);
+    setIngresoMensual(m.rangoIngreso[2]);
+    setGastosFijosItems([]);
+  };
+
+  const totalGastosFijos = gastosFijosItems.reduce((acc, g) => acc + g.monto, 0);
+  // Tope realista de "libre" = (ingreso - gastos fijos) / 30, redondeado al step de la
+  // moneda — nunca baja del piso del país (huboAjusteRealista avisa cuando se activó ese
+  // piso porque lo fijo casi se come todo el ingreso, en vez de fallar en silencio).
+  const libreRealistaCalculado = Math.round((ingresoMensual - totalGastosFijos) / 30 / monedaActual.rango[3]) * monedaActual.rango[3];
+  const huboAjusteRealista = libreRealistaCalculado < monedaActual.rango[0];
+  const libreDiarioMax = Math.max(monedaActual.rango[0], libreRealistaCalculado);
   useEffect(() => {
-    setPresupuestoLibre(monedaActual.rango[2]);
-    setPresupuestoMensual(monedaActual.rangoMensual[2]);
-    // Solo al fijar el país por primera vez — no queremos resetear si el usuario ya ajustó el slider.
+    setPresupuestoLibre((v) => Math.min(v, libreDiarioMax));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [monedaActual.moneda]);
+  }, [libreDiarioMax]);
+
+  const agregarGastoFijo = () => {
+    const soloDigitos = nuevoGastoMonto.replace(/[^\d]/g, '');
+    const monto = soloDigitos ? parseInt(soloDigitos, 10) : NaN;
+    if (!nuevoGastoNombre.trim()) {
+      setErrorGastoFijo('Escribe a qué se va ese gasto');
+      setTimeout(() => setErrorGastoFijo(null), 2000);
+      return;
+    }
+    if (!Number.isFinite(monto) || monto <= 0) {
+      setErrorGastoFijo('Escribe cuánto pagas por eso');
+      setTimeout(() => setErrorGastoFijo(null), 2000);
+      return;
+    }
+    setGastosFijosItems((items) => [...items, { id: crypto.randomUUID(), nombre: nuevoGastoNombre.trim(), monto }]);
+    setNuevoGastoNombre('');
+    setNuevoGastoMonto('');
+  };
+
+  const eliminarGastoFijo = (id: string) => {
+    setGastosFijosItems((items) => items.filter((g) => g.id !== id));
+  };
 
   const [gastoMonto, setGastoMonto] = useState('');
   const [gastoCategoria, setGastoCategoria] = useState<string | null>(null);
@@ -205,7 +265,7 @@ export default function OnboardingPage() {
       setTimeout(() => setErrorPais(false), 2000);
       return;
     }
-    setPais(null);
+    elegirPais(null);
     avanzar();
   };
 
@@ -261,7 +321,8 @@ export default function OnboardingPage() {
           categorias: categorias.concat(otraCategoria ? [otraCategoria] : []),
           momento,
           presupuestoLibreDiario: presupuestoLibre,
-          presupuestoMensual,
+          presupuestoMensual: totalGastosFijos,
+          ingresoMensual,
           gastoPrueba: { monto: parseFloat(gastoMonto) || 0, categoria: gastoCategoria },
         })
       );
@@ -340,7 +401,7 @@ export default function OnboardingPage() {
                     label={p.nombre}
                     seleccionado={pais?.nombre === p.nombre}
                     onClick={() => {
-                      setPais(p);
+                      elegirPais(p);
                       setTimeout(avanzar, 300);
                     }}
                   />
@@ -474,20 +535,88 @@ export default function OnboardingPage() {
           </PantallaPregunta>
         )}
 
-        {paso === 'presupuestoMensual' && (
+        {paso === 'ingreso' && (
           <SliderCompromiso
-            tituloMarked={<>¿Cuánto gastas al mes en lo <Accent>fijo</Accent> — renta, recibos, súper?</>}
-            valor={presupuestoMensual}
-            min={monedaActual.rangoMensual[0]}
-            max={monedaActual.rangoMensual[1]}
-            step={monedaActual.rangoMensual[3]}
+            tituloMarked={<>¿Cuánto <Accent>ganas</Accent> al mes?</>}
+            valor={ingresoMensual}
+            min={monedaActual.rangoIngreso[0]}
+            max={monedaActual.rangoIngreso[1]}
+            step={monedaActual.rangoIngreso[3]}
             formatear={(v) => formatoMoneda(v, monedaActual.moneda, monedaActual.locale)}
-            onCambiar={setPresupuestoMensual}
+            onCambiar={setIngresoMensual}
             onFijar={avanzar}
-            feedback={feedbackPresupuestoMensual(presupuestoMensual, monedaActual.rangoMensual[0], monedaActual.rangoMensual[1])}
+            feedback={feedbackIngreso()}
             unidad="al mes"
-            ariaLabel="Presupuesto fijo mensual"
+            ariaLabel="Ingreso mensual"
           />
+        )}
+
+        {paso === 'gastosFijos' && (
+          <div className="flex flex-1 flex-col px-4 pb-16">
+            <h1 className="mt-6 text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]">
+              ¿En qué se te va lo <Accent>fijo</Accent> cada mes?
+            </h1>
+            <p className="mt-2 text-sm text-[var(--text-secondary)]">Renta, recibos, súper — agrégalos uno por uno.</p>
+
+            <div className="mt-6 flex flex-col gap-2">
+              <input
+                type="text"
+                value={nuevoGastoNombre}
+                onChange={(e) => { setNuevoGastoNombre(e.target.value); if (errorGastoFijo) setErrorGastoFijo(null); }}
+                placeholder="Ej. Renta"
+                className="h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:border-[var(--accent)] focus:bg-[var(--surface)]"
+              />
+              <input
+                type="text"
+                inputMode="numeric"
+                value={nuevoGastoMonto}
+                onChange={(e) => { setNuevoGastoMonto(e.target.value); if (errorGastoFijo) setErrorGastoFijo(null); }}
+                placeholder={`Monto (${simboloMoneda(monedaActual.moneda, monedaActual.locale)})`}
+                className="h-14 w-full rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--text-tertiary)_30%,transparent)] bg-[var(--surface-2)] px-4 text-base text-[var(--text-primary)] shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--text-primary)_10%,transparent)] outline-none focus:border-[var(--accent)] focus:bg-[var(--surface)]"
+              />
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.97 }}
+                onClick={agregarGastoFijo}
+                className="flex h-12 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--accent)_45%,transparent)] text-[15px] font-semibold text-[var(--accent)] [touch-action:manipulation]"
+              >
+                <Plus size={18} aria-hidden="true" />
+                Agregar
+              </motion.button>
+              {errorGastoFijo && <p className="text-center text-sm font-medium text-[var(--error)]">{errorGastoFijo}</p>}
+            </div>
+
+            {gastosFijosItems.length > 0 && (
+              <div className="mt-6 flex flex-col gap-2">
+                {gastosFijosItems.map((g) => (
+                  <div key={g.id} className="flex items-center gap-3 rounded-[var(--radius-button)] bg-[var(--surface-2)] px-3 py-2.5">
+                    <p className="min-w-0 flex-1 truncate text-[15px] font-semibold text-[var(--text-primary)]">{g.nombre}</p>
+                    <span className="shrink-0 text-[15px] font-bold tabular-nums text-[var(--text-primary)]">{formatoMoneda(g.monto, monedaActual.moneda, monedaActual.locale)}</span>
+                    <motion.button
+                      type="button"
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => eliminarGastoFijo(g.id)}
+                      aria-label={`Eliminar ${g.nombre}`}
+                      className="shrink-0 text-[var(--text-tertiary)] [touch-action:manipulation]"
+                    >
+                      <Trash2 size={16} aria-hidden="true" />
+                    </motion.button>
+                  </div>
+                ))}
+                <div className="mt-2 flex items-center justify-between px-1">
+                  <span className="text-sm font-medium text-[var(--text-secondary)]">Total fijo al mes</span>
+                  <span className="text-[15px] font-bold tabular-nums text-[var(--text-primary)]">{formatoMoneda(totalGastosFijos, monedaActual.moneda, monedaActual.locale)}</span>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-6 flex-1" />
+            <div className="pb-[max(16px,env(safe-area-inset-bottom))]">
+              <CtaButton href="#" alto={56} onClick={(e) => { e.preventDefault(); avanzar(); }}>
+                {gastosFijosItems.length > 0 ? 'Continuar' : 'No tengo gastos fijos'}
+              </CtaButton>
+            </div>
+          </div>
         )}
 
         {paso === 'presupuestoLibre' && (
@@ -495,12 +624,18 @@ export default function OnboardingPage() {
             tituloMarked={<>¿Cuánto quieres tener <Accent>libre</Accent> al día para gastos del día a día?</>}
             valor={presupuestoLibre}
             min={monedaActual.rango[0]}
-            max={monedaActual.rango[1]}
+            max={libreDiarioMax}
             step={monedaActual.rango[3]}
             formatear={(v) => formatoMoneda(v, monedaActual.moneda, monedaActual.locale)}
             onCambiar={setPresupuestoLibre}
             onFijar={avanzar}
-            feedback={feedbackPresupuestoLibre(presupuestoLibre, monedaActual.rango[0], monedaActual.rango[1])}
+            feedback={feedbackPresupuestoLibre(
+              presupuestoLibre,
+              monedaActual.rango[0],
+              libreDiarioMax,
+              formatoMoneda(libreDiarioMax, monedaActual.moneda, monedaActual.locale),
+              huboAjusteRealista
+            )}
           />
         )}
 
@@ -593,7 +728,7 @@ export default function OnboardingPage() {
           <PantallaLoading
             titulo={<>Armando tu <Accent>Chequeo de Gastón</Accent>…</>}
             lineas={[
-              `Tu presupuesto fijo: ${formatoMoneda(presupuestoMensual, monedaActual.moneda, monedaActual.locale)} al mes`,
+              `Tu presupuesto fijo: ${formatoMoneda(totalGastosFijos, monedaActual.moneda, monedaActual.locale)} al mes`,
               `Tu presupuesto libre: ${formatoMoneda(presupuestoLibre, monedaActual.moneda, monedaActual.locale)} al día`,
               'Configurando tus categorías de riesgo',
               `Tu momento de riesgo: ${momento}`,

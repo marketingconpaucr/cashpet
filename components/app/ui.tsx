@@ -74,19 +74,23 @@ export function BarraPresupuestoDia({ gastado, limite, formatear }: { gastado: n
   const reduce = useReducedMotion();
   const pct = limite > 0 ? Math.min(100, Math.round((gastado / limite) * 100)) : 0;
   const pasado = gastado > limite;
+  // Verde/rojo en vez del acento neutro (2026-09-24, a pedido explícito del usuario viendo
+  // la pantalla real: "si está dentro del presupuesto en verde... si nos pasamos en rojo").
+  const colorTexto = pasado ? 'text-[var(--error)]' : 'text-[var(--success)]';
+  const colorBarra = pasado ? 'bg-[var(--error)]' : 'bg-[var(--success)]';
+  const colorPista = pasado ? 'bg-[color-mix(in_oklab,var(--error)_12%,transparent)]' : 'bg-[color-mix(in_oklab,var(--success)_12%,transparent)]';
   return (
     <Hairline surface="surface" className="shadow-[var(--shadow-1)]">
       <div className="p-4">
-        {/* "· libre" aclara que el dato héroe excluye los gastos fijos del mes (que se
-            resumen en Progreso) — sin esto, un gasto "Fijo" en la lista de abajo no
-            movía el total y se leía como una inconsistencia (defecto real, 12ª revisión). */}
-        <span className="text-xs text-[var(--text-secondary)]">Llevas hoy · libre</span>
+        {/* Antes decía siempre "Llevas hoy · libre" — ahora el estado (disponible/excedido)
+            reemplaza esa etiqueta neutra, mismo criterio de color que el número y la barra. */}
+        <span className={`text-xs font-semibold ${colorTexto}`}>{pasado ? 'Presupuesto excedido' : 'Presupuesto disponible'}</span>
         {/* Sin font-family display (Fredoka): esa fuente no tiene el glifo del colón (₡,
             U+20A1) y lo renderiza roto como "Ø" — bug real confirmado contra FilaGasto,
             que sí muestra el símbolo bien porque hereda la fuente de cuerpo (Nunito).
             Tamaño 42px: el tier "display" exacto de FICHA-ARTE.md (display 42px / title
             25px) para el número que más importa de la pantalla principal. */}
-        <div className={`text-[42px] font-bold leading-tight tabular-nums ${pasado ? 'text-[var(--error)]' : 'text-[var(--text-primary)]'}`}>
+        <div className={`text-[42px] font-bold leading-tight tabular-nums ${colorTexto}`}>
           <MontoAnimado valor={gastado} formatear={formatear} />
         </div>
         <div className="text-xs font-medium text-[var(--text-tertiary)]">de {formatear(limite)}</div>
@@ -96,10 +100,10 @@ export function BarraPresupuestoDia({ gastado, limite, formatear }: { gastado: n
           aria-valuenow={pct}
           aria-valuemin={0}
           aria-valuemax={100}
-          className="mt-3 h-2.5 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]"
+          className={`mt-3 h-2.5 overflow-hidden rounded-full ${colorPista}`}
         >
           <motion.div
-            className={`h-full rounded-full ${pasado ? 'bg-[var(--error)]' : 'bg-[var(--accent)]'}`}
+            className={`h-full rounded-full ${colorBarra}`}
             initial={reduce ? false : { width: 0 }}
             animate={{ width: `${pct}%` }}
             transition={{ duration: reduce ? 0 : 0.7, ease: [0.16, 1, 0.3, 1] }}

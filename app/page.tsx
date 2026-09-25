@@ -44,7 +44,7 @@ export default function LandingCashPet() {
         appName="CashPet"
         loginHref="/entrar"
         h1Marked="La mascota que te dice si vas [acento]bien con tu dinero[/acento]"
-        subtitleMarked="El Chequeo de Gastón: [b]anota cada gasto y en segundos sabes si sigues bien o te estás pasando.[/b]"
+        subtitleMarked="El Chequeo de Gastón: [b]anota cada gasto y lleva el control de tus finanzas en tiempo real.[/b]"
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
         socialProof={
@@ -96,7 +96,7 @@ export default function LandingCashPet() {
         ]}
         contraste={{
           labelHoy: 'Hoy',
-          hoy: 'Revisas tu cuenta con el corazón en la boca, sintiéndote una irresponsable.',
+          hoy: 'Revisas tu cuenta con ansiedad, sintiéndote una irresponsable.',
           labelFuturo: 'En 6 meses, si nada cambia',
           futuro: 'El mismo miedo, mes tras mes — hasta que decidas frenarlo hoy.',
         }}
@@ -197,7 +197,7 @@ export default function LandingCashPet() {
           { src: '/mockups/hoy.png', alt: 'Pantalla principal de CashPet con la mascota y la racha del día', label: 'Tu pantalla de cada día', nombrePantalla: 'Hoy' },
           { src: '/mockups/onboarding.png', alt: 'Pregunta del onboarding sobre el presupuesto diario', label: 'Así te pregunta al empezar', nombrePantalla: 'Onboarding' },
           { src: '/mockups/paywall.png', alt: 'Pantalla de planes anual y mensual', label: 'Elige tu plan en segundos', nombrePantalla: 'Paywall' },
-          { src: '/mockups/mecanismo.png', alt: 'La mascota reaccionando a un domicilio de más', label: 'Así reacciona tu mascota', nombrePantalla: 'Mecanismo' },
+          { src: '/mockups/mecanismo.png', alt: 'La mascota reaccionando a una compra de más', label: 'Así reacciona tu mascota', nombrePantalla: 'Mecanismo' },
         ]}
         ctaLabel={CTA_LABEL}
         ctaHref={CTA_HREF}
@@ -205,7 +205,7 @@ export default function LandingCashPet() {
 
       {/* 6. OFERTA — anual primero, trial 7 días (02C), precio confirmado 2026-09-17 */}
       <Oferta
-        tituloMarked="Por menos de [acento]un café al día[/acento]"
+        tituloMarked="Por menos de [acento]lo que cuesta un café[/acento]"
         trialDias={7}
         anual={{
           nombre: 'Anual',
@@ -222,7 +222,7 @@ export default function LandingCashPet() {
             'Historial completo de tus rachas',
             'Niveles y crecimiento de tu mascota',
             'Soporte prioritario por email',
-            'Garantía de la Primera Racha: 15 días',
+            'Garantía de la Primera Racha: 7 días',
           ],
         }}
         mensual={{
@@ -243,8 +243,8 @@ export default function LandingCashPet() {
       {/* 7. GARANTÍA */}
       <Garantia
         nombre="la Garantía de la Primera Racha"
-        condicionMarked="Si en tus primeros 15 días de pago El Chequeo de Gastón no te ayuda a [b]sentir más control sobre tu dinero[/b], te devolvemos todo. Sin preguntas."
-        pisoLegal="Respaldada por la garantía de reembolso de Hotmart: 15 días desde tu primer cobro, después de tus 7 días de prueba gratis"
+        condicionMarked="Si en tus primeros 7 días de pago El Chequeo de Gastón no te ayuda a [b]sentir más control sobre tu dinero[/b], te devolvemos todo. Sin preguntas."
+        pisoLegal="Respaldada por la garantía de reembolso de Hotmart: 7 días desde tu primer cobro, después de tus 7 días de prueba gratis — 14 días de tranquilidad en total desde que empiezas"
       />
 
       {/* 8. FAQ — objeciones reales de FICHA-AVATAR.md */}

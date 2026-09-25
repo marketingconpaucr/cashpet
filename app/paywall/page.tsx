@@ -21,7 +21,7 @@ interface DatosOnboarding {
   dolor: string;
   categorias: string[];
   momento: string;
-  presupuestoDiario: number;
+  presupuestoLibreDiario: number;
   gastoPrueba: { monto: number; categoria: string };
 }
 
@@ -145,7 +145,7 @@ export default function PaywallPage() {
                   indice={5}
                   icon={Wallet}
                   label="Tu límite diario"
-                  valor={datos ? formatoMoneda(datos.presupuestoDiario, moneda) : 'Sin datos'}
+                  valor={datos ? formatoMoneda(datos.presupuestoLibreDiario, moneda) : 'Sin datos'}
                 />
               </div>
 
@@ -207,8 +207,7 @@ export default function PaywallPage() {
                 Actívalo con <Accent>7 días gratis</Accent>
               </h1>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">
-                Se acabó el 20 del mes preguntándote en qué se te fue el sueldo — por menos de
-                $0.30 al día.
+                Por menos de lo que cuesta un café, sabes al instante si vas bien con tu dinero.
               </p>
 
               <ul className="mt-4 flex flex-col gap-2">
@@ -253,7 +252,7 @@ export default function PaywallPage() {
                   <span>Pago seguro</span>
                   <span aria-hidden="true">·</span>
                   <ShieldCheck size={16} aria-hidden="true" />
-                  <span>Garantía de 15 días</span>
+                  <span>Garantía de 7 días</span>
                 </div>
               </Hairline>
 
