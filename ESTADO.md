@@ -1,6 +1,19 @@
 # ESTADO — CashPet
 Última actualización: 2026-09-25 | Sesión actual: 6
 
+⏸️ CHECKPOINT 2026-09-25 (3) — **[BUG REAL — CORREGIDO, 2º intento]** Con la categoría ya
+arreglada, el usuario seguía sin ver el botón de confirmar en "Anotar gasto" en su celular
+real. El primer intento de arreglo (checkpoint anterior) separaba el sheet en dos zonas
+anidadas (contenido con su propio scroll + pie `shrink-0` fuera de esa zona), apoyado en que
+el sheet tuviera `max-h-[85dvh]` — pero en un celular real, con el teclado abierto, `85dvh`
+no siempre se recalcula bien (comportamiento real de varios navegadores móviles), dejando el
+pie fuera de la altura visible de todas formas. Corregido con el mismo patrón ya probado en
+el onboarding: el sheet ES el único contenedor con scroll, y el pie usa `sticky bottom-0`
+DENTRO de ese scroll — no depende de que el navegador recalcule el viewport al abrir el
+teclado. Verificado con Playwright a una altura de viewport de 400px (simulando un teclado
+que tapa más de la mitad de la pantalla): el botón queda visible sin scrollear, y el flujo
+completo (elegir categoría, monto, Anotar) guarda el gasto correctamente.
+
 ⏸️ CHECKPOINT 2026-09-25 (2) — **[BUG REAL — CORREGIDO]** El usuario reportó quedarse
 atascado al abrir "Anotar gasto" justo después de terminar el onboarding: en vez de la
 grilla normal de categorías, veía un campo de texto con "Café y antojos" ya escrito, sin
