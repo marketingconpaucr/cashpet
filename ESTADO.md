@@ -1,6 +1,19 @@
 # ESTADO — CashPet
 Última actualización: 2026-10-01 | Sesión actual: 6
 
+⏸️ CHECKPOINT 2026-10-01 (10) — Conectado el MCP de Supabase (acceso directo al proyecto
+`faehxespgpwdmlhgiegn`, confirmado que es el mismo proyecto cuyas claves están en `.env.local`).
+Aplicadas las 2 migraciones (`0001_init`, `0002_revoke_trigger_fn_execute`) directo en la base
+real — ya NO hace falta que el usuario pegue SQL a mano en el dashboard. Tablas `profiles` y
+`gastos` creadas, RLS activo en ambas (verificado con `list_tables`). El advisor de seguridad de
+Supabase encontró algo real que la migración original no cubría: las funciones `handle_new_user`
+y `set_updated_at` (pensadas solo para dispararse como trigger) quedaban invocables directo desde
+internet vía `/rest/v1/rpc/...` por los roles `anon`/`authenticated` — corregido revocando
+`execute` de esas funciones para esos roles; el advisor de seguridad ahora da 0 alertas. GitHub
+conectado: remote `origin` apuntando a `github.com/marketingconpaucr/cashpet` — el usuario
+confirmó el repo. Pendiente: primer `push` (preguntado, esperando confirmación del usuario antes
+de subir 79 commits de trabajo).
+
 ⏸️ CHECKPOINT 2026-10-01 (9) — Arrancó en serio la Sesión 6. El usuario ya tenía cuenta de GitHub
 y Supabase (sin Vercel todavía) y creó el proyecto Supabase "cashpet" (región sa-east-1). Pegó
 sus 3 claves en el chat (URL, anon/publishable, service_role) — se avisó que la service_role
