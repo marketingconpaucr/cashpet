@@ -1,5 +1,24 @@
 # ESTADO — CashPet
-Última actualización: 2026-09-30 | Sesión actual: 6
+Última actualización: 2026-10-01 | Sesión actual: 6
+
+⏸️ CHECKPOINT 2026-10-01 (9) — Arrancó en serio la Sesión 6. El usuario ya tenía cuenta de GitHub
+y Supabase (sin Vercel todavía) y creó el proyecto Supabase "cashpet" (región sa-east-1). Pegó
+sus 3 claves en el chat (URL, anon/publishable, service_role) — se avisó que la service_role
+quedó expuesta en el historial del chat y se le pidió regenerarla; el usuario decidió posponerlo
+("seguimos con el resto primero", ver Problemas conocidos). Claves guardadas en `.env.local`
+(gitignored, verificado) + `.env.example` creado (sin valores reales, commiteado). De paso se
+encontró y corrigió una vulnerabilidad crítica real (RCE) en Next.js 16.3.5 → parcheado a 16.3.8
+(`npm audit`: 0 vulnerabilidades). Esquema de BD (ya diseñado desde Sesión 1) escrito como
+migración real en `supabase/migrations/0001_init.sql` — profiles + gastos, RLS con
+`(select auth.uid())`, índice compuesto, trigger `handle_new_user` (crea el profile al
+registrarse) y trigger `updated_at`, siguiendo las reglas de `25-BASE-DE-DATOS.md` (search_path
+vacío + tablas calificadas en las funciones security definer, para evitar escalada de
+privilegios). Supabase CLI instalado (`npm i -D supabase`) pero el login automático por
+navegador no funciona en este entorno (no-TTY) — se optó por que el usuario corra la migración
+directo en el SQL Editor del dashboard de Supabase, sin necesitar un token de acceso personal.
+Pendiente: (1) el usuario corra `supabase/migrations/0001_init.sql` en su dashboard y confirme,
+(2) nombre del repo de GitHub (owner/repo) para conectarlo — todavía no lo dio, (3) decidir si
+regenera la clave service_role expuesta.
 
 ⏸️ CHECKPOINT 2026-09-30 (8) — **[NO ERA BUG — FALSO POSITIVO]** 4º reporte de "se perdieron los
 botones" (paso gastos fijos). Investigando con el usuario se descubrió que está probando la app
@@ -258,6 +277,14 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
   4. NO se adopta: "metas financieras del mes" tipo checklist ni "reflexiones anuales" del Excel — son features de una herramienta de planificación anual, no del hábito diario que vende CashPet. Quedan anotadas acá por si se quieren evaluar más adelante, no se descartan para siempre.
 
 ## Problemas conocidos ⚠️
+- [SECRETO EXPUESTO EN CHAT — PENDIENTE DE ROTAR 2026-10-01] El usuario pegó sus 3 claves de
+  Supabase directo en el chat, incluyendo la `service_role` (secreta — equivale a saltarse RLS
+  por completo). Se le avisó de inmediato que quedó comprometida en el historial y se le pidió
+  regenerarla desde el dashboard de Supabase (Project Settings → API Keys → Regenerate). El
+  usuario respondió "seguimos con el resto primero" — decisión suya de posponerlo, no un olvido.
+  Mientras no se regenere, tratar esa clave como potencialmente filtrada: no usarla para nada
+  fuera de `.env.local` local, y recordar la rotación antes de publicar a producción (bloqueante
+  real para P3/P7 de `62-PUBLICACION-SEGURA-Y-CONTINUA.md`).
 - [EXCEPCIÓN DOCUMENTADA — GARANTÍA 2026-09-24] `FICHA-MERCADO.md` declara Prueba elegida: 7 días y Garantía elegida: 7 días (iguales) — la REGLA DURA de `18-VENTA-HOTMART.md` pide garantía > prueba, así que esto la incumple a propósito. Antes tenía Garantía: 15 días (verificado contra Hotmart), pero el usuario pidió expresamente bajarlo a 7 ("son 7 días gratis y 7 de garantía, en total 14 días"). Se le avisó DOS veces que Hotmart permite 7/15/21/30 días configurables (15 no es un mínimo fijo) y que empatar garantía=prueba deja a la garantía sin cobertura real adicional (quien se arrepiente ya pudo cancelar gratis en la prueba, sin pagar nada) — el usuario confirmó su decisión entendiendo la superposición. Es una decisión de negocio del usuario, no un descuido. Actualizado en `FICHA-MERCADO.md` §4, `app/page.tsx`, `app/paywall/page.tsx` y `docs/copy/landing.md` §6-7. No se re-litiga salvo que el usuario lo pida (`/precios`).
 - [VEREDICTO CADUCADO — LANDING 2026-09-24] El veredicto de landing (LISTA, 36/40 · 18/20 · 20/20, 2026-09-17) quedó desactualizado por ediciones reales de copy hechas hoy a pedido del usuario tras ver la app: subtítulo del hero (dejó de repetir el H1), "el corazón en la boca"→"ansiedad" (modismo de otra generación), "por menos de un café al día"→"por menos de lo que cuesta un café" (quitaba la implicación de hábito diario de comprar café), garantía 15→7 días, y el alt text de los mockups del carrusel. Los 5 screenshots de `public/mockups/` también se regeneraron completos (capturas reales 375×812 del código actual, ya no dibujos a mano) tras notar el usuario que estaban en colones cuando la venta es en dólares. Cada cambio se verificó visualmente en el navegador (Playwright + browser pane) y el usuario vio y aprobó los resultados en el chat, pero NO se re-lanzó el subagente revisor-visual formal — son ediciones de texto puntuales sobre una pantalla ya aprobada, no un rediseño estructural, mismo criterio que ya se usó para onboarding/paywall/login/Inicio en este proyecto (ver entradas de abajo). Re-lanzar el revisor si el usuario pide una re-certificación formal.
 - [ACEPTADO POR EL USUARIO 2026-09-24] Veredicto de inicio (app interna, pantalla principal): 14 pasadas del revisor-visual — RÉCORD del proyecto (onboarding=8, login=7, paywall=5) — NINGUNA dio LISTA. Trayectoria: usabilidad 22→29→27→29→31→27→29→33→35→28→28→28→28→30 /40 · craft 11→15→15→14→14→12→13→17→17→16→16→16→16→16 /20 — el craft cruzó el gate (≥16/20) en la 8ª ronda y se sostuvo estable 6 rondas seguidas; la usabilidad nunca alcanzó 36/40 (techo real: 35, luego se estabilizó en 28-30). A lo largo de las 14 rondas se corrigieron decenas de defectos reales, incluyendo 2 bugs de dinero genuinos: (1) el parseo de montos no manejaba separadores de miles y truncaba el valor silenciosamente (ronda 10); (2) el monto en la moneda secundaria (USD) se parseaba sin decimales, "$12.50" se guardaba como 1250, ~100x inflado (ronda 12) — ambos corregidos y verificados. También se construyó un bottom-sheet real (reemplazando un formulario que dejaba medio viewport vacío), preselección de categoría, señales de editar/eliminar, accesibilidad del modal (`role="dialog"`, `inert` en el fondo — con un bug real en el propio `inert` corregido en la ronda 9), y todo el sub-flujo de moneda secundaria (toggle, tipo de cambio manual, preview en vivo, trazabilidad). La 14ª pasada fue explícita y terminante: los 10 criterios de usabilidad puntúan un "3" parejo — cruzar el gate ya no es cuestión de corregir el próximo defecto puntual, exigiría una inversión estructural (errores inline por campo, backend real, jerarquía tipográfica de 3 niveles reales) — y recomendó aceptar el estado actual como "production-viable" en vez de seguir iterando. Se le mostraron al usuario las capturas y, tras revisarlas, respondió explícitamente "Se ve bien, aceptamos y avanzamos" — decisión de producto suya, siguiendo la recomendación del propio revisor. Defectos finos de la 14ª pasada quedan pendientes de valor bajo/opcional (no bloqueantes): el mensaje de error se renderiza en un slot fijo lejos del campo inválido en vez de pegado a él; el texto de preview "≈ ₡26 495" usa el tratamiento más apagado del sistema tipográfico; el toggle de moneda no está agrupado en un `role="radiogroup"`; el toast de "Gasto eliminado" no indica tiempo restante; `--text-secondary`/`--text-tertiary` son el mismo hex desde el rediseño blanco (2 niveles reales de texto, no 3). Se revisan si el usuario los pide o en un pulido futuro.
