@@ -1,6 +1,42 @@
 # ESTADO — CashPet
 Última actualización: 2026-10-01 | Sesión actual: 6
 
+⏸️ CHECKPOINT 2026-10-01 (16) — **[RESUELTO]** IA real conectada y verificada de punta a punta.
+Causa raíz del error 400 "not scoped to a workspace": las claves creadas con Alcance =
+"Organización" no sirven para `messages.create` sin el header `anthropic-workspace-id` — hacía
+falta Alcance = "Espacio de trabajo predeterminado" (Default). Con la clave correcta: probado
+directo contra `/api/reaccion` (respuesta real de Gastón, registrada en `ai_calls`: modelo
+`claude-haiku-4-5-20251001`, 371+30 tokens, $0.000521 — consistente con la estimación de ~$0.0007
+por reacción) y probado en la pantalla real de Inicio (línea generada por IA visible, sin tocar
+nada a mano). Build de producción limpio con la ruta `/api/reaccion` como dinámica (server-only).
+Pendiente real (anotado, no bloqueante hoy): el endpoint no tiene auth todavía — el freno de
+abuso hoy es solo el kill-switch de presupuesto global, no por usuario (ver Problemas conocidos,
+depende de conectar Supabase Auth real, que todavía no se ha hecho — la app interna sigue en
+localStorage).
+
+⏸️ CHECKPOINT 2026-10-01 (15) — Conectando IA real (Anthropic/Claude Haiku para las reacciones
+de Gastón). Construido: `lib/ai.ts` (reintentos+backoff, circuit-breaker en memoria, kill-switch
+de presupuesto diario contra `ai_calls`, degradación a `textoReaccion()` si falla — nunca
+pantalla rota), `app/api/reaccion/route.ts` (BFF, valida con zod, SIN auth todavía — ver
+Problemas conocidos), tabla `ai_calls` (migración `0003_ai_calls.sql`, aplicada en Supabase vía
+MCP), y conectado en Inicio (`reaccionIA` state + fetch al cambiar el estado del día). Usuario
+decidió tope de $5 USD como spend cap inicial en el panel de Anthropic (~60 usuarios-mes de
+margen con Haiku). **Bloqueante actual**: la clave de API del usuario da error 400 "not scoped
+to a workspace" en cada llamada — probó 2 claves, ninguna con un Alcance/Workspace específico
+seleccionado. Pendiente: captura de la lista desplegada de "Alcance" en el diálogo de creación de
+clave de Anthropic para identificar la opción correcta. **[SECRETO EXPUESTO — 2ª vez, otro
+proveedor]** El usuario pegó una clave completa en el chat de nuevo (esta vez de Anthropic, no
+Supabase) — formato inusual (`sk-ant-usr-...` en vez de `sk-ant-api03-...`, posiblemente copió
+algo que no era la clave de API). Se le avisó de inmediato, se le pidió revocarla y se reiteró el
+protocolo (pegar solo en el archivo, nunca en el chat). Esa clave NO se usó ni se escribió en
+ningún archivo del proyecto.
+
+⏸️ CHECKPOINT 2026-10-01 (14) — Confirmado el auto-deploy de punta a punta (P8 de
+`62-PUBLICACION-SEGURA-Y-CONTINUA.md`): el commit del checkpoint 13 se subió con `git push` y
+Vercel lo publicó solo, sin ninguna acción manual en su dashboard — pasó de `BUILDING` a `READY`
+en ~1 minuto, dominio `cashpet.vercel.app` de vuelta en la lista. El flujo GitHub→Vercel queda
+verificado como automático y confiable para lo que sigue de la sesión.
+
 ⏸️ CHECKPOINT 2026-10-01 (13) — **[BUG REAL — CORREGIDO]** El usuario reportó el caso límite exacto
 que había prometido probar: ingreso = gastos fijos (₡600.000 = ₡600.000, ni un colón de sobra). El
 fix anterior (checkpoint 7, `deficitMensual > 0`) dejaba fuera el caso de IGUALDAD exacta —
@@ -327,6 +363,21 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
   4. NO se adopta: "metas financieras del mes" tipo checklist ni "reflexiones anuales" del Excel — son features de una herramienta de planificación anual, no del hábito diario que vende CashPet. Quedan anotadas acá por si se quieren evaluar más adelante, no se descartan para siempre.
 
 ## Problemas conocidos ⚠️
+- [SIN AUTH REAL — endpoint /api/reaccion 2026-10-01] La app interna (Inicio/Progreso/Perfil)
+  sigue funcionando 100% sobre localStorage, sin sesión real de Supabase Auth conectada todavía
+  (el login de `app/entrar/page.tsx` sigue siendo un mock). Por eso `/api/reaccion` no puede
+  exigir sesión y el único freno contra abuso es el kill-switch de presupuesto GLOBAL (`ai_calls`
+  + `AI_DAILY_BUDGET_USD`), no uno por usuario — aceptable por ahora (sin tráfico real, app no
+  promocionada), pero bloqueante real antes de lanzar: conectar Supabase Auth de verdad
+  (`datos/RLS → auth → BFF/endpoints → UI conectada`, ver 62) y exigir sesión en este endpoint
+  es tarea pendiente de Sesión 6, todavía no iniciada.
+- [SECRETO EXPUESTO EN CHAT — ANTHROPIC, 2ª vez 2026-10-01] El usuario pegó una clave completa de
+  Anthropic en el chat (formato `sk-ant-usr-...`, no la estándar `sk-ant-api03-...`). Avisado de
+  inmediato, se le pidió revocarla; no se usó ni se escribió en ningún archivo. La clave que SÍ
+  quedó en `.env.local` fue una posterior, pegada directo por el usuario en el archivo (nunca en
+  el chat) — mismo patrón `sk-ant-usr-...`: parece ser el formato real y válido de las claves de
+  este workspace (funcionó correctamente una vez con Alcance = Default), así que el formato en sí
+  no era el problema real — el Alcance sí lo era.
 - [SECRETO EXPUESTO EN CHAT — PENDIENTE DE ROTAR 2026-10-01] El usuario pegó sus 3 claves de
   Supabase directo en el chat, incluyendo la `service_role` (secreta — equivale a saltarse RLS
   por completo). Se le avisó de inmediato que quedó comprometida en el historial y se le pidió

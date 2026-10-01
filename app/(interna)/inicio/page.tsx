@@ -62,6 +62,10 @@ export default function InicioPage() {
   // un gasto en esa moneda y convertirlo a mano con el tipo de cambio del día.
   const [monedaGasto, setMonedaGasto] = useState<'principal' | 'secundaria'>('principal');
   const [tipoCambio, setTipoCambio] = useState('');
+  // Reacción generada por IA real (Sesión 6, lib/ai.ts vía app/api/reaccion) — null mientras
+  // carga o si la IA se degrada (presupuesto agotado, error): ahí se muestra textoReaccion()
+  // de respaldo, nunca un vacío ni un error visible (degradación elegante, ver 30).
+  const [reaccionIA, setReaccionIA] = useState<string | null>(null);
 
   useEffect(() => {
     setDatos(cargarDatosApp());
@@ -77,6 +81,34 @@ export default function InicioPage() {
   // (renta, recibos, súper) se resume en Progreso, no compite por el dato héroe de Inicio.
   const gastadoLibreHoy = sumaPorTipo(gastosHoy, 'libre');
   const emocion = calcularEmocion(gastadoLibreHoy, datos.presupuestoLibreDiario);
+  const ultimoGastoHoy = gastosHoy[0] ?? null;
+
+  // Pide la reacción real de Gastón cuando cambia el estado del día (nuevo gasto, uno
+  // borrado, o el umbral de emoción se movió). Mientras llega o si la IA se degrada
+  // (presupuesto agotado, error de red), el render de abajo cae a textoReaccion(emocion) —
+  // nunca un hueco en blanco ni un error visible.
+  useEffect(() => {
+    if (!cargado) return;
+    const controlador = new AbortController();
+    fetch('/api/reaccion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        emocion,
+        categoria: ultimoGastoHoy?.categoria ?? null,
+        monto: ultimoGastoHoy?.monto ?? null,
+        moneda: datos.moneda,
+        racha: datos.racha,
+        gastadoHoy: gastadoLibreHoy,
+        presupuestoHoy: datos.presupuestoLibreDiario,
+      }),
+      signal: controlador.signal,
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => setReaccionIA(data?.texto ?? null))
+      .catch(() => {}); // silencioso a propósito: se queda con textoReaccion() de respaldo
+    return () => controlador.abort();
+  }, [cargado, emocion, ultimoGastoHoy?.id, datos.moneda, datos.racha, gastadoLibreHoy, datos.presupuestoLibreDiario]);
 
   // Preseleccionar la categoría del último gasto (no el monto: cada gasto es nuevo, pero
   // la categoría se repite 3-5 veces al día en el ritual — obligar a re-elegirla siempre
@@ -260,7 +292,7 @@ export default function InicioPage() {
         >
           <Mascota size={72} emocion={emocion} />
           <Hairline surface="surface" emphasis className="mt-3 max-w-[30ch] shadow-[var(--shadow-1)]">
-            <p className="px-4 py-3 text-[15px] font-semibold text-[var(--text-primary)]">{textoReaccion(emocion)}</p>
+            <p className="px-4 py-3 text-[15px] font-semibold text-[var(--text-primary)]">{reaccionIA ?? textoReaccion(emocion)}</p>
           </Hairline>
         </motion.div>
 
