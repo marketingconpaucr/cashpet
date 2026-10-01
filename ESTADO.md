@@ -1,6 +1,41 @@
 # ESTADO — CashPet
 Última actualización: 2026-10-01 | Sesión actual: 6
 
+⏸️ CHECKPOINT 2026-10-01 (13) — **[BUG REAL — CORREGIDO]** El usuario reportó el caso límite exacto
+que había prometido probar: ingreso = gastos fijos (₡600.000 = ₡600.000, ni un colón de sobra). El
+fix anterior (checkpoint 7, `deficitMensual > 0`) dejaba fuera el caso de IGUALDAD exacta —
+`deficitMensual === 0` seguía cayendo en el mensaje tranquilo de "casi igualan". Corregido en
+`feedbackPresupuestoLibre`/`deficitMensualTexto` (`app/onboarding/page.tsx`): ahora `>= 0`, con un
+mensaje distinto para el caso exacto ("usan exactamente todo tu ingreso") vs. el de exceso ("ya
+superan tu ingreso por X"). Verificado de punta a punta con el mismo caso del usuario (Renta
+₡350.000 + Comida ₡250.000 = ₡600.000, ingreso ₡600.000 escrito a mano) — el mensaje nuevo aparece
+correcto; el caso de exceso real (ya probado en checkpoint 7) no se tocó y sigue intacto.
+
+⏸️ CHECKPOINT 2026-10-01 (12) — **[NO ERA BUG — FALSO POSITIVO, 2ª vez]** Mismo patrón del
+checkpoint 8: el usuario reportó el botón "Continuar" del paso categorías invisible, con captura
+de pantalla con relación de aspecto distinta a 375×812. Reproducido el mismo caso EXACTO (mismas
+3 categorías) en Playwright a 375×812 real → el botón se ve perfecto. Confirmado con el usuario:
+seguía viendo la app desde la pestaña de vista previa de Claude (no su celular), que recorta el
+contenido `fixed` cuando la ventana física es más chica que el viewport emulado — mismo defecto
+de herramienta ya documentado, no de la app. Se le sugirió abrir `http://localhost:3000` en una
+pestaña normal de su navegador en vez de la vista previa de Claude. Ningún código tocado.
+
+⏸️ CHECKPOINT 2026-10-01 (11) — Vercel conectado. El usuario ya tenía cuenta (plan Hobby, bajo el
+scope de equipo `marketing-con-pau`); importó el repo `marketingconpaucr/cashpet` desde el
+dashboard (autorizando la GitHub App de Vercel él mismo). Primer deploy: `READY`, dominio
+`cashpet.vercel.app`, SHA de producción = `d9ee459e...` (coincide con el último push) — verificado
+con `get_project` del MCP de Vercel. Nota: el MCP de Vercel de este entorno NO tiene permiso sobre
+el scope de equipo del usuario (`list_projects`/`list_teams` con `teamId` dan 403 "Not authorized");
+`get_project`/`create_project_env` con el nombre del proyecto sí funcionan — usar esa vía mientras
+no se re-autorice el scope. Variables de entorno de Supabase cargadas en Vercel → Production
+(`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_URL` como planas,
+`SUPABASE_SECRET_KEY` como `sensitive`) — leídas directo de `.env.local` sin mostrarlas en el
+chat. Como se agregaron DESPUÉS del primer deploy, no están activas hasta el próximo deployment
+(regla de `62`: cambiar una env exige redeploy) — no es problema aún porque ninguna pantalla en
+producción toca Supabase todavía. Pendiente real: Preview sigue compartiendo las mismas claves de
+Production por ahora (un solo proyecto Supabase) — separar cuando haya presupuesto/urgencia, ver
+P3 de `62-PUBLICACION-SEGURA-Y-CONTINUA.md`.
+
 ⏸️ CHECKPOINT 2026-10-01 (10) — Conectado el MCP de Supabase (acceso directo al proyecto
 `faehxespgpwdmlhgiegn`, confirmado que es el mismo proyecto cuyas claves están en `.env.local`).
 Aplicadas las 2 migraciones (`0001_init`, `0002_revoke_trigger_fn_execute`) directo en la base
@@ -10,9 +45,11 @@ Supabase encontró algo real que la migración original no cubría: las funcione
 y `set_updated_at` (pensadas solo para dispararse como trigger) quedaban invocables directo desde
 internet vía `/rest/v1/rpc/...` por los roles `anon`/`authenticated` — corregido revocando
 `execute` de esas funciones para esos roles; el advisor de seguridad ahora da 0 alertas. GitHub
-conectado: remote `origin` apuntando a `github.com/marketingconpaucr/cashpet` — el usuario
-confirmó el repo. Pendiente: primer `push` (preguntado, esperando confirmación del usuario antes
-de subir 79 commits de trabajo).
+conectado y PUSHEADO: remote `origin` → `github.com/marketingconpaucr/cashpet`. Sin GitHub CLI ni
+SSH configurados en esta máquina, así que se instaló `gh` (Homebrew) y se autenticó por el flujo
+de dispositivo (código de un solo uso en github.com/login/device, aprobado por el usuario en su
+navegador — cero tokens pegados en el chat). SHA local y remoto coinciden (`d9ee459e...`). Falta:
+Vercel (el usuario no tiene cuenta todavía — siguiente paso natural de la secuencia de `62`).
 
 ⏸️ CHECKPOINT 2026-10-01 (9) — Arrancó en serio la Sesión 6. El usuario ya tenía cuenta de GitHub
 y Supabase (sin Vercel todavía) y creó el proyecto Supabase "cashpet" (región sa-east-1). Pegó

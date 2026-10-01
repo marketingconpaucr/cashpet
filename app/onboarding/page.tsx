@@ -145,6 +145,9 @@ function simboloMoneda(moneda: string, locale: string): string {
 // cifra real — defecto real reportado por el usuario (ingreso 100 mil, gastos fijos
 // 200 mil, y la app igual decía "casi igualan" y ofrecía "libre" como si sobrara algo).
 function feedbackPresupuestoLibre(v: number, min: number, max: number, maxTexto: string, huboAjuste: boolean, deficitMensualTexto: string | null): string {
+  if (deficitMensualTexto === '') {
+    return `Tus gastos fijos usan exactamente todo tu ingreso — no te queda nada libre de verdad. Te dejamos un mínimo (${maxTexto}) solo para que puedas usar la app; lo real es reducir algún gasto fijo.`;
+  }
   if (deficitMensualTexto) {
     return `Tus gastos fijos ya superan tu ingreso por ${deficitMensualTexto} al mes — no te queda nada libre de verdad. Te dejamos un mínimo (${maxTexto}) solo para que puedas usar la app; lo real es reducir algún gasto fijo.`;
   }
@@ -224,9 +227,13 @@ export default function OnboardingPage() {
   const libreDiarioMax = Math.max(monedaActual.rango[0], libreRealistaCalculado);
   // Caso distinto de "casi igualan" (defecto real reportado por el usuario: ingreso 100 mil,
   // gastos fijos 200 mil — los fijos NO "casi igualan" el ingreso, ya lo superan por el doble,
-  // y el mensaje anterior sonaba igual de tranquilo en ambos casos).
+  // y el mensaje anterior sonaba igual de tranquilo en ambos casos). `>= 0` incluye el caso
+  // exacto (fijos == ingreso, defecto real reportado después: 600 mil == 600 mil seguía
+  // mostrando "casi igualan" cuando en realidad no queda NADA libre) — '' lo distingue de
+  // "superan por X" porque ahí no hay una cifra de exceso que mostrar.
   const deficitMensual = totalGastosFijos - ingresoMensual;
-  const deficitMensualTexto = deficitMensual > 0 ? formatoMoneda(deficitMensual, monedaActual.moneda, monedaActual.locale) : null;
+  const deficitMensualTexto =
+    deficitMensual > 0 ? formatoMoneda(deficitMensual, monedaActual.moneda, monedaActual.locale) : deficitMensual === 0 ? '' : null;
   useEffect(() => {
     setPresupuestoLibre((v) => Math.min(v, libreDiarioMax));
     // eslint-disable-next-line react-hooks/exhaustive-deps
