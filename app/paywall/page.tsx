@@ -134,7 +134,11 @@ export default function PaywallPage() {
                   indice={2}
                   icon={Tag}
                   label="Categorías de riesgo identificadas"
-                  valor={cantidadCategorias > 0 ? `${cantidadCategorias} categorías` : 'Sin datos'}
+                  valor={
+                    cantidadCategorias > 0
+                      ? `${cantidadCategorias} ${cantidadCategorias === 1 ? 'categoría' : 'categorías'}`
+                      : 'Sin datos'
+                  }
                 />
                 <FilaRecap indice={3} icon={Calendar} label="Tu momento de riesgo" valor={datos?.momento ?? 'Sin datos'} />
                 <FilaRecap

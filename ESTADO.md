@@ -1,5 +1,15 @@
 # ESTADO — CashPet
-Última actualización: 2026-09-25 | Sesión actual: 6
+Última actualización: 2026-09-30 | Sesión actual: 6
+
+⏸️ CHECKPOINT 2026-09-30 (8) — **[NO ERA BUG — FALSO POSITIVO]** 4º reporte de "se perdieron los
+botones" (paso gastos fijos). Investigando con el usuario se descubrió que está probando la app
+desde la pestaña de vista previa integrada de Claude Code (no un celular real) — y esa ventana
+física puede ser más chica que el viewport de celular que se le pide, cortando contenido
+`position: fixed` legítimo. Se reprodujo el corte exacto en esa misma ventana y se confirmó: el
+código ya está verificado varias veces con navegador real a 375px y el botón se ve bien — no se
+tocó código. Pendiente: el usuario decida si prueba por `localhost:3000` en una pestaña normal,
+o espera el despliegue real (Sesión 6) para probar en su celular. Sigue sin resolver cuáles
+cuentas externas (GitHub/Supabase/Vercel) ya tiene — bloqueante para avanzar Sesión 6 en serio.
 
 ⏸️ CHECKPOINT 2026-09-25 (7) — **[BUG REAL — CORREGIDO]** El usuario probó el caso extremo
 (ingreso ₡100.000, gastos fijos ₡200.000 — los fijos duplican el ingreso) y el paso de
