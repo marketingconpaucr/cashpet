@@ -55,17 +55,17 @@ mascota le dice al instante si va bien o se está pasando — antes de que se re
 - Pasos:
   1. **Anota el gasto** — `Escribe lo que gastaste, en 5 segundos.`
   2. **Gastón te hace el chequeo** — `Te dice la verdad con humor: vas bien o te estás pasando.`
-  3. **Sube tu racha** — `Cada día sin pasarte del límite, tu mascota crece.`
+  3. **Sube tu racha y tu nivel** — `Registra cada día y cierra cada semana dentro de tu límite: tu mascota crece.` (racha = días seguidos con registro, incluido "Sin gastos hoy"; nivel = semanas cerradas dentro del tope semanal — construido 2026-10-21)
 - Antes/Después — Antes: `Descubres el daño a fin de mes, cuando ya no hay nada que hacer.` · Después: `Gastón te lo dice apenas lo anotas — a tiempo para frenar el resto del día o del mes.`
 
 ## Puente visual — las caras de Gastón (NO es sección canónica — 2026-10-21, a pedido del usuario)
 - Va dentro de la Solución, ilustra el paso 02 ("Gastón te hace el chequeo"). Componente `components/landing/Reacciones.tsx`.
 - Kicker: `ASÍ REACCIONA` · Título marcado: `Gastón reacciona a [acento]cómo vas[/acento]` · Subtítulo: `Ejemplos de lo que te dice según cómo vas, con humor y nunca con culpa.`
 - 4 tarjetas, cada una con la cara que realmente sale en la app para esa situación (mapeo en `components/Mascota.tsx`) y la frase de respaldo de `textoReaccion()` (lib/datosApp.ts):
-  - Gastas poco (feliz) — `Ni un gasto hormiga te agarró hoy. Sigue así.` (recortada a la 1ª oración)
-  - Vas bien (tranquilo) — `Vas bien, todavía dentro de tu límite. No te aplaudo, pero casi.`
-  - Casi te pasas (preocupado) — `Ya casi tocas tu límite de hoy. Un gasto hormiga más y te fastidiaste.`
-  - Te pasaste (sarcástico) — `Se te evaporó el límite de hoy. Otra vez.`
+  - Gastas poco (feliz) — `Vas muy por debajo de tu límite de la semana. Sigue así.`
+  - Vas bien (tranquilo) — `Vas bien, dentro de tu límite de la semana. No te aplaudo, pero casi.`
+  - Casi te pasas (preocupado) — `Ya casi tocas tu límite de la semana. Un gasto hormiga más y te fastidiaste.`
+  - Te pasaste (sarcástico) — `Se te evaporó el límite de la semana. Otra vez.`
 - `sorprendido` NO se muestra: en la app no hay situación que lo use todavía (reservado para hitos de racha) — no prometer lo que no existe.
 - Las frases son EJEMPLOS (con IA real la app genera variantes en el mismo tono) — por eso el subtítulo dice "Ejemplos de lo que te dice".
 
@@ -81,8 +81,8 @@ mascota le dice al instante si va bien o se está pasando — antes de que se re
 - Título marcado: `Por menos de [acento]lo que cuesta un café[/acento]` (ajustado 2026-09-24 — "al día" implicaba un hábito diario de comprar café, que no aplica a todo el mundo; la comparación de precio se mantiene, la cadencia diaria no)
 - Trial: 7 días
 - Sin stack de valor (se retiró: el kit Hormozi exige precios reales de bonos existentes, y CashPet no tiene guías/bonos reales todavía — inventarlos falló la revisión de copy, ver ESTADO.md)
-- Anual (badge MÁS POPULAR): $5.83/mes · se cobra $69.99/año · ahorro 35% · `menos de $0.20 al día` · CTA `Empezar mis 7 días gratis` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Niveles y crecimiento de tu mascota · Soporte prioritario por email · Garantía de la Primera Racha: 7 días (bajado de 15→7 el 2026-09-24 a pedido del usuario, ver FICHA-MERCADO.md §4)
-- Mensual: $8.99/mes · CTA `Elegir mensual` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus rachas · Niveles y crecimiento de tu mascota · Cancela cuando quieras (nota: el código actual NO repite la línea de garantía en el plan mensual — discrepancia preexistente con este doc, no introducida en este cambio; se revisa si el usuario lo pide)
+- Anual (badge MÁS POPULAR): $5.83/mes · se cobra $69.99/año · ahorro 35% · `menos de $0.20 al día` · CTA `Empezar mis 7 días gratis` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus gastos · Niveles de Gastón que suben cada semana · Soporte prioritario por email · Garantía de la Primera Racha: 7 días (bajado de 15→7 el 2026-09-24 a pedido del usuario, ver FICHA-MERCADO.md §4)
+- Mensual: $8.99/mes · CTA `Elegir mensual` — features: Reacciones ilimitadas de tu mascota · Historial completo de tus gastos · Niveles de Gastón que suben cada semana · Cancela cuando quieras (nota: el código actual NO repite la línea de garantía en el plan mensual — discrepancia preexistente con este doc, no introducida en este cambio; se revisa si el usuario lo pide)
 
 ## 7. GARANTÍA (bajada de 15→7 días el 2026-09-24 a pedido EXPLÍCITO del usuario)
 - Nombre: `la Garantía de la Primera Racha`

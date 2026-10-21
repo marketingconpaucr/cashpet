@@ -5,6 +5,15 @@
 
 import type { EmocionMascota } from '@/components/Mascota';
 import {
+  calcularNivel,
+  calcularRacha,
+  diasRegistrados,
+  domingoDe,
+  lunesDe,
+  mejorRacha,
+  type ISO,
+} from '@/lib/semana';
+import {
   Bus,
   CreditCard,
   Gamepad2,
@@ -102,8 +111,8 @@ export function iconoCategoria(categoria: string): LucideIcon {
 
 // Dos presupuestos, no uno (decisión de producto 2026-09-24, a pedido del usuario): lo
 // FIJO (planeado, recurrente — renta, recibos, súper) sale del presupuesto MENSUAL; lo
-// LIBRE (impulso — café, antojos, salidas) sale de una bolsa aparte que se administra
-// DÍA a día para que no se acabe antes de fin de mes. Cada categoría se clasifica sola
+// LIBRE (impulso — café, antojos, salidas) sale de una bolsa aparte que se administra por
+// SEMANA (lunes a domingo, decisión del usuario 2026-10-21) para que no se acabe antes de fin de mes. Cada categoría se clasifica sola
 // — el usuario no elige "fijo o libre" cada vez que anota un gasto.
 export type TipoPresupuesto = 'fijo' | 'libre';
 
@@ -157,10 +166,15 @@ export interface DatosApp {
   /** Precarga el campo de tipo de cambio la próxima vez que se anota en la moneda
    * secundaria — conveniencia, no una tasa fija: el usuario la puede corregir siempre. */
   ultimoTipoCambio?: number;
+  /** Total de gastos FIJOS del mes (lo que el usuario anotó en el recorrido). */
   presupuestoMensual: number;
+  /** Tasa diaria de gasto libre que eligió el usuario. El presupuesto es SEMANAL: cada semana
+   * (lunes a domingo) tiene `presupuestoLibreDiario × 7` — ver `presupuestoSemanal()`. */
   presupuestoLibreDiario: number;
-  racha: number;
-  nivelMascota: number;
+  /** Ingreso mensual declarado en el recorrido — permite recalcular cuánto queda de verdad. */
+  ingresoMensual?: number;
+  /** Días (ISO) que el usuario marcó "Sin gastos hoy": cuentan como registro para la racha. */
+  diasSinGastos?: string[];
   /** TODO el historial, no solo hoy (2026-09-25) — Inicio filtra con `gastosDeHoy()`,
    * Progreso filtra por período con `filtrarPorRango()`. El nombre cambió de
    * `gastosHoy` a `gastos` porque ya no es solo el día de hoy. */
@@ -309,8 +323,7 @@ function sembrarDatos(): DatosApp {
         moneda: d.moneda ?? 'USD',
         presupuestoMensual: d.presupuestoMensual ?? 500,
         presupuestoLibreDiario: d.presupuestoLibreDiario ?? 25,
-        racha: 1,
-        nivelMascota: 1,
+        ingresoMensual: d.ingresoMensual,
         // Un usuario real recién llegado solo tiene SU gasto de prueba de hoy — nunca se
         // le fabrica historial falso de días que no vivió (32: "nunca vacía" es sobre no
         // esconder datos reales, no sobre inventar transacciones que no pasaron).
@@ -330,8 +343,6 @@ function sembrarDatos(): DatosApp {
     moneda: 'CRC',
     presupuestoMensual: 500000,
     presupuestoLibreDiario: 25000,
-    racha: 1,
-    nivelMascota: 1,
     gastos: [
       { id: 'demo1', monto: 8000, categoria: 'Despensa/Comida', hora: horaActual(), fecha: fechaHoy() },
       { id: 'demo2', monto: 3500, categoria: 'Hobbies/Ocio', hora: horaActual(), fecha: fechaHoy() },
@@ -374,14 +385,62 @@ export function guardarDatosApp(datos: DatosApp): void {
   }
 }
 
-// Misma lógica de umbrales del onboarding (ESTADO.md → Decisiones técnicas), ahora contra
-// el gasto LIBRE acumulado del día (no el fijo del mes: el ritual diario de Inicio es
-// sobre la bolsa de impulso, ver "Dos presupuestos" arriba) en vez de un solo gasto de prueba.
+// ── Semana, racha y nivel (decisiones del usuario 2026-10-21; lógica pura en lib/semana.ts) ──
+
+/** Tope libre de CADA semana (lunes a domingo): la tasa diaria × 7. */
+export function presupuestoSemanal(d: DatosApp): number {
+  return d.presupuestoLibreDiario * 7;
+}
+
+/** Gasto LIBRE (impulso) de la semana que contiene `ref` (por defecto, la de hoy). */
+export function gastoLibreSemana(gastos: Gasto[], ref: ISO = fechaHoy()): number {
+  return sumaPorTipo(filtrarPorRango(gastos, lunesDe(ref), domingoDe(ref)), 'libre');
+}
+
+function registradosDe(d: DatosApp) {
+  return diasRegistrados(d.gastos.map((g) => g.fecha), d.diasSinGastos ?? []);
+}
+
+/** Días seguidos con registro (un gasto o "Sin gastos hoy"). Solo se rompe por un día sin registrar. */
+export function rachaActual(d: DatosApp): number {
+  return calcularRacha(registradosDe(d), fechaHoy());
+}
+
+export function mejorRachaHistorica(d: DatosApp): number {
+  return mejorRacha(registradosDe(d));
+}
+
+/** Nivel de Gastón: 1 + semanas cerradas dentro del tope (con al menos un registro). */
+export function nivelActual(d: DatosApp): number {
+  const libres = d.gastos.filter((g) => tipoPresupuesto(g.categoria) === 'libre').map((g) => ({ fecha: g.fecha, monto: g.monto }));
+  return calcularNivel(registradosDe(d), libres, presupuestoSemanal(d), fechaHoy());
+}
+
+export function marcadoSinGastosHoy(d: DatosApp): boolean {
+  return (d.diasSinGastos ?? []).includes(fechaHoy());
+}
+
+export function marcarSinGastosHoy(d: DatosApp): DatosApp {
+  const hoy = fechaHoy();
+  return marcadoSinGastosHoy(d) ? d : { ...d, diasSinGastos: [...(d.diasSinGastos ?? []), hoy] };
+}
+
+/** Si el usuario ya marcó "Sin gastos hoy" y después anota un gasto, la marca sobra (y sería falsa). */
+export function quitarMarcaSinGastosHoy(d: DatosApp): DatosApp {
+  const hoy = fechaHoy();
+  return (d.diasSinGastos ?? []).includes(hoy) ? { ...d, diasSinGastos: (d.diasSinGastos ?? []).filter((x) => x !== hoy) } : d;
+}
+
+// Emoción de Gastón según qué tanto del tope SEMANAL llevas gastado. Cada cara calza con su
+// frase (y con la franja de la landing): gastas poco ≤50% · vas bien ≤85% · casi te pasas ≤100% ·
+// te pasaste >100%. (Antes "casi te pasas" abarcaba 100–150%, o sea ya pasado: la cara y la frase
+// decían "casi" cuando el número ya estaba en rojo.)
 export function calcularEmocion(gastado: number, presupuesto: number): EmocionMascota {
-  const proporcion = presupuesto > 0 ? gastado / presupuesto : 0;
+  if (presupuesto <= 0) return gastado > 0 ? 'decepcionada' : 'feliz';
+  const proporcion = gastado / presupuesto;
   if (proporcion <= 0.5) return 'celebrando';
-  if (proporcion <= 1) return 'feliz';
-  if (proporcion <= 1.5) return 'desconfiada';
+  if (proporcion <= 0.85) return 'feliz';
+  if (proporcion <= 1) return 'desconfiada';
   return 'decepcionada';
 }
 
@@ -390,13 +449,14 @@ export function calcularEmocion(gastado: number, presupuesto: number): EmocionMa
 export function textoReaccion(emocion: EmocionMascota): string {
   switch (emocion) {
     case 'celebrando':
-      return 'Ni un gasto hormiga te agarró hoy. Sigue así y no se te evapora nada.';
+      return 'Vas muy por debajo de tu límite de la semana. Sigue así y no se te evapora nada.';
     case 'feliz':
-      return 'Vas bien, todavía dentro de tu límite. No te aplaudo, pero casi.';
+      return 'Vas bien, todavía dentro de tu límite de la semana. No te aplaudo, pero casi.';
     case 'desconfiada':
-      return 'Ya casi tocas tu límite de hoy. Un gasto hormiga más y te fastidiaste.';
+      return 'Ya casi tocas tu límite de la semana. Un gasto hormiga más y te fastidiaste.';
     case 'decepcionada':
     default:
-      return 'Se te evaporó el límite de hoy. Otra vez. Mañana frenamos a tiempo, ¿va?';
+      return 'Se te evaporó el límite de la semana. Otra vez. El lunes empezamos de cero, ¿va?';
   }
 }
+

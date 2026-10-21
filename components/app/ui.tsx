@@ -79,7 +79,18 @@ export function BottomNav({ activo }: { activo: 'inicio' | 'progreso' | 'perfil'
 }
 
 /* ── <BarraPresupuestoDia> — dato héroe + barra que se llena al cargar (17-VISUALIZACION-DATOS). ── */
-export function BarraPresupuestoDia({ gastado, limite, formatear }: { gastado: number; limite: number; formatear: (v: number) => string }) {
+export function BarraPresupuestoDia({
+  gastado,
+  limite,
+  formatear,
+  detalle,
+}: {
+  gastado: number;
+  limite: number;
+  formatear: (v: number) => string;
+  /** Línea extra bajo el total (ej. lo gastado hoy) — el presupuesto es semanal. */
+  detalle?: string;
+}) {
   const reduce = useReducedMotion();
   const pct = limite > 0 ? Math.min(100, Math.round((gastado / limite) * 100)) : 0;
   const pasado = gastado > limite;
@@ -98,7 +109,7 @@ export function BarraPresupuestoDia({ gastado, limite, formatear }: { gastado: n
       <div className="p-4">
         {/* Antes decía siempre "Llevas hoy · libre" — ahora el estado (disponible/excedido)
             reemplaza esa etiqueta neutra, mismo criterio de color que el número y la barra. */}
-        <span className={`text-xs font-semibold ${colorTexto}`}>{pasado ? 'Presupuesto excedido' : 'Presupuesto disponible'}</span>
+        <span className={`text-xs font-semibold ${colorTexto}`}>{pasado ? 'Excedido esta semana' : 'Disponible esta semana'}</span>
         {/* Sin font-family display (Fredoka): esa fuente no tiene el glifo del colón (₡,
             U+20A1) y lo renderiza roto como "Ø" — bug real confirmado contra FilaGasto,
             que sí muestra el símbolo bien porque hereda la fuente de cuerpo (Nunito).
@@ -107,10 +118,11 @@ export function BarraPresupuestoDia({ gastado, limite, formatear }: { gastado: n
         <div className={`text-[42px] font-bold leading-tight tabular-nums ${colorTexto}`}>
           <MontoAnimado valor={diferencia} formatear={formatear} />
         </div>
-        <div className="text-xs font-medium text-[var(--text-tertiary)]">Gastaste {formatear(gastado)} de {formatear(limite)}</div>
+        <div className="text-xs font-medium text-[var(--text-tertiary)]">Gastaste {formatear(gastado)} de {formatear(limite)} esta semana</div>
+        {detalle && <div className="mt-0.5 text-xs font-medium text-[var(--text-secondary)]">{detalle}</div>}
         <div
           role="progressbar"
-          aria-label="Gastado hoy respecto al límite diario"
+          aria-label="Gastado esta semana respecto al tope semanal"
           aria-valuenow={pct}
           aria-valuemin={0}
           aria-valuemax={100}

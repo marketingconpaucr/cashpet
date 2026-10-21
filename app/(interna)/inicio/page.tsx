@@ -8,9 +8,10 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ChevronDown, Flame, PiggyBank, Plus } from 'lucide-react';
+import { Check, ChevronDown, Flame, PiggyBank, Plus } from 'lucide-react';
 import { CtaButton, Hairline } from '@/components/landing/ui';
 import { Mascota } from '@/components/Mascota';
+import { useFechaHoy } from '@/lib/useFechaHoy';
 import { BarraPresupuestoDia, BottomNav, ChipCategoria, ChipRacha, FilaGasto, SeccionVacia } from '@/components/app/ui';
 import {
   CATEGORIAS,
@@ -19,10 +20,16 @@ import {
   etiquetaMontoOriginal,
   fechaHoy,
   formatoMoneda,
+  gastoLibreSemana,
   gastosDeHoy,
   guardarDatosApp,
   iconoCategoria,
+  marcadoSinGastosHoy,
+  marcarSinGastosHoy,
   nombreMoneda,
+  presupuestoSemanal,
+  quitarMarcaSinGastosHoy,
+  rachaActual,
   simboloMoneda,
   sumaPorTipo,
   textoReaccion,
@@ -31,7 +38,7 @@ import {
   type Gasto,
 } from '@/lib/datosApp';
 
-const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastos: [] };
+const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, gastos: [] };
 
 // Las 4 categorías de gasto hormiga diario van primero (gate de carga cognitiva: ≤4-5
 // antes de agrupar) — las 6 menos frecuentes (pagos mensuales, etc.) quedan detrás de
@@ -66,6 +73,8 @@ export default function InicioPage() {
   // carga o si la IA se degrada (presupuesto agotado, error): ahí se muestra textoReaccion()
   // de respaldo, nunca un vacío ni un error visible (degradación elegante, ver 30).
   const [reaccionIA, setReaccionIA] = useState<string | null>(null);
+  // Se vuelve a pintar solo al cambiar el día del celular (app abierta pasada la medianoche).
+  useFechaHoy();
 
   useEffect(() => {
     setDatos(cargarDatosApp());
@@ -79,9 +88,21 @@ export default function InicioPage() {
 
   // El ritual diario es sobre la bolsa LIBRE (impulso), no sobre lo fijo del mes — lo fijo
   // (renta, recibos, súper) se resume en Progreso, no compite por el dato héroe de Inicio.
+  // El PRESUPUESTO es semanal (lunes a domingo, decisión del usuario 2026-10-21): aunque cada
+  // gasto se anote por día, lo que mide si vas bien es la semana. Hoy solo se resume abajo.
   const gastadoLibreHoy = sumaPorTipo(gastosHoy, 'libre');
-  const emocion = calcularEmocion(gastadoLibreHoy, datos.presupuestoLibreDiario);
+  const gastadoLibreSemanaActual = gastoLibreSemana(datos.gastos);
+  const topeSemanal = presupuestoSemanal(datos);
+  const racha = rachaActual(datos);
+  const sinGastosHoy = marcadoSinGastosHoy(datos);
+  const emocion = calcularEmocion(gastadoLibreSemanaActual, topeSemanal);
   const ultimoGastoHoy = gastosHoy[0] ?? null;
+
+  const alternarSinGastosHoy = () => {
+    const actualizado = sinGastosHoy ? quitarMarcaSinGastosHoy(datos) : marcarSinGastosHoy(datos);
+    setDatos(actualizado);
+    guardarDatosApp(actualizado);
+  };
 
   // Pide la reacción real de Gastón cuando cambia el estado del día (nuevo gasto, uno
   // borrado, o el umbral de emoción se movió). Mientras llega o si la IA se degrada
@@ -98,9 +119,9 @@ export default function InicioPage() {
         categoria: ultimoGastoHoy?.categoria ?? null,
         monto: ultimoGastoHoy?.monto ?? null,
         moneda: datos.moneda,
-        racha: datos.racha,
-        gastadoHoy: gastadoLibreHoy,
-        presupuestoHoy: datos.presupuestoLibreDiario,
+        racha,
+        gastadoSemana: gastadoLibreSemanaActual,
+        presupuestoSemana: topeSemanal,
       }),
       signal: controlador.signal,
     })
@@ -108,7 +129,7 @@ export default function InicioPage() {
       .then((data) => setReaccionIA(data?.texto ?? null))
       .catch(() => {}); // silencioso a propósito: se queda con textoReaccion() de respaldo
     return () => controlador.abort();
-  }, [cargado, emocion, ultimoGastoHoy?.id, datos.moneda, datos.racha, gastadoLibreHoy, datos.presupuestoLibreDiario]);
+  }, [cargado, emocion, ultimoGastoHoy?.id, datos.moneda, racha, gastadoLibreSemanaActual, topeSemanal]);
 
   // Preseleccionar la categoría del último gasto (no el monto: cada gasto es nuevo, pero
   // la categoría se repite 3-5 veces al día en el ritual — obligar a re-elegirla siempre
@@ -228,8 +249,10 @@ export default function InicioPage() {
             ...datos.gastos,
           ],
         };
-    setDatos(actualizado);
-    guardarDatosApp(actualizado);
+    // Un gasto nuevo hace falsa la marca "Sin gastos hoy" — se quita sola.
+    const final = editandoId ? actualizado : quitarMarcaSinGastosHoy(actualizado);
+    setDatos(final);
+    guardarDatosApp(final);
     cerrarFormulario();
   };
 
@@ -280,7 +303,7 @@ export default function InicioPage() {
         {/* Sin saludo visible (decisión del usuario); el h1 queda solo para lectores de pantalla. */}
         <header className="flex items-center justify-end">
           <h1 className="sr-only">Inicio</h1>
-          <ChipRacha dias={datos.racha} icon={Flame} />
+          <ChipRacha dias={racha} icon={Flame} />
         </header>
 
         <motion.div
@@ -296,7 +319,12 @@ export default function InicioPage() {
         </motion.div>
 
         <div className="mt-5">
-          <BarraPresupuestoDia gastado={gastadoLibreHoy} limite={datos.presupuestoLibreDiario} formatear={(v) => formatoMoneda(v, datos.moneda)} />
+          <BarraPresupuestoDia
+            gastado={gastadoLibreSemanaActual}
+            limite={topeSemanal}
+            formatear={(v) => formatoMoneda(v, datos.moneda)}
+            detalle={`Hoy llevas ${formatoMoneda(gastadoLibreHoy, datos.moneda)} libres`}
+          />
         </div>
 
         <div className="mt-5">
@@ -306,6 +334,24 @@ export default function InicioPage() {
               Anotar gasto
             </span>
           </CtaButton>
+          {gastosHoy.length === 0 &&
+            (sinGastosHoy ? (
+              <p role="status" className="mt-3 flex items-center justify-center gap-2 text-sm text-[var(--text-secondary)]">
+                <Check size={16} color="var(--success)" aria-hidden="true" />
+                Marcaste que hoy no gastaste. Tu racha sigue.
+                <button type="button" onClick={alternarSinGastosHoy} className="font-semibold text-[var(--accent)] underline-offset-2 hover:underline [touch-action:manipulation]">
+                  Deshacer
+                </button>
+              </p>
+            ) : (
+              <button
+                type="button"
+                onClick={alternarSinGastosHoy}
+                className="mt-3 flex h-12 w-full items-center justify-center rounded-[var(--radius-button)] border border-[color-mix(in_oklab,var(--accent)_45%,transparent)] text-[15px] font-semibold text-[var(--accent)] [touch-action:manipulation]"
+              >
+                Sin gastos hoy
+              </button>
+            ))}
         </div>
 
         <div className="mt-6 flex-1">

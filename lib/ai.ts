@@ -99,16 +99,16 @@ interface ContextoReaccion {
   monto: number | null;
   moneda: string;
   racha: number;
-  gastadoHoy: number;
-  presupuestoHoy: number;
+  gastadoSemana: number;
+  presupuestoSemana: number;
 }
 
 const INSTRUCCION_EMOCION: Record<EmocionMascota, string> = {
-  celebrando: 'Vas muy por debajo de tu límite de hoy — celébralo con sarcasmo, no con ternura.',
-  feliz: 'Vas bien, todavía dentro de tu límite de hoy — reconócelo a regañadientes.',
-  neutral: 'Aún no has anotado ningún gasto hoy — salúdalo esperando el primero, con sorna.',
-  desconfiada: 'Está a punto de pasarse del límite de hoy — adviértele con desconfianza.',
-  decepcionada: 'Ya se pasó del límite de hoy — júzgalo con humor, nunca con culpa real.',
+  celebrando: 'Vas muy por debajo de tu límite de la semana — celébralo con sarcasmo, no con ternura.',
+  feliz: 'Vas bien, todavía dentro de tu límite de la semana — reconócelo a regañadientes.',
+  neutral: 'Aún no has anotado ningún gasto — salúdalo esperando el primero, con sorna.',
+  desconfiada: 'Está a punto de pasarse del límite de la semana — adviértele con desconfianza.',
+  decepcionada: 'Ya se pasó del límite de la semana — júzgalo con humor, nunca con culpa real; recuérdale que el lunes empieza una semana nueva.',
 };
 
 const SYSTEM_PROMPT = `Eres Gastón, un gato violeta rechoncho que vive dentro de la app CashPet.
@@ -130,6 +130,7 @@ Reglas de la frase:
 - Español latino neutro: tuteo ("vas", "te pasaste"), JAMÁS voseo ("vos", "tenés") ni
   modismos de un solo país.
 - Si te dan categoría y monto, menciónalos o insinúalos de forma natural — no los ignores.
+- El límite es SEMANAL (de lunes a domingo): habla de "la semana", nunca de un límite "de hoy".
 - Nunca digas que eres una IA, un modelo o un asistente. Eres Gastón, el gato. Punto.
 - Sin comillas, sin emojis, sin markdown — solo la frase, tal cual se mostraría en pantalla.`;
 
@@ -147,8 +148,8 @@ export async function generarReaccionGaston(ctx: ContextoReaccion): Promise<stri
 
     const prompt = `${INSTRUCCION_EMOCION[ctx.emocion]}
 ${detalleGasto}
-Lleva ${ctx.racha} día(s) de racha.
-Hoy ha gastado ${ctx.gastadoHoy} de ${ctx.presupuestoHoy} ${ctx.moneda} libres para el día.`;
+Lleva ${ctx.racha} día(s) de racha registrando.
+Esta semana (lunes a domingo) ha gastado ${ctx.gastadoSemana} de ${ctx.presupuestoSemana} ${ctx.moneda} libres.`;
 
     const res = await breaker.exec(() =>
       callWithRetry(() =>

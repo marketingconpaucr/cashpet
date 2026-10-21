@@ -15,8 +15,8 @@ const Entrada = z.object({
   monto: z.number().positive().nullable(),
   moneda: z.string().max(10),
   racha: z.number().int().min(0).max(100_000),
-  gastadoHoy: z.number().min(0),
-  presupuestoHoy: z.number().min(0),
+  gastadoSemana: z.number().min(0),
+  presupuestoSemana: z.number().min(0),
 });
 
 export async function POST(req: Request) {

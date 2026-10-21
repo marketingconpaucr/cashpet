@@ -39,6 +39,7 @@
 
 ## 6. Presupuesto libre — el día a día (compromiso — A6, commitment device)
 - `¿Cuánto quieres tener libre al día para gastos del día a día?` — slider en la moneda del usuario (no chips fijos: los montos varían demasiado entre monedas). Feedback contextual según el rango elegido (ajustado/realista/generoso), nunca juzga.
+  - **Actualización 2026-10-21 (presupuesto SEMANAL):** el slider sigue siendo "al día" (como piensa el usuario) pero el feedback siempre muestra el equivalente a la SEMANA (× 7, la semana empieza el lunes). El tope sale de lo que de verdad queda — (ingreso − gastos fijos) ÷ días del mes en curso, redondeado hacia abajo — SIN piso simbólico: con ₡350.000 de ingreso y ₡300.000 de fijos el tope es ₡1.600 al día (≈ ₡11.200 a la semana), no ₡5.000. Si no queda nada (fijos ≥ ingreso) se dice tal cual y el tope es 0. La reacción del primer gasto se mide contra el tope SEMANAL.
 
 ## Activación real (trabajo 3 de 02B: HACER algo, no leer)
 - `Anota tu primer gasto` — monto libre + categoría (reusa las de la pregunta 3, todas de tipo "libre"). Al anotar, Gastón reacciona con una de sus 5 emociones según el monto vs. el presupuesto LIBRE fijado (ver ESTADO.md → umbrales) — la primera prueba real del mecanismo, antes de pedir cuenta o pago.

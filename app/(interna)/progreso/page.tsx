@@ -6,20 +6,26 @@
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Flame, Star } from 'lucide-react';
 import { Hairline } from '@/components/landing/ui';
+import { useFechaHoy } from '@/lib/useFechaHoy';
 import { BottomNav } from '@/components/app/ui';
 import {
   cargarDatosApp,
   filtrarPorRango,
   formatoMoneda,
+  gastoLibreSemana,
   iconoCategoria,
+  mejorRachaHistorica,
+  nivelActual,
   porCategoria,
+  presupuestoSemanal,
+  rachaActual,
   rangoPeriodo,
   sumaPorTipo,
   type DatosApp,
   type Periodo,
 } from '@/lib/datosApp';
 
-const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastos: [] };
+const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, gastos: [] };
 
 const PERIODOS: { valor: Periodo; label: string }[] = [
   { valor: 'mes', label: 'Mes' },
@@ -36,6 +42,7 @@ export default function ProgresoPage() {
   // toda vista temporal necesita fechas reales + navegación entre períodos).
   const [periodo, setPeriodo] = useState<Periodo>('mes');
   const [offset, setOffset] = useState(0);
+  useFechaHoy(); // se actualiza sola al cambiar el día (semana, racha y mes en curso)
 
   useEffect(() => {
     setDatos(cargarDatosApp());
@@ -59,6 +66,16 @@ export default function ProgresoPage() {
   const restanteFijo = Math.max(0, datos.presupuestoMensual - gastoFijoMes);
   const ahorradoMes = porCategoria(gastosMesActual).find((c) => c.categoria === 'Ahorros')?.monto ?? 0;
 
+  // Racha y nivel se CALCULAN del historial (nada fijo): racha = días seguidos con registro,
+  // nivel = 1 + semanas cerradas dentro del tope semanal (decisiones del usuario 2026-10-21).
+  const racha = rachaActual(datos);
+  const mejorRacha = mejorRachaHistorica(datos);
+  const nivel = nivelActual(datos);
+  const topeSemanal = presupuestoSemanal(datos);
+  const gastoSemana = gastoLibreSemana(datos.gastos);
+  const pasadoSemana = gastoSemana > topeSemanal;
+  const pctSemana = topeSemanal > 0 ? Math.min(100, Math.round((gastoSemana / topeSemanal) * 100)) : 0;
+
   // El historial filtrable: el período que el usuario eligió arriba.
   const rango = rangoPeriodo(periodo, offset);
   const gastosPeriodo = filtrarPorRango(datos.gastos, rango.desde, rango.hasta);
@@ -76,18 +93,36 @@ export default function ProgresoPage() {
           <Hairline surface="surface" className="shadow-[var(--shadow-1)]">
             <div className="flex flex-col items-center p-4">
               <Flame size={22} color="var(--accent)" aria-hidden="true" />
-              <p className="mt-1 text-2xl font-bold tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">{datos.racha}</p>
+              <p className="mt-1 text-2xl font-bold tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">{racha}</p>
               <p className="text-xs text-[var(--text-secondary)]">días de racha</p>
+              {mejorRacha > racha && <p className="mt-0.5 text-[11px] text-[var(--text-tertiary)]">Tu mejor: {mejorRacha}</p>}
             </div>
           </Hairline>
           <Hairline surface="surface" className="shadow-[var(--shadow-1)]">
             <div className="flex flex-col items-center p-4">
               <Star size={22} color="var(--accent)" aria-hidden="true" />
-              <p className="mt-1 text-2xl font-bold tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">{datos.nivelMascota}</p>
+              <p className="mt-1 text-2xl font-bold tabular-nums text-[var(--text-primary)] [font-family:var(--font-display)]">{nivel}</p>
               <p className="text-xs text-[var(--text-secondary)]">nivel de Gastón</p>
             </div>
           </Hairline>
         </div>
+
+        <Hairline surface="surface" className="mt-3 shadow-[var(--shadow-1)]">
+          <div className="p-4">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs text-[var(--text-secondary)]">Libre de esta semana</span>
+              <span className="text-xs font-semibold text-[var(--text-tertiary)]">
+                {formatoMoneda(gastoSemana, datos.moneda)} de {formatoMoneda(topeSemanal, datos.moneda)}
+              </span>
+            </div>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--accent)_12%,transparent)]">
+              <div className={`h-full rounded-full ${pasadoSemana ? 'bg-[var(--error)]' : 'bg-[var(--accent)]'}`} style={{ width: `${pctSemana}%` }} />
+            </div>
+            <p className="mt-2 text-xs text-[var(--text-secondary)]">
+              {pasadoSemana ? 'Esta semana ya te pasaste — no sube de nivel, pero tu racha sigue.' : 'Cada semana cerrada dentro del tope sube el nivel de Gastón.'}
+            </p>
+          </div>
+        </Hairline>
 
         <Hairline surface="surface" className="mt-3 shadow-[var(--shadow-1)]">
           <div className="p-4">

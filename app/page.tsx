@@ -143,7 +143,7 @@ export default function LandingCashPet() {
         pasos={[
           { titulo: 'Anota el gasto', detalle: 'Escribe lo que gastaste, en 5 segundos.' },
           { titulo: 'Gastón te hace el chequeo', detalle: 'Te dice la verdad con humor: vas bien o te estás pasando.' },
-          { titulo: 'Sube tu racha', detalle: 'Cada día sin pasarte del límite, tu mascota crece.' },
+          { titulo: 'Sube tu racha y tu nivel', detalle: 'Registra cada día y cierra cada semana dentro de tu límite: tu mascota crece.' },
         ]}
         antesDespues={{
           labelAntes: 'Antes',
@@ -159,10 +159,10 @@ export default function LandingCashPet() {
         tituloMarked="Gastón reacciona a [acento]cómo vas[/acento]"
         subtitulo="Ejemplos de lo que te dice según cómo vas, con humor y nunca con culpa."
         reacciones={[
-          { emocion: 'celebrando', situacion: 'Gastas poco', frase: 'Ni un gasto hormiga te agarró hoy. Sigue así.' },
-          { emocion: 'feliz', situacion: 'Vas bien', frase: 'Vas bien, todavía dentro de tu límite. No te aplaudo, pero casi.' },
-          { emocion: 'desconfiada', situacion: 'Casi te pasas', frase: 'Ya casi tocas tu límite de hoy. Un gasto hormiga más y te fastidiaste.' },
-          { emocion: 'decepcionada', situacion: 'Te pasaste', frase: 'Se te evaporó el límite de hoy. Otra vez.' },
+          { emocion: 'celebrando', situacion: 'Gastas poco', frase: 'Vas muy por debajo de tu límite de la semana. Sigue así.' },
+          { emocion: 'feliz', situacion: 'Vas bien', frase: 'Vas bien, dentro de tu límite de la semana. No te aplaudo, pero casi.' },
+          { emocion: 'desconfiada', situacion: 'Casi te pasas', frase: 'Ya casi tocas tu límite de la semana. Un gasto hormiga más y te fastidiaste.' },
+          { emocion: 'decepcionada', situacion: 'Te pasaste', frase: 'Se te evaporó el límite de la semana. Otra vez.' },
         ]}
       />
 
@@ -233,8 +233,8 @@ export default function LandingCashPet() {
           ctaHref: CTA_HREF,
           features: [
             'Reacciones ilimitadas de tu mascota',
-            'Historial completo de tus rachas',
-            'Niveles y crecimiento de tu mascota',
+            'Historial completo de tus gastos',
+            'Niveles de Gastón que suben cada semana',
             'Soporte prioritario por email',
             'Garantía de la Primera Racha: 7 días',
           ],
@@ -247,8 +247,8 @@ export default function LandingCashPet() {
           ctaHref: CTA_HREF,
           features: [
             'Reacciones ilimitadas de tu mascota',
-            'Historial completo de tus rachas',
-            'Niveles y crecimiento de tu mascota',
+            'Historial completo de tus gastos',
+            'Niveles de Gastón que suben cada semana',
             'Cancela cuando quieras',
           ],
         }}

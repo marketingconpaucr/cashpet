@@ -399,7 +399,40 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
   4. NO se adopta: "metas financieras del mes" tipo checklist ni "reflexiones anuales" del Excel — son features de una herramienta de planificación anual, no del hábito diario que vende CashPet. Quedan anotadas acá por si se quieren evaluar más adelante, no se descartan para siempre.
 
 ## Problemas conocidos ⚠️
-- [RACHA/NIVEL NO CONSTRUIDOS — 2026-10-21, PRODUCTO DECIDIDO, SIN IMPLEMENTAR] `racha` y
+- [REGLA PERMANENTE — LA BASE GUARDA LOS DATOS REALES DEL CELULAR — 2026-10-21, a pedido del
+  usuario] Al conectar la app con la base de datos, la fecha, la hora y la zona horaria de cada
+  gasto (y de cada "Sin gastos hoy") las manda SIEMPRE el celular; el servidor nunca decide el día
+  (su `current_date`/`now()` va en UTC: en Costa Rica movería al día siguiente un gasto de las 6 pm
+  y rompería semana y racha). Hecho: migración `0004_datos_reales_del_celular.sql` aplicada (tablas
+  vacías, sin tocar datos) — `gastos.gastado_en` sin default y NOT NULL, `gastos.hora_local` y
+  `zona_horaria`, `profiles.ingreso_mensual`, tabla `dias_sin_gastos` con RLS; columnas
+  `racha_actual/racha_mas_larga/mascota_nivel/ultima_actividad` marcadas OBSOLETAS (se calculan del
+  historial). Al escribir el código de sincronización: enviar `fecha`/`hora` locales tal cual se
+  guardan hoy en localStorage + `Intl.DateTimeFormat().resolvedOptions().timeZone`; `created_at`
+  es solo cuándo llegó al servidor. Pendiente al conectar cuentas reales: validar contra la hora del
+  servidor que nadie manipule la fecha del celular para inflar la racha (sin bloquear el uso
+  legítimo, p. ej. viajes entre zonas horarias).
+- [CAMBIO DE DÍA CON LA APP ABIERTA — CORREGIDO 2026-10-21] Inicio y Progreso usan `useFechaHoy()`
+  (`lib/useFechaHoy.ts`): temporizador a la próxima medianoche local + revisión al volver a la
+  pestaña. Probado con reloj simulado: a las 23:59:50 "Hoy llevas ₡4.000", tras pasar la medianoche
+  con la app abierta pasa sola a "Hoy llevas ₡0" y reaparece "Sin gastos hoy".
+- [PRESUPUESTO SEMANAL + RACHA + NIVEL — CONSTRUIDO 2026-10-21] Implementado según las
+  decisiones de abajo: lógica pura en `lib/semana.ts` (probada con 26 casos, incluido ₡350.000 −
+  ₡300.000 → tope ₡1.600/día ≈ ₡11.200/semana en octubre); `lib/datosApp.ts` (racha/nivel ya NO se
+  guardan, se calculan del historial; `diasSinGastos`, `ingresoMensual`; `calcularEmocion` con
+  umbrales ≤50/≤85/≤100/>100 de la SEMANA; `textoReaccion` en términos de la semana); Inicio
+  (barra semanal "Disponible/Excedido esta semana", línea "Hoy llevas", botón "Sin gastos hoy" con
+  deshacer, la marca se quita sola al anotar un gasto); Progreso (racha, mejor racha, nivel,
+  tarjeta "Libre de esta semana"); Perfil (muestra semanal + diario); recorrido (tope real sin piso,
+  equivalente semanal en el feedback, reacción del primer gasto contra el tope semanal); IA
+  (`gastadoSemana`/`presupuestoSemana`, prompt habla de la semana); copy de landing/planes/FAQ
+  corregido ("Historial completo de tus gastos", "Niveles de Gastón que suben cada semana").
+  Capturas del carrusel regeneradas (USD, tope $23/día = $161/semana, racha 12; requieren generarse
+  de miércoles en adelante para sembrar lunes y martes de la semana). LIMITACIONES: el nivel usa el
+  tope semanal ACTUAL para evaluar semanas pasadas (no se guarda historial de topes); el tope se
+  calcula una vez en el recorrido con los días de ESE mes (no se recalcula cada mes todavía);
+  Perfil no permite editar el tope (sigue mockeado).
+- [RACHA/NIVEL NO CONSTRUIDOS — HISTÓRICO, YA RESUELTO ARRIBA] `racha` y
   `nivelMascota` son constantes (siempre 1) en `lib/datosApp.ts`; nada las calcula. La landing
   promete "Sube tu racha / tu mascota crece / Niveles y crecimiento / Historial de rachas" — hoy
   es una promesa sin código (el usuario lo pidió construir). **Decisiones de producto del usuario

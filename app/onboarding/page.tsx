@@ -12,6 +12,8 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Moon, Plus, ShoppingBag, Sparkles, Sunrise, Sun, Sunset, Trash2 } from 'lucide-react';
 import { Mascota, type EmocionMascota } from '@/components/Mascota';
+import { calcularEmocion } from '@/lib/datosApp';
+import { maxLibreDiario } from '@/lib/semana';
 import { Accent, CtaButton, Hairline } from '@/components/landing/ui';
 import {
   BarraMiniVisual,
@@ -135,28 +137,38 @@ function simboloMoneda(moneda: string, locale: string): string {
   }
 }
 
-// El máximo del slider YA ES el tope realista (ingreso - gastos fijos, ver
-// libreDiarioMax más abajo) — el feedback solo indica dónde cae el usuario DENTRO
-// de ese tope real, y siempre menciona el tope para que quede claro de dónde sale
-// (2026-09-24, a pedido del usuario: "no es realista conforme a mis ingresos").
-// `deficitMensualTexto` distingue dos casos que antes compartían el mismo mensaje
-// tranquilizador ("casi igualan"): gastos fijos apenas por encima del ingreso (un
-// mínimo simbólico tiene sentido) vs. gastos fijos que YA SUPERAN el ingreso por una
-// cifra real — defecto real reportado por el usuario (ingreso 100 mil, gastos fijos
-// 200 mil, y la app igual decía "casi igualan" y ofrecía "libre" como si sobrara algo).
-function feedbackPresupuestoLibre(v: number, min: number, max: number, maxTexto: string, huboAjuste: boolean, deficitMensualTexto: string | null): string {
+// El máximo del slider YA ES el tope realista: lo que de verdad queda (ingreso − gastos fijos)
+// repartido por los días del mes en curso (maxLibreDiario, lib/semana.ts) — sin piso simbólico:
+// si no queda nada, la app lo dice tal cual (2026-10-21, a pedido del usuario: con ₡350.000 de
+// ingreso y ₡300.000 de fijos solo quedan ₡50.000 al mes, no ₡150.000). El presupuesto es SEMANAL
+// (lunes a domingo), así que el mensaje siempre muestra el equivalente a la semana.
+// `deficitMensualTexto`: '' = fijos == ingreso (no queda nada) · texto = fijos superan el ingreso
+// por esa cifra · null = sobra algo.
+function feedbackPresupuestoLibre(
+  v: number,
+  min: number,
+  max: number,
+  maxTexto: string,
+  deficitMensualTexto: string | null,
+  semanalTexto: string,
+  sobranteTexto: string,
+  restoBajo: boolean
+): string {
   if (deficitMensualTexto === '') {
-    return `Tus gastos fijos usan exactamente todo tu ingreso — no te queda nada libre de verdad. Te dejamos un mínimo (${maxTexto}) solo para que puedas usar la app; lo real es reducir algún gasto fijo.`;
+    return 'Tus gastos fijos usan exactamente todo tu ingreso — no te queda nada libre de verdad. Puedes seguir, pero lo real es reducir algún gasto fijo.';
   }
   if (deficitMensualTexto) {
-    return `Tus gastos fijos ya superan tu ingreso por ${deficitMensualTexto} al mes — no te queda nada libre de verdad. Te dejamos un mínimo (${maxTexto}) solo para que puedas usar la app; lo real es reducir algún gasto fijo.`;
+    return `Tus gastos fijos ya superan tu ingreso por ${deficitMensualTexto} al mes — no te queda nada libre de verdad. Puedes seguir, pero lo real es reducir algún gasto fijo.`;
   }
-  if (huboAjuste) {
-    return `Tus gastos fijos casi igualan tu ingreso — te dejamos un mínimo (${maxTexto}) para que empieces. Puedes ajustar esto luego.`;
+  if (max <= 0) {
+    return `Después de lo fijo te quedan solo ${sobranteTexto} al mes — prácticamente nada libre. Lo real es reducir algún gasto fijo.`;
+  }
+  if (restoBajo) {
+    return `Después de lo fijo te quedan ${sobranteTexto} al mes: hasta ${maxTexto} al día. Eso son ${semanalTexto} a la semana (cada semana empieza el lunes).`;
   }
   const rel = max > min ? (v - min) / (max - min) : 0;
   const calif = rel < 0.35 ? 'ajustado' : rel < 0.7 ? 'realista' : 'generoso, cerca de tu máximo real';
-  return `Un límite ${calif} · hasta ${maxTexto} es lo que te alcanza según tu ingreso y tus gastos fijos.`;
+  return `Un límite ${calif}: ${semanalTexto} a la semana (cada semana empieza el lunes). Hasta ${maxTexto} al día es lo que te alcanza.`;
 }
 
 function feedbackIngreso(): string {
@@ -219,12 +231,13 @@ export default function OnboardingPage() {
   };
 
   const totalGastosFijos = gastosFijosItems.reduce((acc, g) => acc + g.monto, 0);
-  // Tope realista de "libre" = (ingreso - gastos fijos) / 30, redondeado al step de la
-  // moneda — nunca baja del piso del país (huboAjusteRealista avisa cuando se activó ese
-  // piso porque lo fijo casi se come todo el ingreso, en vez de fallar en silencio).
-  const libreRealistaCalculado = Math.round((ingresoMensual - totalGastosFijos) / 30 / monedaActual.rango[3]) * monedaActual.rango[3];
-  const huboAjusteRealista = libreRealistaCalculado < monedaActual.rango[0];
-  const libreDiarioMax = Math.max(monedaActual.rango[0], libreRealistaCalculado);
+  // Tope realista de "libre" = lo que queda tras los fijos, repartido por los días del MES EN CURSO
+  // (lib/semana.ts → maxLibreDiario). Sin piso: si queda poco, el tope es poco; si no queda nada, es 0.
+  const topeLibre = maxLibreDiario(ingresoMensual, totalGastosFijos, new Date(), monedaActual.rango[3]);
+  const libreDiarioMax = topeLibre.max;
+  const pasoLibre = topeLibre.paso;
+  const restoBajo = libreDiarioMax < monedaActual.rango[0];
+  const libreDiarioMin = restoBajo ? Math.min(pasoLibre, libreDiarioMax) : monedaActual.rango[0];
   // Caso distinto de "casi igualan" (defecto real reportado por el usuario: ingreso 100 mil,
   // gastos fijos 200 mil — los fijos NO "casi igualan" el ingreso, ya lo superan por el doble,
   // y el mensaje anterior sonaba igual de tranquilo en ambos casos). `>= 0` incluye el caso
@@ -324,13 +337,8 @@ export default function OnboardingPage() {
       setTimeout(() => setErrorGasto(null), 2000);
       return;
     }
-    const proporcion = monto / presupuestoLibre;
-    let emocion: EmocionMascota;
-    if (proporcion <= 0.5) emocion = 'celebrando';
-    else if (proporcion <= 1) emocion = 'feliz';
-    else if (proporcion <= 1.5) emocion = 'desconfiada';
-    else emocion = 'decepcionada';
-    setReaccion(emocion);
+    // Mismos umbrales que Inicio (un solo lugar: calcularEmocion) y contra el tope SEMANAL.
+    setReaccion(calcularEmocion(monto, presupuestoLibre * 7));
   };
 
   // Guarda todo en localStorage al llegar al loading final — Modelo 2: sin cuenta todavía,
@@ -661,19 +669,21 @@ export default function OnboardingPage() {
           <SliderCompromiso
             tituloMarked={<>¿Cuánto quieres tener <Accent>libre</Accent> al día para gastos del día a día?</>}
             valor={presupuestoLibre}
-            min={monedaActual.rango[0]}
+            min={libreDiarioMin}
             max={libreDiarioMax}
-            step={monedaActual.rango[3]}
+            step={pasoLibre}
             formatear={(v) => formatoMoneda(v, monedaActual.moneda, monedaActual.locale)}
             onCambiar={setPresupuestoLibre}
             onFijar={avanzar}
             feedback={feedbackPresupuestoLibre(
               presupuestoLibre,
-              monedaActual.rango[0],
+              libreDiarioMin,
               libreDiarioMax,
               formatoMoneda(libreDiarioMax, monedaActual.moneda, monedaActual.locale),
-              huboAjusteRealista,
-              deficitMensualTexto
+              deficitMensualTexto,
+              formatoMoneda(presupuestoLibre * 7, monedaActual.moneda, monedaActual.locale),
+              formatoMoneda(Math.max(0, topeLibre.sobranteMes), monedaActual.moneda, monedaActual.locale),
+              restoBajo
             )}
           />
         )}

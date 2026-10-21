@@ -8,9 +8,9 @@ import { useEffect, useState } from 'react';
 import { Coins, DollarSign, LogOut, Wallet } from 'lucide-react';
 import { Hairline } from '@/components/landing/ui';
 import { BottomNav } from '@/components/app/ui';
-import { cargarDatosApp, formatoMoneda, guardarDatosApp, type DatosApp } from '@/lib/datosApp';
+import { cargarDatosApp, formatoMoneda, guardarDatosApp, presupuestoSemanal, type DatosApp } from '@/lib/datosApp';
 
-const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, racha: 1, nivelMascota: 1, gastos: [] };
+const DATOS_INICIALES: DatosApp = { moneda: 'CRC', presupuestoMensual: 500000, presupuestoLibreDiario: 25000, gastos: [] };
 
 export default function PerfilPage() {
   const [datos, setDatos] = useState<DatosApp>(DATOS_INICIALES);
@@ -56,8 +56,9 @@ export default function PerfilPage() {
               <Coins size={20} color="var(--accent)" aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-[var(--text-tertiary)]">Tu presupuesto libre por día</p>
-              <p className="text-[15px] font-semibold text-[var(--text-primary)]">{formatoMoneda(datos.presupuestoLibreDiario, datos.moneda)}</p>
+              <p className="text-xs text-[var(--text-tertiary)]">Tu presupuesto libre por semana</p>
+              <p className="text-[15px] font-semibold text-[var(--text-primary)]">{formatoMoneda(presupuestoSemanal(datos), datos.moneda)}</p>
+              <p className="text-xs text-[var(--text-tertiary)]">{formatoMoneda(datos.presupuestoLibreDiario, datos.moneda)} al día · cada semana empieza el lunes</p>
             </div>
           </div>
         </Hairline>
