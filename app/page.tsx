@@ -141,7 +141,7 @@ export default function LandingCashPet() {
         mecanismo="El Chequeo de Gastón"
         bigIdeaMarked="No te falta fuerza de voluntad: te falta [b]saber al momento si te estás pasando[/b]."
         pasos={[
-          { titulo: 'Anota el gasto', detalle: 'Escribe o dicta lo que gastaste, en 5 segundos.' },
+          { titulo: 'Anota el gasto', detalle: 'Escribe lo que gastaste, en 5 segundos.' },
           { titulo: 'Gastón te hace el chequeo', detalle: 'Te dice la verdad con humor: vas bien o te estás pasando.' },
           { titulo: 'Sube tu racha', detalle: 'Cada día sin pasarte del límite, tu mascota crece.' },
         ]}
@@ -179,15 +179,15 @@ export default function LandingCashPet() {
         >
           <motion.div
             variants={item}
-            className="relative aspect-[9/19.5] w-48 overflow-hidden rounded-[30px] border-[5px] shadow-[var(--shadow-2)]"
+            className="relative aspect-[9/19.5] w-72 overflow-hidden md:w-80 rounded-[30px] border-[5px] shadow-[var(--shadow-2)]"
             style={{ borderColor: 'color-mix(in oklab, var(--text-primary) 90%, var(--accent))' }}
           >
             {!mecanismoImgFallo ? (
               <img
                 src="/mockups/mecanismo-impulso.png"
                 alt="La mascota de CashPet reaccionando a una compra en línea"
-                width={192}
-                height={417}
+                width={320}
+                height={693}
                 loading="lazy"
                 className="h-full w-full object-cover"
                 onError={() => setMecanismoImgFallo(true)}

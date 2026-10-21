@@ -53,7 +53,7 @@ mascota le dice al instante si va bien o se está pasando — antes de que se re
 - Mecanismo: `El Chequeo de Gastón`
 - Big idea marcada (recortada a 1 frase): `No te falta fuerza de voluntad: te falta [b]saber al momento si te estás pasando[/b].`
 - Pasos:
-  1. **Anota el gasto** — `Escribe o dicta lo que gastaste, en 5 segundos.`
+  1. **Anota el gasto** — `Escribe lo que gastaste, en 5 segundos.`
   2. **Gastón te hace el chequeo** — `Te dice la verdad con humor: vas bien o te estás pasando.`
   3. **Sube tu racha** — `Cada día sin pasarte del límite, tu mascota crece.`
 - Antes/Después — Antes: `Descubres el daño a fin de mes, cuando ya no hay nada que hacer.` · Después: `Gastón te lo dice apenas lo anotas — a tiempo para frenar el resto del día o del mes.`

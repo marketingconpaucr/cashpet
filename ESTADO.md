@@ -362,7 +362,7 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
 ## Decisiones técnicas (NO re-discutir sin pedirlo el usuario)
 - Framework: Next.js (App Router) — decidido el 2026-09-16. Motivo: la landing necesita SEO/indexación y la app necesita un BFF para no exponer la clave de IA en el navegador (regla de decisión de 12-FLUJO-AGENTICO.md)
 - Stack: Next.js + Supabase (BD/Auth) + Hotmart (cobro) + Resend (emails) + Vercel (hosting)
-- Features del MVP (orden de prioridad): 1) registro de gasto en máx. 3 clics (o nota de voz), 2) mascota IA con personalidad fija que reacciona a cada gasto, 3) sistema de rachas/streaks por respetar el presupuesto
+- Features del MVP (orden de prioridad): 1) registro de gasto en máx. 3 clics (la "nota de voz" NUNCA se construyó — no prometerla en el copy), 2) mascota IA con personalidad fija que reacciona a cada gasto, 3) sistema de rachas/streaks por respetar el presupuesto
 - Explícitamente NO construir en el MVP: conexión automática con bancos, cursos en video, gráficos financieros complejos o predicciones de inversión (regla de la investigación del usuario, punto 11)
 - Modelo de IA: Claude Haiku 4.5 (`claude-haiku-4-5`) para las reacciones de la mascota — texto corto, personalidad definida por prompt, barato y rápido (~$1/$5 por millón de tokens); síncrono, sin necesidad de streaming largo por ser respuestas breves
 - Auth: magic link/OTP por email (passwordless), sin contraseñas — default del SO para venta por Hotmart. El usuario prueba todo el onboarding SIN cuenta (anónimo); la cuenta nace recién en el login post-compra (o al terminar el trial). Sesión larga (30-90 días). Passkeys se ofrecen más adelante, después de la primera victoria, no en el primer login
@@ -399,6 +399,38 @@ Tracker de gastos gamificado con una mascota de IA con personalidad: el usuario 
   4. NO se adopta: "metas financieras del mes" tipo checklist ni "reflexiones anuales" del Excel — son features de una herramienta de planificación anual, no del hábito diario que vende CashPet. Quedan anotadas acá por si se quieren evaluar más adelante, no se descartan para siempre.
 
 ## Problemas conocidos ⚠️
+- [RACHA/NIVEL NO CONSTRUIDOS — 2026-10-21, PRODUCTO DECIDIDO, SIN IMPLEMENTAR] `racha` y
+  `nivelMascota` son constantes (siempre 1) en `lib/datosApp.ts`; nada las calcula. La landing
+  promete "Sube tu racha / tu mascota crece / Niveles y crecimiento / Historial de rachas" — hoy
+  es una promesa sin código (el usuario lo pidió construir). **Decisiones de producto del usuario
+  (2026-10-21):** (1) el presupuesto es SEMANAL aunque los gastos se registren por día; (2) la
+  semana empieza el LUNES; (3) la racha cuenta días seguidos de registro (un gasto o el botón
+  "Sin gastos hoy") y SOLO se rompe por un día sin registrar nada — pasarse del tope semanal no la
+  rompe pero esa semana Gastón no sube de nivel (el nivel sube por cada semana cerrada dentro del
+  tope); (4) el pozo sale del dinero REAL que queda: ingreso − gastos fijos (ej. ₡350.000 − ₡300.000
+  = ₡50.000/mes) repartido entre las semanas del mes en curso — propuesta: prorrateo por días
+  (÷ días del mes × 7; las semanas que cruzan de mes solo cuentan los días de cada mes). Hoy el
+  onboarding calcula (ingreso−fijos)/30 por DÍA y fuerza un mínimo simbólico (₡5.000/día en CR),
+  que contradice el caso de ₡50.000 al mes — hay que quitar ese piso. Toca: onboarding, Inicio,
+  calcularEmocion, prompt de `lib/ai.ts`, Progreso, Perfil, copy de landing/planes/FAQ. Plan
+  mostrado al usuario; no se ha empezado la construcción.
+- [MENÚ INFERIOR PERDIDO CON LISTAS LARGAS — CORREGIDO 2026-10-21] `BottomNav` era `sticky
+  bottom-0` y con 4+ gastos (más aún tras agrandar a Gastón) quedaba al final del documento,
+  fuera de pantalla. Ahora es `fixed` vía portal a `document.body` (mismo patrón que los botones
+  fijos del recorrido) y las 3 pantallas dejan `pb-28`. Verificado: nav en 728–812 con lista larga.
+- [SALUDO "HOLA DE NUEVO" ELIMINADO — 2026-10-21, a pedido del usuario] Inicio ya no muestra el
+  saludo (queda un `h1 sr-only` "Inicio" por accesibilidad); capturas del carrusel regeneradas.
+- [FALSA PROMESA CORREGIDA — DICTADO 2026-10-21] La landing decía "Escribe o dicta lo que
+  gastaste"; no hay dictado. Corregido a "Escribe lo que gastaste" (page + docs/copy/landing.md).
+- [SUPABASE SE PAUSA POR INACTIVIDAD — 2026-10-21] El proyecto de Supabase está en el plan gratuito
+  y se pausó solo tras ~3 semanas sin uso (status `INACTIVE`). Efecto visible: `/api/reaccion`
+  devolvía `{"texto":null}` en producción Y en local (el kill-switch de presupuesto no puede leer
+  `ai_calls` → degrada por seguridad a las frases fijas; la app no se rompió, solo perdió la IA).
+  Causa raíz hallada en el log del servidor (`[ai] no se pudo leer el gasto diario: fetch failed`).
+  Se reactivó con `restore_project` (gratis en plan free; tardó ~2 min en pasar de COMING_UP a
+  activo) y la IA volvió a responder en producción. **Antes de lanzar con clientes reales hay que
+  resolverlo de raíz:** plan de pago de Supabase (no se pausa) o un ping periódico — con usuarios
+  reales y su historial en esa base, una pausa sería una caída total, no solo menos gracia.
 - [SIN AUTH REAL — endpoint /api/reaccion 2026-10-01] La app interna (Inicio/Progreso/Perfil)
   sigue funcionando 100% sobre localStorage, sin sesión real de Supabase Auth conectada todavía
   (el login de `app/entrar/page.tsx` sigue siendo un mock). Por eso `/api/reaccion` no puede

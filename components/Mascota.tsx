@@ -29,13 +29,16 @@ const TAMANO_MAXIMO_CABEZA = 72;
 export function Mascota({ size = 100, emocion = 'feliz' }: { size?: number; emocion?: EmocionVisual }) {
   const reduce = useReducedMotion();
   const { archivo, alt } = IMAGEN[emocion];
-  const sufijo = size <= TAMANO_MAXIMO_CABEZA ? '_cabeza' : '';
+  const esCabeza = size <= TAMANO_MAXIMO_CABEZA;
+  const sufijo = esCabeza ? '_cabeza' : '';
+  // Cuerpo: caja cuadrada de `size` (igual que el SVG anterior). Cabeza: la imagen es ~1.5:1, así
+  // que la caja usa `size` de ALTO y 1.5× de ancho — en una caja cuadrada la cabeza quedaba a 2/3
+  // de su altura y se veía diminuta (defecto reportado por el usuario). object-contain evita deformar.
+  const ancho = esCabeza ? Math.round(size * 1.5) : size;
   return (
-    // inline-block + caja cuadrada de `size`: ocupa el mismo lugar que el SVG anterior, así el
-    // layout de cada pantalla no se mueve aunque los PNG no sean cuadrados (object-contain).
     <motion.span
       className="relative inline-block"
-      style={{ width: size, height: size }}
+      style={{ width: ancho, height: size }}
       // Respiración idle sutil — Gastón nunca queda 100% estático, sin distraer del contenido.
       animate={reduce ? undefined : { scale: [1, 1.015, 1] }}
       transition={reduce ? undefined : { duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
@@ -44,7 +47,7 @@ export function Mascota({ size = 100, emocion = 'feliz' }: { size?: number; emoc
         src={`/gaston/gaston_${archivo}${sufijo}.png`}
         alt={alt}
         fill
-        sizes={`${size}px`}
+        sizes={`${ancho}px`}
         // Las de 110px+ son lo primero que se ve (landing, bienvenida del recorrido): no lazy.
         priority={size >= 110}
         className="object-contain"

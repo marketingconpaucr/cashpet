@@ -33,7 +33,7 @@ export default function PerfilPage() {
 
   return (
     <>
-      <div className="flex flex-1 flex-col px-4 pt-4 pb-6" style={{ opacity: cargado ? 1 : 0 }}>
+      <div className="flex flex-1 flex-col px-4 pt-4 pb-28" style={{ opacity: cargado ? 1 : 0 }}>
         <h1 className="text-balance text-[25px] font-bold leading-[1.15] [font-family:var(--font-display)]">
           Tu cuenta
         </h1>

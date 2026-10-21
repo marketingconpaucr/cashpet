@@ -6,6 +6,7 @@
 // los datos viven en localStorage, mockup honesto, nunca una pantalla vacía (32).
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { animate, motion, useInView, useReducedMotion } from 'motion/react';
 import { Home, Pencil, Trash2, TrendingUp, User, type LucideIcon } from 'lucide-react';
 import { Hairline } from '@/components/landing/ui';
@@ -44,8 +45,15 @@ const TABS = [
 
 /* ── <BottomNav> — navegación de 3 secciones, siempre al fondo (min-h-dvh, no min-h-full). ── */
 export function BottomNav({ activo }: { activo: 'inicio' | 'progreso' | 'perfil' }) {
-  return (
-    <nav className="sticky bottom-0 z-10 flex items-center justify-around border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] bg-[var(--surface)] pb-[max(8px,env(safe-area-inset-bottom))] pt-2">
+  // `fixed` por portal a document.body (no `sticky`): con una lista larga el `sticky` quedaba al
+  // final del documento, fuera de la pantalla — el usuario perdía el menú (reportado varias veces).
+  // Mismo patrón que los botones fijos del recorrido (components/onboarding/ui.tsx). Cada pantalla
+  // deja `pb-28` abajo para que nada quede tapado por la barra.
+  const [montado, setMontado] = useState(false);
+  useEffect(() => setMontado(true), []);
+  if (!montado) return null;
+  return createPortal(
+    <nav className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-around border-t border-[color-mix(in_oklab,var(--text-tertiary)_15%,transparent)] bg-[var(--surface)] pb-[max(8px,env(safe-area-inset-bottom))] pt-2">
       {TABS.map((tab) => {
         const esActivo = tab.href === `/${activo}`;
         const Icono = tab.icon;
@@ -65,7 +73,8 @@ export function BottomNav({ activo }: { activo: 'inicio' | 'progreso' | 'perfil'
           </motion.a>
         );
       })}
-    </nav>
+    </nav>,
+    document.body
   );
 }
 

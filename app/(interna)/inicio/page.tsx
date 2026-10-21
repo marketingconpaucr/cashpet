@@ -273,14 +273,13 @@ export default function InicioPage() {
   return (
     <>
       <div
-        className="flex flex-1 flex-col px-4 pt-4 pb-6"
+        className="flex flex-1 flex-col px-4 pt-4 pb-28"
         style={{ opacity: cargado ? 1 : 0 }}
         inert={agregando}
       >
-        <header className="flex items-center justify-between">
-          <h1 className="text-balance text-[25px] font-bold leading-[1.15] [font-family:var(--font-display)]">
-            Hola de nuevo
-          </h1>
+        {/* Sin saludo visible (decisión del usuario); el h1 queda solo para lectores de pantalla. */}
+        <header className="flex items-center justify-end">
+          <h1 className="sr-only">Inicio</h1>
           <ChipRacha dias={datos.racha} icon={Flame} />
         </header>
 
@@ -290,7 +289,7 @@ export default function InicioPage() {
           transition={{ duration: 0.3 }}
           className="mt-4 flex flex-col items-center text-center"
         >
-          <Mascota size={72} emocion={emocion} />
+          <Mascota size={120} emocion={emocion} />
           <Hairline surface="surface" emphasis className="mt-3 max-w-[30ch] shadow-[var(--shadow-1)]">
             <p className="px-4 py-3 text-[15px] font-semibold text-[var(--text-primary)]">{reaccionIA ?? textoReaccion(emocion)}</p>
           </Hairline>

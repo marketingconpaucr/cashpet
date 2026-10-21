@@ -98,7 +98,7 @@ export function AppPorDentro({
         <motion.div variants={item} className="mt-10">
           <div
             ref={scrollerRef}
-            className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-[max(20px,calc(50%-125px))] pb-2 [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [&::-webkit-scrollbar]:hidden"
+            className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-[max(20px,calc(50%-var(--ancho)/2))] pb-2 [--ancho:300px] md:[--ancho:340px] [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [&::-webkit-scrollbar]:hidden"
           >
             {frames.map((f, i) => (
               <div key={i} className="shrink-0 snap-center">
@@ -106,7 +106,7 @@ export function AppPorDentro({
                   ref={(el) => {
                     frameRefs.current[i] = el;
                   }}
-                  className="relative aspect-[9/19.5] w-[250px] overflow-hidden rounded-[30px] border-[5px] shadow-[var(--shadow-2)]"
+                  className="relative aspect-[9/19.5] w-[var(--ancho)] overflow-hidden rounded-[30px] border-[5px] shadow-[var(--shadow-2)]"
                   style={{ borderColor: 'color-mix(in oklab, var(--text-primary) 90%, var(--accent))' }}
                 >
                   {f.src && !fallidos.has(i) ? (
@@ -114,8 +114,8 @@ export function AppPorDentro({
                     <img
                       src={f.src}
                       alt={f.alt ?? f.label}
-                      width={250}
-                      height={542}
+                      width={340}
+                      height={736}
                       loading="lazy"
                       className="h-full w-full object-cover"
                       onError={() => setFallidos((prev) => new Set(prev).add(i))}
