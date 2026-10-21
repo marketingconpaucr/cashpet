@@ -183,7 +183,7 @@ export function PantallaPregunta({
    genérico como ÚNICA carga del momento de reconocimiento"). El "dato" opcional es el mini-
    visual con colores reales de la app que la misma regla exige cuando hay uno que mostrar. ── */
 export function PantallaReconocimiento({
-  emocion = 'feliz',
+  emocion = 'celebrando',
   tituloMarked,
   cuerpo,
   dato,

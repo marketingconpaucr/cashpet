@@ -83,7 +83,7 @@ export default function EntrarPage() {
               animate="visible"
             >
               <motion.div variants={reduce ? undefined : ITEM}>
-                <Mascota size={88} emocion="feliz" />
+                <Mascota size={88} emocion="celebrando" />
               </motion.div>
               <motion.h1
                 variants={reduce ? undefined : ITEM}
@@ -155,7 +155,7 @@ export default function EntrarPage() {
               transition={{ duration: 0.3 }}
               className="flex flex-col items-center text-center"
             >
-              <Mascota size={80} emocion="feliz" />
+              <Mascota size={80} emocion="celebrando" />
               <h1 className="mt-5 text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]">
                 Revisa tu correo
               </h1>

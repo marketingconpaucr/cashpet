@@ -1,5 +1,41 @@
 # ESTADO — CashPet
-Última actualización: 2026-10-01 | Sesión actual: 6
+Última actualización: 2026-10-21 | Sesión actual: 6
+
+⏸️ CHECKPOINT 2026-10-21 (17) — **Gastón nuevo (PNG) reemplaza al SVG dibujado en código**, a pedido
+explícito del usuario (reabre la parte de personaje de FICHA-ARTE; colores/tipografías no se
+tocaron). `components/Mascota.tsx` conserva la misma API (`size`, `emocion`, mismos nombres de
+emoción) y ahora renderiza `next/image` desde `public/gaston/` (10 PNG con transparencia copiados
+de `Descargas/gaston_emociones/`). Mapeo aprobado: feliz→feliz · neutral→tranquilo ·
+celebrando→sorprendido · desconfiada→sarcastico · decepcionada→preocupado. Tamaño ≤72px usa
+`_cabeza`, mayor usa cuerpo completo; caja cuadrada de `size` con `object-contain` (los PNG no son
+cuadrados) para que el layout no se mueva; respiración idle conservada; `priority` si size≥110.
+Verificado 375px y 1280px: landing, bienvenida/país/reconocimiento del recorrido, 3 pasos del
+paywall, login (2 estados) y las 4 emociones en Inicio — sin deformar, 0 errores de consola,
+tsc ✓ build ✓. Las 5 capturas de `public/mockups/` (carrusel de la landing) llevaban el Gastón
+viejo adentro (el usuario lo notó) — **regeneradas** como capturas reales a 375×812 con los
+mismos estados de antes (USD, tope $24, racha 12: hoy=12/24 celebrando, mecanismo=25/24
+desconfiada, mecanismo-impulso=39/24 decepcionada, onboarding=paso presupuesto libre vía Ecuador
+con renta $480, paywall=paso de planes); la reacción se fijó con `page.route` a `/api/reaccion`
+para que salga el texto fijo y no gaste IA. Ahora la lista de gastos sale con el más nuevo
+arriba (como la app real; antes las capturas tenían el orden inverso). **Pendiente:**
+`docs/revisiones/estados-mascota.html` y el texto de FICHA-ARTE describen el SVG viejo.
+Las variables `--mascota-*` de `tokens.css` quedaron sin uso (no se borraron: no se tocan estilos).
+**Landing — nueva franja "Gastón reacciona a cómo vas"** (`components/landing/Reacciones.tsx`,
+insertada tras la Solución en `app/page.tsx`; copy en `docs/copy/landing.md`): 4 tarjetas con las
+caras reales de la app + frase de ejemplo (feliz/tranquilo/preocupado/sarcástico); mobile en filas,
+tablet 2×2, lg 4 columnas; verificada a 375/820/1280 sin desbordes. `sorprendido` NO se muestra
+(la app no tiene situación que lo use — no prometer lo que no existe). **Posible inconsistencia a
+resolver:** el FAQ de la landing dice "Tu mascota tiene 5 emociones"; en la app hay 4 caras
+distintas en el ritual diario (tranquilo se reusa para neutral) — no se tocó el copy sin OK.
+Los veredictos del revisor-visual no se re-lanzaron para este cambio de personaje ni para la franja.
+**Ajuste de mapeo (mismo día, a pedido del usuario: "las caritas no hacen match con el contexto" y
+"el de la landing debería ser sarcástico"):** celebrando→feliz · feliz→tranquilo · neutral→tranquilo
+· desconfiada→preocupado · decepcionada→sarcastico (`sorprendido` queda sin uso, reservado para
+hitos). Nuevo estado visual `sarcastica` (solo en `Mascota`, no en el tipo `EmocionMascota`) para
+los dos Gastón de la landing, cuyo copy es burlón. Los spots "alegres" que pedían `feliz` (login,
+bienvenida y reconocimiento del recorrido, planes 64px, default de PantallaReconocimiento) ahora
+piden `celebrando` para seguir mostrando la cara feliz. Capturas de Inicio del carrusel
+regeneradas otra vez (hoy/mecanismo/mecanismo-impulso).
 
 ⏸️ CHECKPOINT 2026-10-01 (16) — **[RESUELTO]** IA real conectada y verificada de punta a punta.
 Causa raíz del error 400 "not scoped to a workspace": las claves creadas con Alcance =

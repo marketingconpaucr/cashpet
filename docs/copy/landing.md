@@ -58,6 +58,17 @@ mascota le dice al instante si va bien o se está pasando — antes de que se re
   3. **Sube tu racha** — `Cada día sin pasarte del límite, tu mascota crece.`
 - Antes/Después — Antes: `Descubres el daño a fin de mes, cuando ya no hay nada que hacer.` · Después: `Gastón te lo dice apenas lo anotas — a tiempo para frenar el resto del día o del mes.`
 
+## Puente visual — las caras de Gastón (NO es sección canónica — 2026-10-21, a pedido del usuario)
+- Va dentro de la Solución, ilustra el paso 02 ("Gastón te hace el chequeo"). Componente `components/landing/Reacciones.tsx`.
+- Kicker: `ASÍ REACCIONA` · Título marcado: `Gastón reacciona a [acento]cómo vas[/acento]` · Subtítulo: `Ejemplos de lo que te dice según cómo vas, con humor y nunca con culpa.`
+- 4 tarjetas, cada una con la cara que realmente sale en la app para esa situación (mapeo en `components/Mascota.tsx`) y la frase de respaldo de `textoReaccion()` (lib/datosApp.ts):
+  - Gastas poco (feliz) — `Ni un gasto hormiga te agarró hoy. Sigue así.` (recortada a la 1ª oración)
+  - Vas bien (tranquilo) — `Vas bien, todavía dentro de tu límite. No te aplaudo, pero casi.`
+  - Casi te pasas (preocupado) — `Ya casi tocas tu límite de hoy. Un gasto hormiga más y te fastidiaste.`
+  - Te pasaste (sarcástico) — `Se te evaporó el límite de hoy. Otra vez.`
+- `sorprendido` NO se muestra: en la app no hay situación que lo use todavía (reservado para hitos de racha) — no prometer lo que no existe.
+- Las frases son EJEMPLOS (con IA real la app genera variantes en el mismo tono) — por eso el subtítulo dice "Ejemplos de lo que te dice".
+
 ## Puente visual (NO es sección canónica — captura real del mecanismo, justo después de la Solución)
 - Frame de teléfono con `/mockups/mecanismo-impulso.png`: Gastón con la cara "Desconfiada" (sistema de 5 emociones de FICHA-ARTE.md, renombrada junto con el cambio de mascota) reaccionando a una compra en línea — `"¿Otra compra en línea? Van 3 este mes. Mmm, ¿la necesitabas de verdad?"` · botón "Anotado. Lo vigilo." · TERCERA escena distinta (hero=café/feliz, carrusel "Mecanismo"=domicilio/feliz, este puente=compra en línea/desconfiada) para que no se repita la misma experiencia ni la misma emoción dos veces (feedback del usuario, ver ESTADO.md)
 
@@ -83,7 +94,7 @@ mascota le dice al instante si va bien o se está pasando — antes de que se re
 1. **¿CashPet se conecta a mi cuenta bancaria?** → `No. [b]Nunca pedimos tus credenciales bancarias[/b]: anotas cada gasto tú mismo, en segundos.`
 2. **¿Y si lo dejo de usar a los 3 días?** → `No es una hoja de cálculo: es un juego con [b]rachas y una mascota que reacciona[/b] cada vez que gastas.`
 3. **¿Por qué pagar si quiero ahorrar?** → `Cuesta menos de $0.20 al día y [b]te avisa de los gastos hormiga que hoy no ves[/b] — se paga solo.`
-4. **¿Me va a hacer sentir peor si gasto de más?** → `No. Tu mascota tiene 5 emociones — te acompaña con humor, [b]nunca con culpa[/b].`
+4. **¿Me va a hacer sentir peor si gasto de más?** → `No. Tu mascota tiene varias emociones — te acompaña con humor, [b]nunca con culpa[/b].`
 5. **¿Qué pasa si no me sirve?** → `7 días gratis, y si pagas y no te convence: [b]un correo y te devolvemos todo[/b].`
 
 ## 9. CTA FINAL EMOCIONAL

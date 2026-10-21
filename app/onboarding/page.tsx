@@ -393,7 +393,7 @@ export default function OnboardingPage() {
       <TransicionPaso pasoKey={paso}>
         {paso === 'bienvenida' && (
           <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-            <Mascota size={110} emocion="feliz" />
+            <Mascota size={110} emocion="celebrando" />
             <h1 className="mt-6 text-balance text-[28px] font-bold leading-[1.15] [font-family:var(--font-display)]">
               Hola, soy <Accent>Gastón</Accent>
             </h1>
@@ -486,7 +486,7 @@ export default function OnboardingPage() {
 
         {paso === 'reconocimiento1' && (
           <PantallaReconocimiento
-            emocion="feliz"
+            emocion="celebrando"
             tituloMarked={<>No es falta de <Accent>voluntad</Accent></>}
             cuerpo={
               dolor === 'Ni idea — y eso es lo que quiero descubrir'

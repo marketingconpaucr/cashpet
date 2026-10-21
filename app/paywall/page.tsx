@@ -208,7 +208,7 @@ export default function PaywallPage() {
 
           {paso === 'precio' && (
             <div className="flex flex-1 flex-col px-4 pt-4">
-              <Mascota size={64} emocion="feliz" />
+              <Mascota size={64} emocion="celebrando" />
               <h1 className="mt-3 text-balance text-[30px] font-bold leading-[1.15] [font-family:var(--font-display)]">
                 Actívalo con <Accent>7 días gratis</Accent>
               </h1>

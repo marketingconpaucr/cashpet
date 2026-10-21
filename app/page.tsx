@@ -13,6 +13,7 @@ import { Hero } from '@/components/landing/Hero';
 import { Problema } from '@/components/landing/Problema';
 import { Agitacion } from '@/components/landing/Agitacion';
 import { Solucion } from '@/components/landing/Solucion';
+import { Reacciones } from '@/components/landing/Reacciones';
 import { AppPorDentro } from '@/components/landing/AppPorDentro';
 import { Oferta } from '@/components/landing/Oferta';
 import { Garantia } from '@/components/landing/Garantia';
@@ -57,7 +58,7 @@ export default function LandingCashPet() {
         }
         visual={
           <div className="relative flex flex-col items-center gap-3 px-6 py-10">
-            <Mascota size={120} />
+            <Mascota size={120} emocion="sarcastica" />
             <div
               className="rounded-[var(--radius-card)] px-4 py-3 text-sm font-semibold shadow-[var(--shadow-2)]"
               style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}
@@ -123,7 +124,7 @@ export default function LandingCashPet() {
             al año en gastos hormiga — hasta $2.400 si no los frenas
           </motion.p>
           <motion.div variants={item} className="mt-6 flex flex-col items-center gap-3">
-            <Mascota size={72} />
+            <Mascota size={72} emocion="sarcastica" />
             <p
               className="rounded-[var(--radius-card)] px-4 py-2 text-sm font-semibold"
               style={{ background: 'var(--surface)', color: 'var(--accent)' }}
@@ -150,6 +151,19 @@ export default function LandingCashPet() {
           labelDespues: 'Después',
           despues: 'Gastón te lo dice apenas lo anotas — a tiempo para frenar el resto del día o del mes.',
         }}
+      />
+
+      {/* Puente visual dentro de la Solución — las caras que de verdad tiene Gastón (paso 02).
+          Copy: docs/copy/landing.md → "Puente visual — las caras de Gastón". */}
+      <Reacciones
+        tituloMarked="Gastón reacciona a [acento]cómo vas[/acento]"
+        subtitulo="Ejemplos de lo que te dice según cómo vas, con humor y nunca con culpa."
+        reacciones={[
+          { emocion: 'celebrando', situacion: 'Gastas poco', frase: 'Ni un gasto hormiga te agarró hoy. Sigue así.' },
+          { emocion: 'feliz', situacion: 'Vas bien', frase: 'Vas bien, todavía dentro de tu límite. No te aplaudo, pero casi.' },
+          { emocion: 'desconfiada', situacion: 'Casi te pasas', frase: 'Ya casi tocas tu límite de hoy. Un gasto hormiga más y te fastidiaste.' },
+          { emocion: 'decepcionada', situacion: 'Te pasaste', frase: 'Se te evaporó el límite de hoy. Otra vez.' },
+        ]}
       />
 
       {/* Puente visual entre Solución y el carrusel — prueba de que el mecanismo es real, con una
@@ -264,7 +278,7 @@ export default function LandingCashPet() {
           },
           {
             pregunta: '¿Me va a hacer sentir peor si gasto de más?',
-            respuestaMarked: 'No. Tu mascota tiene 5 emociones — te acompaña con humor, [b]nunca con culpa[/b].',
+            respuestaMarked: 'No. Tu mascota tiene varias emociones — te acompaña con humor, [b]nunca con culpa[/b].',
           },
           {
             pregunta: '¿Qué pasa si no me sirve?',
